@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'org.robovm:robovm-gradle-plugin:1.12.0'
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "java"
+
+    version = '1.0'
+    ext {
+        appName = "jgd-platformer"
+        gdxVersion = '1.9.2'
+        roboVMVersion = '1.12.0'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.0'
+        aiVersion = '1.8.0'
+    }
+
+    sourceSets.main.java.srcDirs = ["src/main/java/"]
+    sourceSets.main.resources.srcDirs = ["assets/"]
+    sourceSets.test.java.srcDirs = ["src/test/java/"]
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+project(":desktop") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+project(":core") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":gaming")
+    }
+}
+
+project(":gaming") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile "com.googlecode.json-simple:json-simple:1.1"
+        compile "com.gempukku.secsy:secsy-context:1.0"
+        compile "com.gempukku.secsy:secsy-entity:1.0"
+        compile "com.gempukku.secsy:secsy-serialization:1.0"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
