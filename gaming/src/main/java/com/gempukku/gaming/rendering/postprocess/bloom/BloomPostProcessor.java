@@ -14,13 +14,12 @@ import com.gempukku.gaming.rendering.RenderingBuffer;
 import com.gempukku.gaming.rendering.postprocess.PostProcessingRenderer;
 import com.gempukku.gaming.rendering.postprocess.PostProcessingRendererRegistry;
 import com.gempukku.secsy.context.annotation.Inject;
-import com.gempukku.secsy.context.annotation.NetProfiles;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 
 @RegisterSystem(
-        profiles = NetProfiles.CLIENT)
+        profiles = "bloomEffect")
 public class BloomPostProcessor implements PostProcessingRenderer, LifeCycleSystem {
     @Inject
     private PostProcessingRendererRegistry postProcessingRendererRegistry;

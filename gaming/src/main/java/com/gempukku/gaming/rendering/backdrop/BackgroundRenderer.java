@@ -13,12 +13,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.rendering.BackgroundColorProvider;
 import com.gempukku.secsy.context.annotation.Inject;
-import com.gempukku.secsy.context.annotation.NetProfiles;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 
 @RegisterSystem(
-        profiles = {NetProfiles.CLIENT, "backgroundRenderer"})
+        profiles = "backgroundRenderer")
 public class BackgroundRenderer implements BackdropRenderer, LifeCycleSystem {
     @Inject
     private BackdropRendererRegistry backdropRendererRegistry;

@@ -15,7 +15,6 @@ import com.gempukku.gaming.rendering.postprocess.PostProcessingRendererRegistry;
 import com.gempukku.gaming.rendering.ui.UiRenderer;
 import com.gempukku.gaming.rendering.ui.UiRendererRegistry;
 import com.gempukku.secsy.context.annotation.Inject;
-import com.gempukku.secsy.context.annotation.NetProfiles;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.context.util.PriorityCollection;
@@ -27,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RegisterSystem(
-        profiles = NetProfiles.CLIENT,
+        profiles = "fivePhaseRenderer",
         shared = {RenderingEngine.class, EnvironmentRendererRegistry.class, UiRendererRegistry.class, BackdropRendererRegistry.class,
                 PostEnvironmentRendererRegistry.class, PostProcessingRendererRegistry.class})
 public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRendererRegistry, UiRendererRegistry, BackdropRendererRegistry,
