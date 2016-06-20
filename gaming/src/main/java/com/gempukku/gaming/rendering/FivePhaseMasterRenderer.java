@@ -35,8 +35,6 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
     private DirectionalLightProvider directionalLightProvider;
     @Inject
     private RenderingEntityProvider renderingEntityProvider;
-    @Inject
-    private RenderingCameraProvider renderingCameraProvider;
 
     private PriorityCollection<BackdropRenderer> backdropRenderers = new PriorityCollection<>();
     private PriorityCollection<EnvironmentRenderer> environmentRenderers = new PriorityCollection<>();
@@ -115,9 +113,10 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
         EntityRef renderingEntity = renderingEntityProvider.getRenderingEntity();
 
         if (renderingEntity != null) {
+            setupRenderingCamera();
+
             Collection<PostProcessingRenderer> enabledPostProcessors = getEnabledPostProcessors(renderingEntity);
 
-            setupCamera(renderingEntity);
             boolean hasDirectionalLight = setupDirectionalLight();
             if (hasDirectionalLight) {
                 renderLightMap();
@@ -145,6 +144,11 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
         for (UiRenderer uiRenderer : uiRenderers) {
             uiRenderer.renderUi();
         }
+    }
+
+    private void setupRenderingCamera() {
+        renderingEntityProvider.setupRenderingCamera(camera);
+        camera.update();
     }
 
     private void postProcess(EntityRef observerEntity, Collection<PostProcessingRenderer> enabledPostProcessors) {
@@ -201,11 +205,6 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
         for (BackdropRenderer backdropRenderer : backdropRenderers) {
             backdropRenderer.renderBackdrop(camera);
         }
-    }
-
-    private void setupCamera(EntityRef renderingCameraEntity) {
-        renderingCameraProvider.setupRenderingCamera(renderingCameraEntity, camera);
-        camera.update();
     }
 
     private boolean setupDirectionalLight() {
