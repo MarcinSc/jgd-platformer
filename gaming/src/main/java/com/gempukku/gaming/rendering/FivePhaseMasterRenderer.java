@@ -279,12 +279,12 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
 
         @Override
         public void begin() {
-
+            getSourceBuffer().begin();
         }
 
         @Override
         public void end() {
-
+            getSourceBuffer().end();
         }
 
         public void flip() {
