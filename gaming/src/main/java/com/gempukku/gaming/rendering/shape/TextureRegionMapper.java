@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.environment;
+package com.gempukku.gaming.rendering.shape;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

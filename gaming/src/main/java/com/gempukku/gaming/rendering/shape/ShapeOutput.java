@@ -1,7 +1,6 @@
 package com.gempukku.gaming.rendering.shape;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.gempukku.gaming.rendering.environment.TextureRegionMapper;
 import com.gempukku.gaming.rendering.environment.VertexOutput;
 
 import java.util.List;
@@ -9,6 +8,11 @@ import java.util.List;
 public class ShapeOutput {
     private ShapeOutput() {
 
+    }
+
+    public static void outputShapeToVertexOutput(VertexOutput vertexOutput, ShapeDef shape, TextureRegionMapper textureRegionMapper,
+                                                 float xTranslate, float yTranslate, float zTranslate) {
+        outputShapeToVertexOutput(vertexOutput, shape, textureRegionMapper, xTranslate, yTranslate, zTranslate, 1, 1, 1);
     }
 
     public static void outputShapeToVertexOutput(VertexOutput vertexOutput, ShapeDef shape, TextureRegionMapper textureRegionMapper,
@@ -58,6 +62,4 @@ public class ShapeOutput {
         }
         return null;
     }
-
-
 }
