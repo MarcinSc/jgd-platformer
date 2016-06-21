@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
-import com.gempukku.gaming.asset.component.NameComponentManager;
-import com.gempukku.gaming.asset.prefab.PrefabManager;
-import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.google.common.collect.HashMultimap;
@@ -22,10 +19,6 @@ import java.util.*;
 @RegisterSystem(
         profiles = "textureAtlas", shared = {TextureAtlasProvider.class, TextureAtlasRegistry.class})
 public class ReflectionsTextureAtlasProvider implements TextureAtlasProvider, TextureAtlasRegistry, LifeCycleSystem {
-    @Inject
-    private PrefabManager prefabManager;
-    @Inject
-    private NameComponentManager terasologyComponentManager;
 
     private Map<String, TextureAtlas> textureAtlases;
     private Map<String, List<Texture>> textureList;

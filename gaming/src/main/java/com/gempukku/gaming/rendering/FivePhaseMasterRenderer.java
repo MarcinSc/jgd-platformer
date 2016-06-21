@@ -60,7 +60,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, EnvironmentRend
     }
 
     @Override
-    public void registerEnvironmentRendered(EnvironmentRenderer environmentRenderer) {
+    public void registerEnvironmentRenderer(EnvironmentRenderer environmentRenderer) {
         environmentRenderers.add(environmentRenderer);
     }
 
