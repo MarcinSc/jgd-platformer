@@ -12,6 +12,7 @@ import com.gempukku.secsy.entity.EntityRef;
         shared = RenderingEntityProvider.class
 )
 public class PlatformerRenderingEntityProvider implements RenderingEntityProvider, LifeCycleSystem {
+    private static final int DISTANCE_FROM_TERRAIN = 8;
     @Inject
     private EntityManager entityManager;
 
@@ -29,7 +30,7 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
 
     @Override
     public void setupRenderingCamera(Camera camera) {
-        camera.position.set(0, 0, 5);
+        camera.position.set(0, 0, DISTANCE_FROM_TERRAIN);
         camera.lookAt(0, 0, 0);
         camera.up.set(0, 1, 0);
     }

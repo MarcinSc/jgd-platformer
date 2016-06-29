@@ -27,6 +27,8 @@ public class Platformer extends ApplicationAdapter {
         activeProfiles.add("simpleEntityManager");
         activeProfiles.add("nameConventionComponents");
         activeProfiles.add("backgroundRenderer");
+        activeProfiles.add("textureAtlas");
+        activeProfiles.add("shapeProvider");
 
         Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
                 .setScanners(new TypeAnnotationsScanner())
