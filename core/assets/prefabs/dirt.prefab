@@ -1,0 +1,8 @@
+{
+  "BlockComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "all": "blockTiles/Dirt.png"
+    }
+  }
+}

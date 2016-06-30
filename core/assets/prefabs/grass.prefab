@@ -1,0 +1,10 @@
+{
+  "BlockComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "top": "blockTiles/Grass.png",
+      "bottom": "blockTiles/Dirt.png",
+      "sides": "blockTiles/GrassSide.png"
+    }
+  }
+}

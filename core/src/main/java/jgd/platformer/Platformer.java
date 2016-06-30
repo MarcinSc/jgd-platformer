@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.gempukku.gaming.rendering.RenderingEngine;
 import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
+import jgd.platformer.level.LevelLoader;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -29,6 +30,7 @@ public class Platformer extends ApplicationAdapter {
         activeProfiles.add("backgroundRenderer");
         activeProfiles.add("textureAtlas");
         activeProfiles.add("shapeProvider");
+        activeProfiles.add("prefabManager");
 
         Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
                 .setScanners(new TypeAnnotationsScanner())
@@ -36,6 +38,8 @@ public class Platformer extends ApplicationAdapter {
 
         context = new SECSyContext(activeProfiles, new Reflections(scanBasedOnAnnotations));
         context.startup();
+
+        context.getSystem(LevelLoader.class).loadLevel("level-sample2");
 
         System.out.println("Systems in context");
         for (Object system : context.getSystems()) {
