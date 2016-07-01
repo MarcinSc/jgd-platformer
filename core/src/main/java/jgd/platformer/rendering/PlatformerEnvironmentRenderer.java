@@ -24,6 +24,9 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.event.AfterComponentAdded;
+import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.level.BlockComponent;
 import jgd.platformer.level.LevelComponent;
@@ -62,7 +65,7 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
 
     @Override
     public void postDestroy() {
-        model.dispose();
+        destroyTerrain();
     }
 
     @Override
@@ -70,12 +73,10 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
 
     }
 
-    private void initializeTerrain() {
-        EntityRef levelEntity = entityManager.getEntitiesWithComponents(LevelComponent.class).iterator().next();
-
+    @ReceiveEvent
+    public void levelLoader(AfterComponentAdded event, EntityRef entity, LevelComponent level) {
         ArrayVertexOutput vertices = new ArrayVertexOutput();
 
-        LevelComponent level = levelEntity.getComponent(LevelComponent.class);
         for (Map.Entry<String, String> locationToBlock : level.getBlockCoordinates().entrySet()) {
             String locationAsString = locationToBlock.getKey();
             String[] locationSplit = locationAsString.split(",");
@@ -112,12 +113,25 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
         terrain = new ModelInstance(model);
     }
 
+    @ReceiveEvent
+    public void levelUnloaded(BeforeComponentRemoved event, EntityRef entity, LevelComponent level) {
+        destroyTerrain();
+    }
+
+    private void destroyTerrain() {
+        if (model != null) {
+            model.dispose();
+            model = null;
+        }
+        terrain = null;
+    }
+
     @Override
     public void renderEnvironment(boolean hasDirectionalLight, Camera camera, Camera lightCamera, Texture lightTexture, int shadowFidelity, float ambientLight) {
-        if (terrain == null)
-            initializeTerrain();
-        modelBatch.begin(camera);
-        modelBatch.render(terrain);
-        modelBatch.end();
+        if (terrain != null) {
+            modelBatch.begin(camera);
+            modelBatch.render(terrain);
+            modelBatch.end();
+        }
     }
 }

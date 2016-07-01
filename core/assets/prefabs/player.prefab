@@ -1,0 +1,14 @@
+{
+  "LocationComponent": {
+    "x": 2,
+    "y": 0,
+    "z": 0
+  },
+  "CharacterRenderComponent": {
+    "id": "player",
+    "shape": "cube",
+    "texturesForParts": {
+      "all": "blockTiles/Stone.png"
+    }
+  }
+}
