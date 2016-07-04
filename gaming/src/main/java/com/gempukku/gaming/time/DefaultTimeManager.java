@@ -14,19 +14,26 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
 
     @Override
     public void updateTime(long timeDiff) {
-        EntityRef worldEntity = timeEntityProvider.getTimeEntity();
-        TimeComponent world = worldEntity.getComponent(TimeComponent.class);
-        long lastTime = world.getTime();
-        timeSinceLastUpdate = timeDiff;
-        world.setTime(lastTime + timeDiff);
-        worldEntity.saveChanges();
+        EntityRef timeEntity = timeEntityProvider.getTimeEntity();
+        TimeComponent time = timeEntity.getComponent(TimeComponent.class);
+
+        if (time == null) {
+            time = timeEntity.createComponent(TimeComponent.class);
+            time.setTime(0);
+            timeEntity.saveChanges();
+        } else {
+            long lastTime = time.getTime();
+            timeSinceLastUpdate = timeDiff;
+            time.setTime(lastTime + timeDiff);
+            timeEntity.saveChanges();
+        }
     }
 
     @Override
     public long getTime() {
-        EntityRef worldEntity = timeEntityProvider.getTimeEntity();
-        TimeComponent world = worldEntity.getComponent(TimeComponent.class);
-        return world.getTime();
+        EntityRef timeEntity = timeEntityProvider.getTimeEntity();
+        TimeComponent time = timeEntity.getComponent(TimeComponent.class);
+        return time.getTime();
     }
 
     @Override
