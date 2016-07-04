@@ -4,6 +4,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import jgd.platformer.Platformer;
 
+import java.util.Collections;
+
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -11,6 +13,6 @@ public class DesktopLauncher {
         config.backgroundFPS = 0;
         config.foregroundFPS = 0;
         config.vSyncEnabled = false;
-        new LwjglApplication(new Platformer(), config);
+        new LwjglApplication(new Platformer(Collections.singleton("keyboard")), config);
     }
 }

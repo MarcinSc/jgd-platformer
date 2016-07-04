@@ -1,6 +1,6 @@
 {
   "LocationComponent": {
-    "x": 2,
+    "x": 0,
     "y": 0,
     "z": 0
   },
@@ -10,5 +10,9 @@
     "texturesForParts": {
       "all": "blockTiles/Stone.png"
     }
+  },
+  "PlayerControlledComponent": {},
+  "CameraFocusComponent": {
+    "focusWeight": 1
   }
 }

@@ -3,6 +3,7 @@ package jgd.platformer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.gempukku.gaming.rendering.RenderingEngine;
+import com.gempukku.gaming.time.InternalTimeManager;
 import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
 import jgd.platformer.level.LevelLoader;
@@ -13,12 +14,21 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Platformer extends ApplicationAdapter {
     private FPSLogger fpsLogger;
     private SECSyContext context;
+
+    private long lastUpdateTime;
+
+    private Collection<String> additionalProfiles;
+
+    public Platformer(Collection<String> additionalProfiles) {
+        this.additionalProfiles = additionalProfiles;
+    }
 
     @Override
     public void create() {
@@ -34,6 +44,8 @@ public class Platformer extends ApplicationAdapter {
         activeProfiles.add("prefabManager");
         activeProfiles.add("annotationEventDispatcher");
         activeProfiles.add("simpleEntityIndexManager");
+        activeProfiles.add("time");
+        activeProfiles.addAll(additionalProfiles);
 
         Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
                 .setScanners(new TypeAnnotationsScanner())
@@ -53,11 +65,18 @@ public class Platformer extends ApplicationAdapter {
         for (Object system : context.getSystems()) {
             System.out.println(system.getClass().getSimpleName());
         }
+
+        lastUpdateTime = System.currentTimeMillis();
     }
 
     @Override
     public void render() {
         fpsLogger.log();
+
+        long timePassed = System.currentTimeMillis() - lastUpdateTime;
+        lastUpdateTime += timePassed;
+
+        context.getSystem(InternalTimeManager.class).updateTime(timePassed);
 
         context.getSystem(InternalGameLoop.class).processUpdate();
 
