@@ -7,6 +7,7 @@ import com.gempukku.gaming.time.InternalTimeManager;
 import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
 import jgd.platformer.level.LevelLoader;
+import jgd.platformer.logic.physics.PhysicsEngine;
 import jgd.platformer.player.PlayerManager;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
@@ -77,6 +78,8 @@ public class Platformer extends ApplicationAdapter {
         lastUpdateTime += timePassed;
 
         context.getSystem(InternalTimeManager.class).updateTime(timePassed);
+
+        context.getSystem(PhysicsEngine.class).processPhysics();
 
         context.getSystem(InternalGameLoop.class).processUpdate();
 

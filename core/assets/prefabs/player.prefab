@@ -7,11 +7,24 @@
   "CharacterRenderComponent": {
     "id": "player",
     "shape": "cube",
+    "translateX": -0.5,
     "texturesForParts": {
       "all": "blockTiles/Stone.png"
     }
   },
-  "PlayerControlledComponent": {},
+  "KineticObjectComponent": {},
+  "PlayerControlledComponent": {
+    "movementVelocity": 4
+  },
+  "AffectedByGravityComponent": {
+    "gravityMultiplier": 1
+  },
+  "CollidingObjectComponent": {
+    "translateX": -0.5,
+    "translateY": 0,
+    "width": 1,
+    "height": 1
+  },
   "CameraFocusComponent": {
     "focusWeight": 1
   }

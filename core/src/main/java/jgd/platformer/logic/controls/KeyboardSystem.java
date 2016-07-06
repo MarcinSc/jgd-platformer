@@ -2,61 +2,32 @@ package jgd.platformer.logic.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.gempukku.gaming.time.TimeManager;
-import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.game.GameLoop;
-import com.gempukku.secsy.entity.game.GameLoopListener;
-import com.gempukku.secsy.entity.index.EntityIndex;
-import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.component.LocationComponent;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import jgd.platformer.logic.physics.ApplyPhysicsForces;
 
 @RegisterSystem(
         profiles = "keyboard"
 )
-public class KeyboardSystem implements LifeCycleSystem, GameLoopListener {
-    private static final float BLOCKS_PER_MILLISECOND = (4f / 1000);
-    @Inject
-    private GameLoop gameLoop;
-    @Inject
-    private TimeManager timeManager;
-    @Inject
-    private EntityIndexManager entityIndexManager;
-
+public class KeyboardSystem implements LifeCycleSystem {
     private int[] leftKeys = {Input.Keys.LEFT, Input.Keys.A};
     private int[] rightKeys = {Input.Keys.RIGHT, Input.Keys.D};
-    private EntityIndex controlledEntities;
 
-    @Override
-    public void initialize() {
-        gameLoop.addGameLoopListener(this);
-
-        controlledEntities = entityIndexManager.addIndexOnComponents(PlayerControlledComponent.class, LocationComponent.class);
-    }
-
-    @Override
-    public void update() {
+    @ReceiveEvent
+    public void applyMovement(ApplyPhysicsForces event, EntityRef entity, PlayerControlledComponent playerControlled) {
         boolean leftPressed = isLeftPressed();
         boolean rightPressed = isRightPressed();
-
-        long timeSinceLastUpdate = timeManager.getTimeSinceLastUpdate();
 
         float xDiff = 0;
 
         if (leftPressed && !rightPressed) {
-            xDiff -= timeSinceLastUpdate * BLOCKS_PER_MILLISECOND;
+            event.setBaseVelocityX(-playerControlled.getMovementVelocity());
         } else if (rightPressed && !leftPressed) {
-            xDiff += timeSinceLastUpdate * BLOCKS_PER_MILLISECOND;
-        }
-
-        if (xDiff != 0) {
-            for (EntityRef entityRef : controlledEntities.getEntities()) {
-                LocationComponent location = entityRef.getComponent(LocationComponent.class);
-                location.setX(location.getX() + xDiff);
-                entityRef.saveChanges();
-            }
+            event.setBaseVelocityX(playerControlled.getMovementVelocity());
+        } else {
+            event.setBaseVelocityX(0);
         }
     }
 

@@ -10,4 +10,10 @@ public interface CharacterRenderComponent extends Component {
     String getShape();
 
     Map<String, String> getTexturesForParts();
+
+    float getTranslateX();
+
+    float getTranslateY();
+
+    float getTranslateZ();
 }

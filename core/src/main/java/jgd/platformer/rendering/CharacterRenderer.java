@@ -131,7 +131,10 @@ public class CharacterRenderer implements EnvironmentRenderer, LifeCycleSystem {
                 LocationComponent location = entityRef.getComponent(LocationComponent.class);
 
                 ModelInstance modelInstance = modelInstances.get(characterRender.getId());
-                modelInstance.transform = new Matrix4().translate(location.getX(), location.getY(), location.getZ());
+                modelInstance.transform = new Matrix4().translate(
+                        location.getX() + characterRender.getTranslateX(),
+                        location.getY() + characterRender.getTranslateY(),
+                        location.getZ() + characterRender.getTranslateZ());
             }
 
             modelBatch.begin(camera);
