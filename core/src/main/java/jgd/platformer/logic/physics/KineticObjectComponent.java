@@ -18,4 +18,8 @@ public interface KineticObjectComponent extends Component {
     float getAccelerationY();
 
     void setAccelerationY(float accelerationY);
+
+    boolean isGrounded();
+
+    void setGrounded(boolean grounded);
 }

@@ -14,7 +14,8 @@
   },
   "KineticObjectComponent": {},
   "PlayerControlledComponent": {
-    "movementVelocity": 4
+    "movementVelocity": 4,
+    "jumpVelocity": 7
   },
   "AffectedByGravityComponent": {
     "gravityMultiplier": 1

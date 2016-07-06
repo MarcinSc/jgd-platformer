@@ -74,8 +74,9 @@ public class Platformer extends ApplicationAdapter {
     public void render() {
         fpsLogger.log();
 
-        long timePassed = System.currentTimeMillis() - lastUpdateTime;
-        lastUpdateTime += timePassed;
+        long currentTime = System.currentTimeMillis();
+        long timePassed = Math.min(currentTime - lastUpdateTime, 30);
+        lastUpdateTime = currentTime;
 
         context.getSystem(InternalTimeManager.class).updateTime(timePassed);
 

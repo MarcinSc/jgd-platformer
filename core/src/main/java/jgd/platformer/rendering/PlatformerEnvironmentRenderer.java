@@ -80,9 +80,9 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
         for (Map.Entry<String, String> locationToBlock : level.getBlockCoordinates().entrySet()) {
             String locationAsString = locationToBlock.getKey();
             String[] locationSplit = locationAsString.split(",");
-            int x = Integer.parseInt(locationSplit[0]);
-            int y = Integer.parseInt(locationSplit[1]);
-            int z = Integer.parseInt(locationSplit[2]);
+            float x = Float.parseFloat(locationSplit[0]);
+            float y = Float.parseFloat(locationSplit[1]);
+            float z = Float.parseFloat(locationSplit[2]);
 
             String blockPrefabName = locationToBlock.getValue();
             EntityData blockData = prefabManager.getPrefabByName(blockPrefabName);

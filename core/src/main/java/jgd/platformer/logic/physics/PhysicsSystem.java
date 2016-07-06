@@ -109,6 +109,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
             GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, GetCollisionPoint.Direction.UP);
             kineticEntity.send(getCollisionPoint);
 
+            kineticObject.setGrounded(false);
             if (getCollisionPoint.getNearestCollisionPoint() != null) {
                 kineticObject.setVelocityY(0);
                 return getCollisionPoint.getNearestCollisionPoint() - collidingObject.getTranslateY() - collidingObject.getHeight();
@@ -126,7 +127,10 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
 
             if (getCollisionPoint.getNearestCollisionPoint() != null) {
                 kineticObject.setVelocityY(0);
+                kineticObject.setGrounded(true);
                 return getCollisionPoint.getNearestCollisionPoint() - collidingObject.getTranslateY();
+            } else {
+                kineticObject.setGrounded(false);
             }
         }
 

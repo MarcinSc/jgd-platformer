@@ -4,9 +4,12 @@
       "0,-2,0": "grass",
       "1,-2,0": "grass",
       "2,-2,0": "grass",
-      "-2,0,0": "stone",
-      "-3,0,0": "stone",
-      "-4,0,0": "dirt"
+      "0,2,0": "grass",
+      "1,2,0": "grass",
+      "2,2,0": "grass",
+      "-3.5,0,0": "stone",
+      "-4.5,0,0": "stone",
+      "-5.5,0,0": "dirt"
     }
   },
   "CameraBoundsComponent": {
