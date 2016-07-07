@@ -1,7 +1,6 @@
 package com.gempukku.gaming.rendering.postprocess.bloom;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -10,20 +9,15 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.gempukku.gaming.rendering.RenderingBuffer;
-import com.gempukku.gaming.rendering.postprocess.PostProcessingRenderer;
-import com.gempukku.gaming.rendering.postprocess.PostProcessingRendererRegistry;
-import com.gempukku.secsy.context.annotation.Inject;
+import com.gempukku.gaming.rendering.FlipOffScreenRenderingBuffer;
+import com.gempukku.gaming.rendering.event.PostProcessRendering;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem(
-        profiles = "bloomEffect")
-public class BloomPostProcessor implements PostProcessingRenderer, LifeCycleSystem {
-    @Inject
-    private PostProcessingRendererRegistry postProcessingRendererRegistry;
-
+@RegisterSystem
+public class BloomPostProcessor implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
     private BloomShaderProvider bloomShaderProvider;
@@ -49,34 +43,31 @@ public class BloomPostProcessor implements PostProcessingRenderer, LifeCycleSyst
         modelInstance = new ModelInstance(model);
     }
 
-    @Override
-    public void initialize() {
-        postProcessingRendererRegistry.registerPostProcessingRenderer(this);
-    }
+    @ReceiveEvent
+    public void render(PostProcessRendering event, EntityRef renderingEntity, BloomComponent bloom) {
+        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
 
-    @Override
-    public boolean isEnabled(EntityRef observerEntity) {
-        return observerEntity.hasComponent(BloomComponent.class);
-    }
+        int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
-    @Override
-    public void render(EntityRef observerEntity, RenderingBuffer renderingBuffer, Camera camera,
-                       int sourceBoundColorTexture, int sourceBoundDepthTexture) {
-        BloomComponent bloom = observerEntity.getComponent(BloomComponent.class);
-        bloomShaderProvider.setSourceTextureIndex(sourceBoundColorTexture);
+        bloomShaderProvider.setSourceTextureIndex(0);
         bloomShaderProvider.setBlurRadius(bloom.getBlurRadius());
         bloomShaderProvider.setMinimalBrightness(bloom.getMinimalBrightness());
         bloomShaderProvider.setBloomStrength(bloom.getBloomStrength());
 
-        renderingBuffer.begin();
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 0);
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
+
+        renderingBuffer.getDestinationBuffer().begin();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        modelBatch.begin(camera);
+        modelBatch.begin(event.getCamera());
         modelBatch.render(modelInstance);
         modelBatch.end();
-        renderingBuffer.end();
+
+        renderingBuffer.getDestinationBuffer().end();
+        renderingBuffer.flip();
     }
 
     @Override
@@ -84,5 +75,4 @@ public class BloomPostProcessor implements PostProcessingRenderer, LifeCycleSyst
         modelBatch.dispose();
         model.dispose();
     }
-
 }

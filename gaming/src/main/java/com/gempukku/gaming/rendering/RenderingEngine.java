@@ -3,5 +3,5 @@ package com.gempukku.gaming.rendering;
 public interface RenderingEngine {
     void render();
 
-    void updateCamera();
+    void screenResized(int width, int height);
 }

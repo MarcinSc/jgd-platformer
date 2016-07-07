@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.backdrop;
+package com.gempukku.gaming.rendering.backdrop.background;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;

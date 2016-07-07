@@ -1,6 +1,5 @@
-package com.gempukku.gaming.rendering.backdrop;
+package com.gempukku.gaming.rendering.backdrop.background;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -11,19 +10,14 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.gempukku.gaming.rendering.BackgroundColorProvider;
-import com.gempukku.secsy.context.annotation.Inject;
+import com.gempukku.gaming.rendering.event.RenderBackdrop;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem(
-        profiles = "backgroundRenderer")
-public class BackgroundRenderer implements BackdropRenderer, LifeCycleSystem {
-    @Inject
-    private BackdropRendererRegistry backdropRendererRegistry;
-    @Inject
-    private BackgroundColorProvider backgroundColorProvider;
-
+@RegisterSystem
+public class BackgroundRenderer implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
     private BackgroundShaderProvider backgroundShaderProvider;
@@ -50,17 +44,15 @@ public class BackgroundRenderer implements BackdropRenderer, LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @Override
-    public void initialize() {
-        backdropRendererRegistry.registerBackdropRenderer(this);
-    }
+    @ReceiveEvent
+    public void renderBackground(RenderBackdrop event, EntityRef renderingEntity, BackgroundColorComponent backgroundColor) {
+        Vector3 color = new Vector3(
+                backgroundColor.getRed() / 255f,
+                backgroundColor.getGreen() / 255f,
+                backgroundColor.getBlue() / 255f);
+        backgroundShaderProvider.setBackgroundColor(color);
 
-    @Override
-    public void renderBackdrop(Camera camera) {
-        Vector3 backgroundColor = backgroundColorProvider.getBackgroundColor();
-        backgroundShaderProvider.setBackgroundColor(backgroundColor);
-
-        modelBatch.begin(camera);
+        modelBatch.begin(event.getCamera());
         modelBatch.render(modelInstance);
         modelBatch.end();
     }

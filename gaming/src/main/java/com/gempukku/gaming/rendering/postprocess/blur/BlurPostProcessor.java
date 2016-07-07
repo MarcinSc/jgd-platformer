@@ -1,7 +1,6 @@
 package com.gempukku.gaming.rendering.postprocess.blur;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -10,20 +9,15 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.gempukku.gaming.rendering.RenderingBuffer;
-import com.gempukku.gaming.rendering.postprocess.PostProcessingRenderer;
-import com.gempukku.gaming.rendering.postprocess.PostProcessingRendererRegistry;
-import com.gempukku.secsy.context.annotation.Inject;
+import com.gempukku.gaming.rendering.FlipOffScreenRenderingBuffer;
+import com.gempukku.gaming.rendering.event.PostProcessRendering;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem(
-        profiles = "blurEffect")
-public class BlurPostProcessor implements PostProcessingRenderer, LifeCycleSystem {
-    @Inject
-    private PostProcessingRendererRegistry postProcessingRendererRegistry;
-
+@RegisterSystem
+public class BlurPostProcessor implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
     private BlurShaderProvider blurShaderProvider;
@@ -49,33 +43,30 @@ public class BlurPostProcessor implements PostProcessingRenderer, LifeCycleSyste
         modelInstance = new ModelInstance(model);
     }
 
-    @Override
-    public void initialize() {
-        postProcessingRendererRegistry.registerPostProcessingRenderer(this);
-    }
+    @ReceiveEvent
+    public void render(PostProcessRendering event, EntityRef renderingEntity, BlurComponent blur) {
+        float blurRadius = blur.getBlurRadius();
 
-    @Override
-    public boolean isEnabled(EntityRef observerEntity) {
-        return observerEntity.hasComponent(BlurComponent.class);
-    }
+        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
+        int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
-    @Override
-    public void render(EntityRef observerEntity, RenderingBuffer renderingBuffer, Camera camera,
-                       int sourceBoundColorTexture, int sourceBoundDepthTexture) {
-        float blurRadius = observerEntity.getComponent(BlurComponent.class).getBlurRadius();
-
-        blurShaderProvider.setSourceTextureIndex(sourceBoundColorTexture);
+        blurShaderProvider.setSourceTextureIndex(0);
         blurShaderProvider.setBlurRadius(blurRadius);
 
-        renderingBuffer.begin();
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
+
+        renderingBuffer.getDestinationBuffer().begin();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        modelBatch.begin(camera);
+        modelBatch.begin(event.getCamera());
         modelBatch.render(modelInstance);
         modelBatch.end();
-        renderingBuffer.end();
+
+        renderingBuffer.getDestinationBuffer().end();
+        renderingBuffer.flip();
     }
 
     @Override
