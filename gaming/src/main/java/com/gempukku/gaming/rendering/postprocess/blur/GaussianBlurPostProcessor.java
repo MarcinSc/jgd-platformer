@@ -17,16 +17,16 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
 @RegisterSystem
-public class BlurPostProcessor implements LifeCycleSystem {
+public class GaussianBlurPostProcessor implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
-    private BlurShaderProvider blurShaderProvider;
+    private GaussianBlurShaderProvider blurShaderProvider;
     private ModelInstance modelInstance;
     private Model model;
 
     @Override
     public void preInitialize() {
-        blurShaderProvider = new BlurShaderProvider();
+        blurShaderProvider = new GaussianBlurShaderProvider();
 
         modelBatch = new ModelBatch(blurShaderProvider);
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -44,14 +44,22 @@ public class BlurPostProcessor implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void render(PostProcessRendering event, EntityRef renderingEntity, BlurComponent blur) {
-        float blurRadius = blur.getBlurRadius();
-
-        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
-        int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
+    public void render(PostProcessRendering event, EntityRef renderingEntity, GaussianBlurComponent blur) {
+        int blurRadius = blur.getBlurRadius();
 
         blurShaderProvider.setSourceTextureIndex(0);
         blurShaderProvider.setBlurRadius(blurRadius);
+
+        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
+
+        blurShaderProvider.setVertical(true);
+        executeBlur(event, renderingBuffer);
+        blurShaderProvider.setVertical(false);
+        executeBlur(event, renderingBuffer);
+    }
+
+    private void executeBlur(PostProcessRendering event, FlipOffScreenRenderingBuffer renderingBuffer) {
+        int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
         Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);

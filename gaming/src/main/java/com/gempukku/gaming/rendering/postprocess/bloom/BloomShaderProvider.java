@@ -33,7 +33,7 @@ public class BloomShaderProvider implements ShaderProvider {
     public Shader getShader(Renderable renderable) {
         if (bloomShader == null) {
             DefaultShader.Config config = new DefaultShader.Config(
-                    Gdx.files.internal("shader/bloom.vert").readString(),
+                    Gdx.files.internal("shader/viewToScreenCoords.vert").readString(),
                     Gdx.files.internal("shader/bloom.frag").readString());
             bloomShader = new BloomShader(renderable,
                     config);

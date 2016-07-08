@@ -18,7 +18,7 @@ public class CopyShaderProvider implements ShaderProvider {
     public Shader getShader(Renderable renderable) {
         if (copyShader == null) {
             DefaultShader.Config config = new DefaultShader.Config(
-                    Gdx.files.internal("shader/copy.vert").readString(),
+                    Gdx.files.internal("shader/viewToScreenCoords.vert").readString(),
                     Gdx.files.internal("shader/copy.frag").readString());
             copyShader = new CopyShader(renderable, config);
             copyShader.init();
