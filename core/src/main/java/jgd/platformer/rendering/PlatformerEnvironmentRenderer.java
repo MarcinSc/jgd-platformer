@@ -1,7 +1,5 @@
 package jgd.platformer.rendering;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -14,8 +12,7 @@ import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
-import com.gempukku.gaming.rendering.environment.EnvironmentRenderer;
-import com.gempukku.gaming.rendering.environment.EnvironmentRendererRegistry;
+import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.gaming.rendering.shape.ShapeOutput;
 import com.gempukku.gaming.rendering.shape.ShapeProvider;
 import com.gempukku.gaming.rendering.shape.TextureRegionMapper;
@@ -34,9 +31,7 @@ import jgd.platformer.level.LevelComponent;
 import java.util.Map;
 
 @RegisterSystem
-public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeCycleSystem {
-    @Inject
-    private EnvironmentRendererRegistry environmentRendererRegistry;
+public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     @Inject
     private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
@@ -59,18 +54,8 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
     }
 
     @Override
-    public void initialize() {
-        environmentRendererRegistry.registerEnvironmentRenderer(this);
-    }
-
-    @Override
     public void postDestroy() {
         destroyTerrain();
-    }
-
-    @Override
-    public void renderEnvironmentForLight(Camera lightCamera) {
-
     }
 
     @ReceiveEvent
@@ -126,10 +111,10 @@ public class PlatformerEnvironmentRenderer implements EnvironmentRenderer, LifeC
         terrain = null;
     }
 
-    @Override
-    public void renderEnvironment(boolean hasDirectionalLight, Camera camera, Camera lightCamera, Texture lightTexture, int shadowFidelity, float ambientLight) {
+    @ReceiveEvent
+    public void renderTerrain(RenderEnvironment event, EntityRef renderingEntity) {
         if (terrain != null) {
-            modelBatch.begin(camera);
+            modelBatch.begin(event.getCamera());
             modelBatch.render(terrain);
             modelBatch.end();
         }

@@ -1,7 +1,5 @@
 package jgd.platformer.rendering;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -15,8 +13,7 @@ import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
-import com.gempukku.gaming.rendering.environment.EnvironmentRenderer;
-import com.gempukku.gaming.rendering.environment.EnvironmentRendererRegistry;
+import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.gaming.rendering.shape.ShapeDef;
 import com.gempukku.gaming.rendering.shape.ShapeOutput;
 import com.gempukku.gaming.rendering.shape.ShapeProvider;
@@ -41,10 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem
-public class CharacterRenderer implements EnvironmentRenderer, LifeCycleSystem {
+public class CharacterRenderer implements LifeCycleSystem {
     private static final String CHARACTERS_ATLAS_ID = "characters";
-    @Inject
-    private EnvironmentRendererRegistry environmentRendererRegistry;
     @Inject
     private ShapeProvider shapeProvider;
     @Inject
@@ -66,7 +61,6 @@ public class CharacterRenderer implements EnvironmentRenderer, LifeCycleSystem {
 
     @Override
     public void initialize() {
-        environmentRendererRegistry.registerEnvironmentRenderer(this);
         charactersIndex = entityIndexManager.addIndexOnComponents(CharacterRenderComponent.class, LocationComponent.class);
 
         Set<String> textureNames = new HashSet<>();
@@ -112,19 +106,7 @@ public class CharacterRenderer implements EnvironmentRenderer, LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void characterRemoved(BeforeComponentRemoved event, EntityRef entity, CharacterRenderComponent characterRender, LocationComponent location) {
-        String characterId = characterRender.getId();
-        modelInstances.remove(characterId);
-        models.remove(characterId).dispose();
-    }
-
-    @Override
-    public void renderEnvironmentForLight(Camera lightCamera) {
-
-    }
-
-    @Override
-    public void renderEnvironment(boolean hasDirectionalLight, Camera camera, Camera lightCamera, Texture lightTexture, int shadowFidelity, float ambientLight) {
+    public void renderCharacters(RenderEnvironment event, EntityRef renderingEntity) {
         if (!modelInstances.isEmpty()) {
             for (EntityRef entityRef : charactersIndex.getEntities()) {
                 CharacterRenderComponent characterRender = entityRef.getComponent(CharacterRenderComponent.class);
@@ -137,9 +119,16 @@ public class CharacterRenderer implements EnvironmentRenderer, LifeCycleSystem {
                         location.getZ() + characterRender.getTranslateZ());
             }
 
-            modelBatch.begin(camera);
+            modelBatch.begin(event.getCamera());
             modelBatch.render(modelInstances.values());
             modelBatch.end();
         }
+    }
+
+    @ReceiveEvent
+    public void characterRemoved(BeforeComponentRemoved event, EntityRef entity, CharacterRenderComponent characterRender, LocationComponent location) {
+        String characterId = characterRender.getId();
+        modelInstances.remove(characterId);
+        models.remove(characterId).dispose();
     }
 }

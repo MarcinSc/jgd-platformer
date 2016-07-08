@@ -1,6 +1,7 @@
 package jgd.platformer.rendering;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -9,6 +10,7 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
+import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.component.LocationComponent;
 
 @RegisterSystem(
@@ -16,6 +18,8 @@ import jgd.platformer.component.LocationComponent;
 )
 public class PlatformerRenderingEntityProvider implements RenderingEntityProvider, LifeCycleSystem {
     private static final int DISTANCE_FROM_TERRAIN = 8;
+    @Inject
+    private PrefabManager prefabManager;
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -27,7 +31,8 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
 
     @Override
     public void initialize() {
-        cameraEntity = entityManager.createEntity();
+        EntityData renderingEntity = prefabManager.getPrefabByName("renderingEntity");
+        cameraEntity = entityManager.createEntity(renderingEntity);
         cameraFocusedEntities = entityIndexManager.addIndexOnComponents(CameraFocusComponent.class, LocationComponent.class);
         cameraBoundsEntities = entityIndexManager.addIndexOnComponents(CameraBoundsComponent.class);
     }

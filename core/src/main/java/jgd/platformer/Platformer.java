@@ -39,7 +39,6 @@ public class Platformer extends ApplicationAdapter {
         activeProfiles.add("fivePhaseRenderer");
         activeProfiles.add("simpleEntityManager");
         activeProfiles.add("nameConventionComponents");
-        activeProfiles.add("backgroundRenderer");
         activeProfiles.add("textureAtlas");
         activeProfiles.add("shapeProvider");
         activeProfiles.add("prefabManager");
@@ -89,6 +88,7 @@ public class Platformer extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
+        context.getSystem(RenderingEngine.class).screenResized(width, height);
     }
 
     @Override
