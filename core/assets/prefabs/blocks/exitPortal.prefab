@@ -1,0 +1,14 @@
+{
+  "BlockComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "front": "blockTiles/Dirt.png"
+    }
+  },
+  "BlockEntityComponent": {},
+  "RectangleHitboxComponent": {
+    "width": 1,
+    "height": 1
+  },
+  "LevelExitPortalComponent": {}
+}

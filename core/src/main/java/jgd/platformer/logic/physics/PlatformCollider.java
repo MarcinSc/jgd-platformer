@@ -1,6 +1,9 @@
 package jgd.platformer.logic.physics;
 
+import com.gempukku.gaming.asset.prefab.PrefabManager;
+import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
+import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
@@ -10,19 +13,33 @@ import jgd.platformer.level.LevelComponent;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @RegisterSystem
 public class PlatformCollider {
+    @Inject
+    private PrefabManager prefabManager;
+    @Inject
+    private EntityManager entityManager;
+
     private List<Rectangle2D> platformBlocks = new LinkedList<>();
 
     @ReceiveEvent
     public void levelLoaded(AfterComponentAdded event, EntityRef entity, LevelComponent level) {
-        for (String blockCoordinates : level.getBlockCoordinates().keySet()) {
-            String[] split = blockCoordinates.split(",");
-            float x = Float.parseFloat(split[0]);
-            float y = Float.parseFloat(split[1]);
-
-            platformBlocks.add(new Rectangle2D.Float(x, y, 1, 1));
+        Map<String, String> blockCoordinates = level.getBlockCoordinates();
+        for (Map.Entry<String, String> blockCoordinate : blockCoordinates.entrySet()) {
+            String location = blockCoordinate.getKey();
+            String prefab = blockCoordinate.getValue();
+            EntityRef prefabData = entityManager.wrapEntityData(prefabManager.getPrefabByName(prefab));
+            CollidingObjectComponent collidingObject = prefabData.getComponent(CollidingObjectComponent.class);
+            if (collidingObject != null) {
+                String[] locationSplit = location.split(",");
+                float x = Float.parseFloat(locationSplit[0]);
+                float y = Float.parseFloat(locationSplit[1]);
+                platformBlocks.add(new Rectangle2D.Float(
+                        x + collidingObject.getTranslateX(), y + collidingObject.getTranslateY(),
+                        collidingObject.getWidth(), collidingObject.getHeight()));
+            }
         }
     }
 
