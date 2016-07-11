@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.backdrop.background;
+package com.gempukku.gaming.rendering.backdrop.background.color;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -17,16 +17,16 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
 @RegisterSystem
-public class BackgroundRenderer implements LifeCycleSystem {
+public class BackgroundColorRenderer implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
-    private BackgroundShaderProvider backgroundShaderProvider;
+    private BackgroundColorShaderProvider backgroundShaderProvider;
     private ModelInstance modelInstance;
     private Model model;
 
     @Override
     public void preInitialize() {
-        backgroundShaderProvider = new BackgroundShaderProvider();
+        backgroundShaderProvider = new BackgroundColorShaderProvider();
 
         modelBatch = new ModelBatch(backgroundShaderProvider);
         ModelBuilder modelBuilder = new ModelBuilder();

@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.backdrop.background;
+package com.gempukku.gaming.rendering.backdrop.background.color;
 
 import com.gempukku.secsy.entity.Component;
 
