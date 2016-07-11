@@ -7,10 +7,13 @@
       "sides": "blockTiles/GrassSide.png"
     }
   },
-  "CollidingObjectComponent": {
+  "CollisionObstacleComponent": {
     "translateX": 0,
     "translateY": 0,
     "width": 1,
-    "height": 1
+    "height": 1,
+    "collideSides": [
+      "DOWN"
+    ]
   }
 }

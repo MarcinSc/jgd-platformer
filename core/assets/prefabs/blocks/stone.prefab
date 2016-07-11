@@ -5,7 +5,7 @@
       "all": "blockTiles/Stone.png"
     }
   },
-  "CollidingObjectComponent": {
+  "CollisionObstacleComponent": {
     "translateX": 0,
     "translateY": 0,
     "width": 1,
