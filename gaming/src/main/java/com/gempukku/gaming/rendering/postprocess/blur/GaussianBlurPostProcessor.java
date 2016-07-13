@@ -47,15 +47,17 @@ public class GaussianBlurPostProcessor implements LifeCycleSystem {
     public void render(PostProcessRendering event, EntityRef renderingEntity, GaussianBlurComponent blur) {
         int blurRadius = blur.getBlurRadius();
 
-        blurShaderProvider.setSourceTextureIndex(0);
-        blurShaderProvider.setBlurRadius(blurRadius);
+        if (blurRadius > 0) {
+            blurShaderProvider.setSourceTextureIndex(0);
+            blurShaderProvider.setBlurRadius(blurRadius);
 
-        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
+            FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
 
-        blurShaderProvider.setVertical(true);
-        executeBlur(event, renderingBuffer);
-        blurShaderProvider.setVertical(false);
-        executeBlur(event, renderingBuffer);
+            blurShaderProvider.setVertical(true);
+            executeBlur(event, renderingBuffer);
+            blurShaderProvider.setVertical(false);
+            executeBlur(event, renderingBuffer);
+        }
     }
 
     private void executeBlur(PostProcessRendering event, FlipOffScreenRenderingBuffer renderingBuffer) {

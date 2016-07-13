@@ -45,29 +45,32 @@ public class BloomPostProcessor implements LifeCycleSystem {
 
     @ReceiveEvent
     public void render(PostProcessRendering event, EntityRef renderingEntity, BloomComponent bloom) {
-        FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
+        float minimalBrightness = bloom.getMinimalBrightness();
+        if (minimalBrightness < 1) {
+            FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
 
-        int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
+            int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
-        bloomShaderProvider.setSourceTextureIndex(0);
-        bloomShaderProvider.setBlurRadius(bloom.getBlurRadius());
-        bloomShaderProvider.setMinimalBrightness(bloom.getMinimalBrightness());
-        bloomShaderProvider.setBloomStrength(bloom.getBloomStrength());
+            bloomShaderProvider.setSourceTextureIndex(0);
+            bloomShaderProvider.setBlurRadius(bloom.getBlurRadius());
+            bloomShaderProvider.setMinimalBrightness(minimalBrightness);
+            bloomShaderProvider.setBloomStrength(bloom.getBloomStrength());
 
-        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 0);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 0);
+            Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
-        renderingBuffer.getDestinationBuffer().begin();
+            renderingBuffer.getDestinationBuffer().begin();
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        modelBatch.begin(event.getCamera());
-        modelBatch.render(modelInstance);
-        modelBatch.end();
+            modelBatch.begin(event.getCamera());
+            modelBatch.render(modelInstance);
+            modelBatch.end();
 
-        renderingBuffer.getDestinationBuffer().end();
-        renderingBuffer.flip();
+            renderingBuffer.getDestinationBuffer().end();
+            renderingBuffer.flip();
+        }
     }
 
     @Override
