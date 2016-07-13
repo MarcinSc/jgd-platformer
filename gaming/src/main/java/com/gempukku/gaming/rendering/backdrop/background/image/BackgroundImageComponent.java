@@ -6,4 +6,18 @@ public interface BackgroundImageComponent extends Component {
     String getTextureAtlasId();
 
     String getTextureName();
+
+    float getPaddingTop();
+
+    float getPaddingBottom();
+
+    float getPaddingLeft();
+
+    float getPaddingRight();
+
+    int getBackgroundRed();
+
+    int getBackgroundGreen();
+
+    int getBackgroundBlue();
 }
