@@ -9,8 +9,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.gempukku.gaming.rendering.FlipOffScreenRenderingBuffer;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
+import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
@@ -47,9 +48,9 @@ public class BloomPostProcessor implements LifeCycleSystem {
     public void render(PostProcessRendering event, EntityRef renderingEntity, BloomComponent bloom) {
         float minimalBrightness = bloom.getMinimalBrightness();
         if (minimalBrightness < 1) {
-            FlipOffScreenRenderingBuffer renderingBuffer = event.getRenderingBuffer();
+            PostProcessPipeline postProcessPipeline = event.getPostProcessPipeline();
 
-            int textureHandle = renderingBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
+            int textureHandle = postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
             bloomShaderProvider.setSourceTextureIndex(0);
             bloomShaderProvider.setBlurRadius(bloom.getBlurRadius());
@@ -59,7 +60,8 @@ public class BloomPostProcessor implements LifeCycleSystem {
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 0);
             Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
-            renderingBuffer.getDestinationBuffer().begin();
+            FrameBuffer frameBuffer = postProcessPipeline.borrowFrameBuffer();
+            frameBuffer.begin();
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -68,8 +70,8 @@ public class BloomPostProcessor implements LifeCycleSystem {
             modelBatch.render(modelInstance);
             modelBatch.end();
 
-            renderingBuffer.getDestinationBuffer().end();
-            renderingBuffer.flip();
+            frameBuffer.end();
+            postProcessPipeline.finishPostProcess(frameBuffer);
         }
     }
 

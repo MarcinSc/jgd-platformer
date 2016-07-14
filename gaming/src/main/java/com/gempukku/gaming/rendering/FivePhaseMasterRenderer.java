@@ -42,9 +42,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
     private static int shadowFidelity = 4;
 
-    private FrameBuffer firstOffScreenBuffer;
-    private FrameBuffer secondOffScreenBuffer;
-
+    private PostProcessPipelineImpl postProcessPipeline;
     private CopyShaderProvider copyShaderProvider;
     private ModelInstance copyModelInstance;
     private Model copyModel;
@@ -78,6 +76,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         lightFrameBuffer.dispose();
         copyModel.dispose();
         copyModelBatch.dispose();
+        postProcessPipeline.dispose();
     }
 
     @Override
@@ -87,14 +86,11 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
     private void updateCameraAndBuffers(int width, int height) {
         camera = new PerspectiveCamera(75, width, height);
-        if (firstOffScreenBuffer != null) {
-            firstOffScreenBuffer.dispose();
+        if (postProcessPipeline == null) {
+            postProcessPipeline = new PostProcessPipelineImpl(width, height);
+        } else {
+            postProcessPipeline.resetSize(width, height);
         }
-        if (secondOffScreenBuffer != null) {
-            secondOffScreenBuffer.dispose();
-        }
-        firstOffScreenBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
-        secondOffScreenBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
     }
 
     @Override
@@ -110,26 +106,29 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
                 renderLightMap(renderingEntity);
             }
 
-            FlipOffScreenRenderingBuffer renderingBuffer = new FlipOffScreenRenderingBuffer(firstOffScreenBuffer, secondOffScreenBuffer);
+            FrameBuffer drawFrameBuffer = postProcessPipeline.startPipeline();
+            try {
+                float ambientLight = hasDirectionalLight ? directionalLightProvider.getAmbientLight() : 1f;
+                renderCameraView(renderingEntity, drawFrameBuffer, hasDirectionalLight, ambientLight);
 
-            float ambientLight = hasDirectionalLight ? directionalLightProvider.getAmbientLight() : 1f;
-            renderCameraView(renderingEntity, renderingBuffer, hasDirectionalLight, ambientLight);
+                postProcess(renderingEntity);
 
-            postProcess(renderingEntity, renderingBuffer);
+                renderUi(renderingEntity);
 
-            renderUi(renderingEntity, renderingBuffer);
-
-            renderToScreen(renderingBuffer);
+                renderToScreen();
+            } finally {
+                postProcessPipeline.finishPipeline();
+            }
         } else {
             cleanBuffer();
         }
     }
 
-    private void renderToScreen(FlipOffScreenRenderingBuffer mainPassBuffer) {
+    private void renderToScreen() {
         copyShaderProvider.setSourceTextureIndex(0);
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, mainPassBuffer.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle());
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle());
 
         cleanBuffer();
 
@@ -138,10 +137,10 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         copyModelBatch.end();
     }
 
-    private void renderUi(EntityRef renderingEntity, FlipOffScreenRenderingBuffer mainPassBuffer) {
-        mainPassBuffer.getSourceBuffer().begin();
+    private void renderUi(EntityRef renderingEntity) {
+        postProcessPipeline.getSourceBuffer().begin();
         renderingEntity.send(new RenderUi());
-        mainPassBuffer.getSourceBuffer().end();
+        postProcessPipeline.getSourceBuffer().end();
     }
 
     private void setupRenderingCamera() {
@@ -149,18 +148,17 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         camera.update();
     }
 
-    private void postProcess(EntityRef renderingEntity, FlipOffScreenRenderingBuffer renderingBuffer) {
-        renderingEntity.send(new PostProcessRendering(renderingBuffer, camera));
+    private void postProcess(EntityRef renderingEntity) {
+        renderingEntity.send(new PostProcessRendering(postProcessPipeline, camera));
     }
 
-    private void renderCameraView(EntityRef renderingEntity, FlipOffScreenRenderingBuffer renderingBuffer, boolean hasDirectionalLight, float ambientLight) {
-        renderingBuffer.getDestinationBuffer().begin();
+    private void renderCameraView(EntityRef renderingEntity, FrameBuffer drawFrameBuffer, boolean hasDirectionalLight, float ambientLight) {
+        drawFrameBuffer.begin();
         cleanBuffer();
         renderBackdrop(renderingEntity);
         normalRenderPass(renderingEntity, hasDirectionalLight, ambientLight);
         renderPostEnvironment(renderingEntity);
-        renderingBuffer.getDestinationBuffer().end();
-        renderingBuffer.flip();
+        drawFrameBuffer.end();
     }
 
     private void renderLightMap(EntityRef renderingEntity) {

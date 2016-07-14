@@ -1,15 +1,15 @@
 package com.gempukku.gaming.rendering.event;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.gempukku.gaming.rendering.FlipOffScreenRenderingBuffer;
+import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
 import com.gempukku.secsy.entity.event.Event;
 
 public class PostProcessRendering extends Event {
-    private FlipOffScreenRenderingBuffer renderingBuffer;
+    private PostProcessPipeline postProcessPipeline;
     private Camera camera;
 
-    public PostProcessRendering(FlipOffScreenRenderingBuffer renderingBuffer, Camera camera) {
-        this.renderingBuffer = renderingBuffer;
+    public PostProcessRendering(PostProcessPipeline postProcessPipeline, Camera camera) {
+        this.postProcessPipeline = postProcessPipeline;
         this.camera = camera;
     }
 
@@ -17,7 +17,7 @@ public class PostProcessRendering extends Event {
         return camera;
     }
 
-    public FlipOffScreenRenderingBuffer getRenderingBuffer() {
-        return renderingBuffer;
+    public PostProcessPipeline getPostProcessPipeline() {
+        return postProcessPipeline;
     }
 }
