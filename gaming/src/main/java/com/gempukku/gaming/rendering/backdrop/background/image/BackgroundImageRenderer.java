@@ -93,14 +93,14 @@ public class BackgroundImageRenderer implements LifeCycleSystem {
         // Discounting padding for a moment
         leftEdge = 0.5f - width / 2;
         rightEdge = 0.5f + width / 2;
-        bottomEdge = 0.5f - height / 2;
-        topEdge = 0.5f + height / 2;
+        topEdge = 0.5f - height / 2;
+        bottomEdge = 0.5f + height / 2;
 
         // Apply bounds for padding
         leftEdge -= paddingLeft * width;
         rightEdge += paddingRight * width;
-        bottomEdge -= paddingBottom * height;
-        topEdge += paddingTop * height;
+        bottomEdge += paddingBottom * height;
+        topEdge -= paddingTop * height;
 
         backgroundImageProvider.setBackgroundImageStartX(texture.getU());
         backgroundImageProvider.setBackgroundImageStartY(texture.getV());
