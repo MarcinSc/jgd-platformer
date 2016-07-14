@@ -1,5 +1,7 @@
 package com.gempukku.gaming.rendering.ui;
 
+import com.badlogic.gdx.InputEventQueue;
+
 public interface UiProcessor {
-    void processUi(long timeDiff);
+    void processUi(InputEventQueue inputEventQueue);
 }

@@ -1,10 +1,11 @@
 package com.gempukku.gaming.rendering.ui;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.gempukku.gaming.rendering.event.RenderUi;
+import com.gempukku.gaming.time.TimeManager;
+import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
@@ -12,13 +13,11 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
         profiles = "stageUi",
         shared = {UiProcessor.class, StageProvider.class}
 )
-public class StageUiSystem implements UiProcessor, StageProvider, LifeCycleSystem {
-    private Stage stage = new Stage();
+public class StageUiSystem implements UiProcessor, StageProvider {
+    @Inject
+    private TimeManager timeManager;
 
-    @Override
-    public void initialize() {
-        Gdx.input.setInputProcessor(stage);
-    }
+    private Stage stage = new Stage();
 
     @ReceiveEvent
     public void renderUi(RenderUi event, EntityRef renderingEntity) {
@@ -31,7 +30,8 @@ public class StageUiSystem implements UiProcessor, StageProvider, LifeCycleSyste
     }
 
     @Override
-    public void processUi(long timeDiff) {
-        stage.act(timeDiff / 1000f);
+    public void processUi(InputEventQueue inputEventQueue) {
+        inputEventQueue.setProcessor(stage);
+        stage.act(timeManager.getTimeSinceLastUpdate() / 1000f);
     }
 }
