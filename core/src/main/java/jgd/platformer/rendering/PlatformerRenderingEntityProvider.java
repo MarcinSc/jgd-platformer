@@ -14,6 +14,7 @@ import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.component.LocationComponent;
 
 @RegisterSystem(
+        profiles = "gameplay",
         shared = RenderingEntityProvider.class
 )
 public class PlatformerRenderingEntityProvider implements RenderingEntityProvider, LifeCycleSystem {

@@ -30,7 +30,7 @@ import jgd.platformer.level.LevelComponent;
 
 import java.util.Map;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     @Inject
     private TextureAtlasRegistry textureAtlasRegistry;

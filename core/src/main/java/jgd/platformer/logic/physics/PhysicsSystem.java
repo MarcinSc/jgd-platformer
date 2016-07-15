@@ -12,6 +12,7 @@ import jgd.platformer.component.LocationComponent;
 import java.awt.geom.Rectangle2D;
 
 @RegisterSystem(
+        profiles = "gameplay",
         shared = PhysicsEngine.class
 )
 public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {

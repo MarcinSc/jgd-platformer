@@ -12,7 +12,7 @@ import com.gempukku.secsy.entity.io.EntityData;
 import java.util.HashSet;
 import java.util.Set;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class BlockTextureAtlasCreator implements LifeCycleSystem {
     @Inject
     private TextureAtlasRegistry textureAtlasRegistry;

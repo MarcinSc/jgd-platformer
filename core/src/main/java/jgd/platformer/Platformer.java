@@ -21,11 +21,14 @@ import java.util.Set;
 
 public class Platformer extends ApplicationAdapter {
     private FPSLogger fpsLogger;
-    private SECSyContext context;
+    private SECSyContext gameplayContext;
+    private SECSyContext menuContext;
 
     private long lastUpdateTime;
 
     private Collection<String> additionalProfiles;
+
+    private boolean menuShown = true;
 
     public Platformer(Collection<String> additionalProfiles) {
         this.additionalProfiles = additionalProfiles;
@@ -35,60 +38,108 @@ public class Platformer extends ApplicationAdapter {
     public void create() {
         fpsLogger = new FPSLogger();
 
-        Set<String> activeProfiles = new HashSet<>();
-        activeProfiles.add("fivePhaseRenderer");
-        activeProfiles.add("simpleEntityManager");
-        activeProfiles.add("nameConventionComponents");
-        activeProfiles.add("textureAtlas");
-        activeProfiles.add("shapeProvider");
-        activeProfiles.add("prefabManager");
-        activeProfiles.add("annotationEventDispatcher");
-        activeProfiles.add("simpleEntityIndexManager");
-        activeProfiles.add("time");
-        activeProfiles.addAll(additionalProfiles);
-
         Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
                 .setScanners(new TypeAnnotationsScanner())
                 .setUrls(ClasspathHelper.forJavaClassPath());
 
-        context = new SECSyContext(activeProfiles, new Reflections(scanBasedOnAnnotations));
-        context.startup();
+        menuContext = createMenuContext(scanBasedOnAnnotations);
+        gameplayContext = createGameplayContext(scanBasedOnAnnotations);
 
-        PlayerManager playerManager = context.getSystem(PlayerManager.class);
+        PlayerManager playerManager = gameplayContext.getSystem(PlayerManager.class);
         playerManager.createPlayer();
 
-        LevelLoader levelLoader = context.getSystem(LevelLoader.class);
+        LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
         levelLoader.loadLevel("level-sample");
         levelLoader.loadLevel("level-sample2");
 
-        System.out.println("Systems in context");
-        for (Object system : context.getSystems()) {
+        lastUpdateTime = System.currentTimeMillis();
+    }
+
+    private SECSyContext createMenuContext(Configuration scanBasedOnAnnotations) {
+        Set<String> menuActiveProfiles = new HashSet<>();
+        menuActiveProfiles.add("menu");
+        menuActiveProfiles.add("fivePhaseRenderer");
+        menuActiveProfiles.add("simpleEntityManager");
+        menuActiveProfiles.add("nameConventionComponents");
+        menuActiveProfiles.add("textureAtlas");
+        menuActiveProfiles.add("prefabManager");
+        menuActiveProfiles.add("annotationEventDispatcher");
+        menuActiveProfiles.add("simpleEntityIndexManager");
+        menuActiveProfiles.add("time");
+        menuActiveProfiles.addAll(additionalProfiles);
+
+        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, new Reflections(scanBasedOnAnnotations));
+        menuContext.startup();
+
+        System.out.println("Systems in menu context");
+        for (Object system : menuContext.getSystems()) {
             System.out.println(system.getClass().getSimpleName());
         }
 
-        lastUpdateTime = System.currentTimeMillis();
+        return menuContext;
+    }
+
+    private SECSyContext createGameplayContext(Configuration scanBasedOnAnnotations) {
+        Set<String> gameplayActiveProfiles = new HashSet<>();
+        gameplayActiveProfiles.add("gameplay");
+        gameplayActiveProfiles.add("fivePhaseRenderer");
+        gameplayActiveProfiles.add("simpleEntityManager");
+        gameplayActiveProfiles.add("nameConventionComponents");
+        gameplayActiveProfiles.add("textureAtlas");
+        gameplayActiveProfiles.add("shapeProvider");
+        gameplayActiveProfiles.add("prefabManager");
+        gameplayActiveProfiles.add("annotationEventDispatcher");
+        gameplayActiveProfiles.add("simpleEntityIndexManager");
+        gameplayActiveProfiles.add("time");
+        gameplayActiveProfiles.addAll(additionalProfiles);
+
+        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, new Reflections(scanBasedOnAnnotations));
+        gameplayContext.startup();
+
+        System.out.println("Systems in gameplay context");
+        for (Object system : gameplayContext.getSystems()) {
+            System.out.println(system.getClass().getSimpleName());
+        }
+
+        return gameplayContext;
     }
 
     @Override
     public void render() {
         fpsLogger.log();
 
-        long currentTime = System.currentTimeMillis();
-        long timePassed = Math.min(currentTime - lastUpdateTime, 30);
-        lastUpdateTime = currentTime;
+        if (menuShown) {
+            long currentTime = System.currentTimeMillis();
+            long timePassed = Math.min(currentTime - lastUpdateTime, 30);
+            lastUpdateTime = currentTime;
 
-        context.getSystem(InternalTimeManager.class).updateTime(timePassed);
+            menuContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
 
-        context.getSystem(PhysicsEngine.class).processPhysics();
+            menuContext.getSystem(InternalGameLoop.class).processUpdate();
 
-        context.getSystem(InternalGameLoop.class).processUpdate();
+            menuContext.getSystem(RenderingEngine.class).render();
+        } else {
+            long currentTime = System.currentTimeMillis();
+            long timePassed = Math.min(currentTime - lastUpdateTime, 30);
+            lastUpdateTime = currentTime;
 
-        context.getSystem(RenderingEngine.class).render();
+            gameplayContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
+
+            gameplayContext.getSystem(PhysicsEngine.class).processPhysics();
+
+            gameplayContext.getSystem(InternalGameLoop.class).processUpdate();
+
+            gameplayContext.getSystem(RenderingEngine.class).render();
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-        context.getSystem(RenderingEngine.class).screenResized(width, height);
+        if (menuShown) {
+            menuContext.getSystem(RenderingEngine.class).screenResized(width, height);
+        } else {
+            gameplayContext.getSystem(RenderingEngine.class).screenResized(width, height);
+        }
     }
 
     @Override

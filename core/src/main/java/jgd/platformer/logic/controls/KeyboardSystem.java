@@ -10,7 +10,7 @@ import jgd.platformer.logic.physics.ApplyPhysicsForces;
 import jgd.platformer.logic.physics.KineticObjectComponent;
 
 @RegisterSystem(
-        profiles = "keyboard"
+        profiles = {"gameplay", "keyboard"}
 )
 public class KeyboardSystem implements LifeCycleSystem {
     private int[] leftKeys = {Input.Keys.LEFT, Input.Keys.A};

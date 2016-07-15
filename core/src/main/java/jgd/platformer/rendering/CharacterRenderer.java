@@ -37,7 +37,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class CharacterRenderer implements LifeCycleSystem {
     private static final String CHARACTERS_ATLAS_ID = "characters";
     @Inject

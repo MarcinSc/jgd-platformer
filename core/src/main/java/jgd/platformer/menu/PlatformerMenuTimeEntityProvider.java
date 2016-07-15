@@ -1,4 +1,4 @@
-package jgd.platformer.logic;
+package jgd.platformer.menu;
 
 import com.gempukku.gaming.time.TimeEntityProvider;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -8,10 +8,10 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = "menu",
         shared = TimeEntityProvider.class
 )
-public class PlatformerTimeEntityProvider implements TimeEntityProvider, LifeCycleSystem {
+public class PlatformerMenuTimeEntityProvider implements TimeEntityProvider, LifeCycleSystem {
     @Inject
     private EntityManager entityManager;
 

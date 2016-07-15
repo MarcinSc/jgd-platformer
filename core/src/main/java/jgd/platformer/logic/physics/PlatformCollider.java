@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class PlatformCollider {
     @Inject
     private PrefabManager prefabManager;

@@ -11,7 +11,7 @@ import com.gempukku.secsy.entity.index.EntityIndexManager;
 import jgd.platformer.component.LocationComponent;
 import jgd.platformer.logic.PlayerComponent;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem, GameLoopListener {
     @Inject
     private GameLoop gameLoop;

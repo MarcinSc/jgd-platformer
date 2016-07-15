@@ -12,7 +12,7 @@ import jgd.platformer.component.LocationComponent;
 
 import java.util.Map;
 
-@RegisterSystem
+@RegisterSystem(profiles = "gameplay")
 public class LevelEntitySystem {
     @Inject
     private PrefabManager prefabManager;
