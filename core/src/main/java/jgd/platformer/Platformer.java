@@ -58,6 +58,7 @@ public class Platformer extends ApplicationAdapter {
     private SECSyContext createMenuContext(Configuration scanBasedOnAnnotations) {
         Set<String> menuActiveProfiles = new HashSet<>();
         menuActiveProfiles.add("menu");
+        menuActiveProfiles.add("gameLoop");
         menuActiveProfiles.add("fivePhaseRenderer");
         menuActiveProfiles.add("simpleEntityManager");
         menuActiveProfiles.add("nameConventionComponents");
@@ -82,6 +83,7 @@ public class Platformer extends ApplicationAdapter {
     private SECSyContext createGameplayContext(Configuration scanBasedOnAnnotations) {
         Set<String> gameplayActiveProfiles = new HashSet<>();
         gameplayActiveProfiles.add("gameplay");
+        gameplayActiveProfiles.add("gameLoop");
         gameplayActiveProfiles.add("fivePhaseRenderer");
         gameplayActiveProfiles.add("simpleEntityManager");
         gameplayActiveProfiles.add("nameConventionComponents");

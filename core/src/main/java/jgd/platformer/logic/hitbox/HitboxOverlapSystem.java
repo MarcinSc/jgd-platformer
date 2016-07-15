@@ -1,15 +1,12 @@
 package jgd.platformer.logic.hitbox;
 
-import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.AfterComponentUpdated;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
-import com.gempukku.secsy.entity.game.GameLoop;
-import com.gempukku.secsy.entity.game.GameLoopListener;
+import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import jgd.platformer.component.LocationComponent;
 
 import java.awt.geom.Rectangle2D;
@@ -19,16 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(profiles = "gameplay")
-public class HitboxOverlapSystem implements GameLoopListener, LifeCycleSystem {
-    @Inject
-    private GameLoop gameLoop;
-
+public class HitboxOverlapSystem {
     private Map<EntityRef, Rectangle2D> hitboxEntities = new HashMap<>();
-
-    @Override
-    public void initialize() {
-        gameLoop.addGameLoopListener(this);
-    }
 
     @ReceiveEvent
     public void entityWithHitboxAdded(AfterComponentAdded event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, LocationComponent location) {
@@ -47,8 +36,8 @@ public class HitboxOverlapSystem implements GameLoopListener, LifeCycleSystem {
         hitboxEntities.remove(entity);
     }
 
-    @Override
-    public void update() {
+    @ReceiveEvent
+    public void checkOverlaps(GameLoopUpdate event, EntityRef entityRef) {
         List<OverlapEventToFire> eventsToFire = new LinkedList<>();
 
         for (Map.Entry<EntityRef, Rectangle2D> hitboxEntity : hitboxEntities.entrySet()) {

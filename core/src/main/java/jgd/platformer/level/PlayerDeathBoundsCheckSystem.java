@@ -4,33 +4,29 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.game.GameLoop;
-import com.gempukku.secsy.entity.game.GameLoopListener;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import jgd.platformer.component.LocationComponent;
 import jgd.platformer.logic.PlayerComponent;
 
 @RegisterSystem(profiles = "gameplay")
-public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem, GameLoopListener {
-    @Inject
-    private GameLoop gameLoop;
+public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;
+
     private EntityIndex deathBoundsEntities;
     private EntityIndex playerEntities;
 
-
     @Override
     public void initialize() {
-        gameLoop.addGameLoopListener(this);
-
         deathBoundsEntities = entityIndexManager.addIndexOnComponents(PlayerDeathBoundsComponent.class);
         playerEntities = entityIndexManager.addIndexOnComponents(PlayerComponent.class, LocationComponent.class);
     }
 
-    @Override
-    public void update() {
+    @ReceiveEvent
+    public void checkForPlayerOutOfBounds(GameLoopUpdate event, EntityRef entityRef) {
         for (EntityRef playerEntity : playerEntities.getEntities()) {
             for (EntityRef deathBounds : deathBoundsEntities.getEntities()) {
                 LocationComponent location = playerEntity.getComponent(LocationComponent.class);

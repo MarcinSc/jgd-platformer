@@ -10,8 +10,8 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.game.GameLoop;
-import com.gempukku.secsy.entity.game.GameLoopListener;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.menu.SplashSeriesComponent;
 
@@ -21,7 +21,7 @@ import java.util.Set;
 @RegisterSystem(
         profiles = "menu"
 )
-public class SplashScreenSystem implements GameLoopListener, LifeCycleSystem {
+public class SplashScreenSystem implements LifeCycleSystem {
     @Inject
     private PrefabManager prefabManager;
     @Inject
@@ -32,16 +32,12 @@ public class SplashScreenSystem implements GameLoopListener, LifeCycleSystem {
     private RenderingEntityProvider renderingEntityProvider;
     @Inject
     private TimeManager timeManager;
-    @Inject
-    private GameLoop gameLoop;
 
     private int shownIndex = -1;
     private SplashSeriesComponent splashSeriesComponent;
 
     @Override
     public void initialize() {
-        gameLoop.addGameLoopListener(this);
-
         EntityData splashSeriesPrefab = prefabManager.getPrefabByName("splashSeries");
         EntityRef splashSeries = entityManager.wrapEntityData(splashSeriesPrefab);
 
@@ -56,8 +52,8 @@ public class SplashScreenSystem implements GameLoopListener, LifeCycleSystem {
         textureAtlasRegistry.registerTextures(splashSeriesComponent.getTextureAtlasId(), imagePaths);
     }
 
-    @Override
-    public void update() {
+    @ReceiveEvent
+    public void updateDisplayedSplashScreens(GameLoopUpdate event, EntityRef entityRef) {
         if (shownIndex == -1) {
             shownIndex = 0;
 

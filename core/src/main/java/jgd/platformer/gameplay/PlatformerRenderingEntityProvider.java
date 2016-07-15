@@ -1,4 +1,4 @@
-package jgd.platformer.rendering;
+package jgd.platformer.gameplay;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
@@ -12,6 +12,8 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.component.LocationComponent;
+import jgd.platformer.rendering.CameraBoundsComponent;
+import jgd.platformer.rendering.CameraFocusComponent;
 
 @RegisterSystem(
         profiles = "gameplay",

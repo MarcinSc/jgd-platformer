@@ -3,43 +3,28 @@ package com.gempukku.gaming.time.delay;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterEntityLoaded;
 import com.gempukku.secsy.entity.event.BeforeEntityUnloaded;
-import com.gempukku.secsy.entity.game.GameLoop;
-import com.gempukku.secsy.entity.game.GameLoopListener;
+import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RegisterSystem(
         profiles = {"delayActions"}, shared = DelayManager.class)
-public class DelayedActionSystem implements GameLoopListener, LifeCycleSystem, DelayManager {
+public class DelayedActionSystem implements DelayManager {
     @Inject
     private TimeManager timeManager;
-    @Inject
-    private GameLoop gameLoop;
 
     private SortedSetMultimap<Long, EntityRef> delayedOperationsSortedByTime = TreeMultimap.create(Ordering.natural(), Ordering.arbitrary());
     private SortedSetMultimap<Long, EntityRef> periodicOperationsSortedByTime = TreeMultimap.create(Ordering.natural(), Ordering.arbitrary());
 
-    @Override
-    public void initialize() {
-        gameLoop.addGameLoopListener(this);
-    }
-
-    @Override
-    public void update() {
+    @ReceiveEvent
+    public void invokeScheduledActions(GameLoopUpdate gameLoopUpdate, EntityRef entity) {
         final long currentTime = timeManager.getTime();
         invokeDelayedOperations(currentTime);
         invokePeriodicOperations(currentTime);
