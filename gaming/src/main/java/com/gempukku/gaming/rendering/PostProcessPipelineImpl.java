@@ -72,8 +72,6 @@ public class PostProcessPipelineImpl implements PostProcessPipeline {
     }
 
     public void finishPipeline() {
-        if (borrowedFrameBuffers.size() != 1)
-            throw new IllegalStateException("There should be exactly one FrameBuffer borrowed");
         freeFrameBuffers.addAll(borrowedFrameBuffers);
         borrowedFrameBuffers.clear();
         mainBuffer = null;
