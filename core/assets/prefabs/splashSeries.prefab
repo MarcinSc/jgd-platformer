@@ -2,8 +2,8 @@
   "SplashSeriesComponent": {
     "textureAtlasId": "splashScreen",
     "splashDescriptions": [
-      "badlogic.jpg|3000|0,0,0",
-      "splash/JGD-logo-large.png|6000|255,255,255"
+      "badlogic.jpg|1000|0,0,0",
+      "splash/JGD-logo-large.png|2000|255,255,255"
     ]
   }
 }

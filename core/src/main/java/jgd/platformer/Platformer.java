@@ -1,14 +1,16 @@
 package jgd.platformer;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.gempukku.gaming.rendering.RenderingEngine;
+import com.gempukku.gaming.rendering.ui.UiProcessor;
 import com.gempukku.gaming.time.InternalTimeManager;
 import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
-import jgd.platformer.level.LevelLoader;
-import jgd.platformer.logic.physics.PhysicsEngine;
-import jgd.platformer.player.PlayerManager;
+import jgd.platformer.gameplay.logic.physics.PhysicsEngine;
+import jgd.platformer.menu.GameState;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -27,8 +29,7 @@ public class Platformer extends ApplicationAdapter {
     private long lastUpdateTime;
 
     private Collection<String> additionalProfiles;
-
-    private boolean menuShown = true;
+    private InputEventQueue inputEventQueue;
 
     public Platformer(Collection<String> additionalProfiles) {
         this.additionalProfiles = additionalProfiles;
@@ -45,12 +46,8 @@ public class Platformer extends ApplicationAdapter {
         menuContext = createMenuContext(scanBasedOnAnnotations);
         gameplayContext = createGameplayContext(scanBasedOnAnnotations);
 
-        PlayerManager playerManager = gameplayContext.getSystem(PlayerManager.class);
-        playerManager.createPlayer();
-
-        LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
-        levelLoader.loadLevel("level-sample");
-        levelLoader.loadLevel("level-sample2");
+        inputEventQueue = new InputEventQueue();
+        Gdx.input.setInputProcessor(inputEventQueue);
 
         lastUpdateTime = System.currentTimeMillis();
     }
@@ -67,6 +64,7 @@ public class Platformer extends ApplicationAdapter {
         menuActiveProfiles.add("annotationEventDispatcher");
         menuActiveProfiles.add("simpleEntityIndexManager");
         menuActiveProfiles.add("time");
+        menuActiveProfiles.add("stageUi");
         menuActiveProfiles.addAll(additionalProfiles);
 
         SECSyContext menuContext = new SECSyContext(menuActiveProfiles, new Reflections(scanBasedOnAnnotations));
@@ -110,12 +108,14 @@ public class Platformer extends ApplicationAdapter {
     public void render() {
         fpsLogger.log();
 
-        if (menuShown) {
+        if (menuContext.getSystem(GameState.class).shouldShowMenu(gameplayContext)) {
             long currentTime = System.currentTimeMillis();
             long timePassed = Math.min(currentTime - lastUpdateTime, 30);
             lastUpdateTime = currentTime;
 
             menuContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
+
+            menuContext.getSystem(UiProcessor.class).processUi(inputEventQueue);
 
             menuContext.getSystem(InternalGameLoop.class).processUpdate();
 
@@ -137,11 +137,8 @@ public class Platformer extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        if (menuShown) {
-            menuContext.getSystem(RenderingEngine.class).screenResized(width, height);
-        } else {
-            gameplayContext.getSystem(RenderingEngine.class).screenResized(width, height);
-        }
+        menuContext.getSystem(RenderingEngine.class).screenResized(width, height);
+        gameplayContext.getSystem(RenderingEngine.class).screenResized(width, height);
     }
 
     @Override

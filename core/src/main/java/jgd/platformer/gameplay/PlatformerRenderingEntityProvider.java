@@ -11,9 +11,9 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.entity.io.EntityData;
-import jgd.platformer.component.LocationComponent;
-import jgd.platformer.rendering.CameraBoundsComponent;
-import jgd.platformer.rendering.CameraFocusComponent;
+import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.rendering.CameraBoundsComponent;
+import jgd.platformer.gameplay.rendering.CameraFocusComponent;
 
 @RegisterSystem(
         profiles = "gameplay",

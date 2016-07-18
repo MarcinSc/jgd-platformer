@@ -32,6 +32,7 @@ public class StageUiSystem implements UiProcessor, StageProvider {
     @Override
     public void processUi(InputEventQueue inputEventQueue) {
         inputEventQueue.setProcessor(stage);
+        inputEventQueue.drain();
         stage.act(timeManager.getTimeSinceLastUpdate() / 1000f);
     }
 }
