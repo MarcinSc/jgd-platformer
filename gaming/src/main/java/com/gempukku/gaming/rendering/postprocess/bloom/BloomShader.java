@@ -49,9 +49,4 @@ public class BloomShader extends DefaultShader {
         set(u_viewportHeight, camera.viewportHeight);
         set(u_bloomStrength, bloomStrength);
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
 }

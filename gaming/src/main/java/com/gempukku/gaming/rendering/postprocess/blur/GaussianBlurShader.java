@@ -50,10 +50,4 @@ public class GaussianBlurShader extends DefaultShader {
         set(u_vertical, vertical ? 1 : 0);
         program.setUniform1fv(u_kernel, kernel, 0, kernel.length);
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
 }
