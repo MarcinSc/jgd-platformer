@@ -11,7 +11,7 @@ public class LevelExitSystem {
     @ReceiveEvent
     public void playerEnteredPortal(HitboxOverlapEvent event, EntityRef entity, PlayerComponent player) {
         if (event.getOtherEntity().hasComponent(LevelExitPortalComponent.class)) {
-            System.out.println("Player exited");
+            entity.send(new LevelCompleted());
         }
     }
 }

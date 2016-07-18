@@ -8,6 +8,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
+import jgd.platformer.gameplay.PlayerDeath;
 import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
 
@@ -37,7 +38,7 @@ public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
                 if (deathBound.getMaxX() < playerX
                         || deathBound.getMinX() > playerX
                         || deathBound.getMinY() > playerY) {
-                    System.out.println("Player is dead");
+                    playerEntity.send(new PlayerDeath());
                 }
             }
         }

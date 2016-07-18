@@ -21,11 +21,15 @@ public class LevelSystem implements LevelLoader {
 
     @Override
     public void loadLevel(String levelPrefabName) {
-        if (levelEntity != null) {
-            entityManager.destroyEntity(levelEntity);
-            levelEntity = null;
-        }
         EntityData levelData = prefabManager.getPrefabByName(levelPrefabName);
         levelEntity = entityManager.createEntity(levelData);
+        levelEntity.send(new AfterLevelLoaded());
+    }
+
+    @Override
+    public void unloadLevel() {
+        levelEntity.send(new BeforeLevelUnloaded());
+        entityManager.destroyEntity(levelEntity);
+        levelEntity = null;
     }
 }

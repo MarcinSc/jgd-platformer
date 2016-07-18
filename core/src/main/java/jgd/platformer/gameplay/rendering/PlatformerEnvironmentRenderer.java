@@ -22,9 +22,9 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.entity.event.AfterComponentAdded;
-import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.io.EntityData;
+import jgd.platformer.gameplay.level.AfterLevelLoaded;
+import jgd.platformer.gameplay.level.BeforeLevelUnloaded;
 import jgd.platformer.gameplay.level.BlockComponent;
 import jgd.platformer.gameplay.level.LevelComponent;
 
@@ -59,7 +59,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void levelLoader(AfterComponentAdded event, EntityRef entity, LevelComponent level) {
+    public void levelLoader(AfterLevelLoaded event, EntityRef entity, LevelComponent level) {
         ArrayVertexOutput vertices = new ArrayVertexOutput();
 
         for (Map.Entry<String, String> locationToBlock : level.getBlockCoordinates().entrySet()) {
@@ -99,7 +99,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void levelUnloaded(BeforeComponentRemoved event, EntityRef entity, LevelComponent level) {
+    public void levelUnloaded(BeforeLevelUnloaded event, EntityRef entity, LevelComponent level) {
         destroyTerrain();
     }
 

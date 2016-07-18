@@ -6,7 +6,6 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.gameplay.component.LocationComponent;
 
@@ -20,7 +19,7 @@ public class LevelEntitySystem {
     private EntityManager entityManager;
 
     @ReceiveEvent
-    public void levelLoaded(AfterComponentAdded event, EntityRef entity, LevelComponent level) {
+    public void levelLoaded(AfterLevelLoaded event, EntityRef entity, LevelComponent level) {
         for (Map.Entry<String, String> blockCoordinates : level.getBlockCoordinates().entrySet()) {
             String locationStr = blockCoordinates.getKey();
             String prefabName = blockCoordinates.getValue();
