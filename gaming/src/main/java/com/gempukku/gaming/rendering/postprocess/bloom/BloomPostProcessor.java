@@ -44,7 +44,7 @@ public class BloomPostProcessor implements LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @ReceiveEvent
+    @ReceiveEvent(priorityName = "gaming.renderer.bloom")
     public void render(PostProcessRendering event, EntityRef renderingEntity, BloomComponent bloom) {
         float minimalBrightness = bloom.getMinimalBrightness();
         if (minimalBrightness < 1) {

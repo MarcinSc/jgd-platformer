@@ -45,7 +45,7 @@ public class TintPostProcessor implements LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @ReceiveEvent
+    @ReceiveEvent(priorityName = "gaming.renderer.tint")
     public void render(PostProcessRendering event, EntityRef renderingEntity, TintComponent tint) {
         float factor = tint.getFactor();
 

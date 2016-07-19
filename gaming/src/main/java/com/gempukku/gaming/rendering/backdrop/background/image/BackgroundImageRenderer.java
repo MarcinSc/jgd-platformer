@@ -51,7 +51,7 @@ public class BackgroundImageRenderer implements LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @ReceiveEvent
+    @ReceiveEvent(priorityName = "gaming.renderer.backgroundImage")
     public void renderBackground(RenderBackdrop event, EntityRef renderingEntity, BackgroundImageComponent backgroundImage) {
         TextureRegion texture = textureAtlasProvider.getTexture(backgroundImage.getTextureAtlasId(), backgroundImage.getTextureName());
 

@@ -19,7 +19,7 @@ public class StageUiSystem implements UiProcessor, StageProvider {
 
     private Stage stage = new Stage();
 
-    @ReceiveEvent
+    @ReceiveEvent(priorityName = "gaming.renderer.stage")
     public void renderUi(RenderUi event, EntityRef renderingEntity) {
         stage.draw();
     }

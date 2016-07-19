@@ -44,7 +44,7 @@ public class BackgroundColorRenderer implements LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @ReceiveEvent
+    @ReceiveEvent(priorityName = "gaming.renderer.backgroundColor")
     public void renderBackground(RenderBackdrop event, EntityRef renderingEntity, BackgroundColorComponent backgroundColor) {
         Vector3 color = new Vector3(
                 backgroundColor.getRed() / 255f,
