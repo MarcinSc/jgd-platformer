@@ -31,5 +31,10 @@ public class LevelSystem implements LevelLoader {
         levelEntity.send(new BeforeLevelUnloaded());
         entityManager.destroyEntity(levelEntity);
         levelEntity = null;
+
+        for (EntityRef entityRef : entityManager.getAllEntities()) {
+            if (!entityRef.hasComponent(KeepWithoutLevelComponent.class))
+                entityManager.destroyEntity(entityRef);
+        }
     }
 }

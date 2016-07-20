@@ -34,14 +34,16 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
 
     @Override
     public void initialize() {
-        EntityData renderingEntity = prefabManager.getPrefabByName("renderingEntity");
-        cameraEntity = entityManager.createEntity(renderingEntity);
         cameraFocusedEntities = entityIndexManager.addIndexOnComponents(CameraFocusComponent.class, LocationComponent.class);
         cameraBoundsEntities = entityIndexManager.addIndexOnComponents(CameraBoundsComponent.class);
     }
 
     @Override
     public EntityRef getRenderingEntity() {
+        if (cameraEntity == null || !cameraEntity.exists()) {
+            EntityData renderingEntity = prefabManager.getPrefabByName("renderingEntity");
+            cameraEntity = entityManager.createEntity(renderingEntity);
+        }
         return cameraEntity;
     }
 
