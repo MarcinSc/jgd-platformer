@@ -1,12 +1,7 @@
 package com.gempukku.gaming.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,12 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.gempukku.gaming.rendering.event.PostProcessRendering;
-import com.gempukku.gaming.rendering.event.PostRenderEnvironment;
-import com.gempukku.gaming.rendering.event.RenderBackdrop;
-import com.gempukku.gaming.rendering.event.RenderEnvironment;
-import com.gempukku.gaming.rendering.event.RenderEnvironmentForLight;
-import com.gempukku.gaming.rendering.event.RenderUi;
+import com.gempukku.gaming.rendering.event.*;
 import com.gempukku.gaming.rendering.lighting.DirectionalLightProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -82,6 +72,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
     @Override
     public void screenResized(int width, int height) {
         updateCameraAndBuffers(width, height);
+        renderingEntityProvider.getRenderingEntity().send(new ScreenResized(width, height));
     }
 
     private void updateCameraAndBuffers(int width, int height) {
