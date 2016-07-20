@@ -1,6 +1,9 @@
 {
   "PlayerComponent": {},
   "KeepWithoutLevelComponent": {},
+  "LivesComponent": {
+    "livesCount": 5
+  },
   "ScoreComponent": {
     "score": 0
   },

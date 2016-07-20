@@ -68,11 +68,18 @@ public class GameStateSwitcher implements GameState {
 
                     currentState = State.SHOWING_MENU;
                 }
-            } else if (gameplayState.isPlayerDead()) {
+            } else if (gameplayState.isPlayerWithoutLives()) {
+                LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
+                levelLoader.unloadLevel();
+
                 PlayerManager playerManager = gameplayContext.getSystem(PlayerManager.class);
                 playerManager.removePlayer();
 
                 currentState = State.SHOWING_MENU;
+            } else if (gameplayState.isPlayerDead()) {
+                LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
+                levelLoader.unloadLevel();
+                levelLoader.loadLevel(getLevelName(currentLevelIndex));
             }
         }
 

@@ -8,9 +8,9 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.PlayerDeath;
 import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
+import jgd.platformer.gameplay.logic.health.PlayerDeath;
 
 @RegisterSystem(profiles = "gameplay")
 public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {

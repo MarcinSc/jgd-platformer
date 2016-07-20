@@ -4,4 +4,6 @@ public interface GameplayState {
     boolean isPlayerDead();
 
     boolean isLevelFinished();
+
+    boolean isPlayerWithoutLives();
 }
