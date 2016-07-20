@@ -91,6 +91,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("annotationEventDispatcher");
         gameplayActiveProfiles.add("simpleEntityIndexManager");
         gameplayActiveProfiles.add("time");
+        gameplayActiveProfiles.add("stageUi");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
         SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, new Reflections(scanBasedOnAnnotations));
@@ -128,6 +129,8 @@ public class Platformer extends ApplicationAdapter {
             gameplayContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
 
             gameplayContext.getSystem(PhysicsEngine.class).processPhysics();
+
+            gameplayContext.getSystem(UiProcessor.class).processUi(inputEventQueue);
 
             gameplayContext.getSystem(InternalGameLoop.class).processUpdate();
 

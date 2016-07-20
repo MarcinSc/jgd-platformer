@@ -58,6 +58,8 @@ public class MainMenuSystem implements LifeCycleSystem {
         params.magFilter = Texture.TextureFilter.Linear;
 
         buttonFont = generator.generateFont(params);
+
+        generator.dispose();
     }
 
     @Override
