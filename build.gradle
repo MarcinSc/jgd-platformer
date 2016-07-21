@@ -64,13 +64,39 @@ project(":gaming") {
 
 
     dependencies {
+        compile project(":secsy-serialization")
         compile "com.googlecode.json-simple:json-simple:1.1"
-        compile "com.gempukku.secsy:secsy-context:1.0"
-        compile "com.gempukku.secsy:secsy-entity:1.0"
-        compile "com.gempukku.secsy:secsy-serialization:1.0"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    }
+}
+
+project(":secsy-serialization") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":secsy-entity")
+    }
+}
+
+project(":secsy-entity") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":secsy-context")
+        compile "org.codehaus.jackson:jackson-mapper-asl:1.9.13"
+        testCompile "junit:junit:4.11"
+        testCompile "org.mockito:mockito-all:1.9.5"
+    }
+}
+
+project(":secsy-context") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "org.reflections:reflections:0.9.9-RC1"
+        compile "org.javassist:javassist:3.20.0-GA"
     }
 }
 
