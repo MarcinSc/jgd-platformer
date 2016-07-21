@@ -21,8 +21,8 @@
     "maxY": 10
   },
   "PlayerDeathBoundsComponent": {
-    "minX": -7,
-    "maxX": 12,
-    "minY": -3
+    "minX": -5,
+    "maxX": 10,
+    "minY": -7
   }
 }
