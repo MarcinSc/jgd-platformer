@@ -2,7 +2,7 @@
   "BlockComponent": {
     "shape": "cube",
     "texturesForParts": {
-      "front": "blockTiles/Dirt.png"
+      "front": "blockTiles/ExitPortal.png"
     }
   },
   "BlockEntityComponent": {},

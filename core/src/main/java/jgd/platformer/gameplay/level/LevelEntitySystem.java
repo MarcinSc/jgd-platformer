@@ -35,5 +35,20 @@ public class LevelEntitySystem {
                 result.saveChanges();
             }
         }
+
+        if (level.getObjectCoordinates() != null) {
+            for (Map.Entry<String, String> objectCoordinates : level.getObjectCoordinates().entrySet()) {
+                String locationStr = objectCoordinates.getKey();
+                String prefabName = objectCoordinates.getValue();
+                EntityData entityData = prefabManager.getPrefabByName(prefabName);
+                EntityRef result = entityManager.createEntity(entityData);
+                LocationComponent location = result.createComponent(LocationComponent.class);
+                String[] locationSplit = locationStr.split(",");
+                location.setX(Float.parseFloat(locationSplit[0]));
+                location.setY(Float.parseFloat(locationSplit[1]));
+                location.setZ(Float.parseFloat(locationSplit[2]));
+                result.saveChanges();
+            }
+        }
     }
 }

@@ -4,16 +4,8 @@ import com.gempukku.secsy.entity.Component;
 
 import java.util.Map;
 
-public interface CharacterRenderComponent extends Component {
-    String getId();
-
+public interface ModelShapeComponent extends Component {
     String getShape();
 
     Map<String, String> getTexturesForParts();
-
-    float getTranslateX();
-
-    float getTranslateY();
-
-    float getTranslateZ();
 }

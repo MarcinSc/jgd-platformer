@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -29,8 +30,9 @@ import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.entity.io.EntityData;
-import jgd.platformer.gameplay.component.CharacterRenderComponent;
 import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.ModelRenderComponent;
+import jgd.platformer.gameplay.component.ModelShapeComponent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,8 +40,8 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem(profiles = "gameplay")
-public class CharacterRenderer implements LifeCycleSystem {
-    private static final String CHARACTERS_ATLAS_ID = "characters";
+public class ModelRenderer implements LifeCycleSystem {
+    private static final String CHARACTERS_ATLAS_ID = "models";
     @Inject
     private ShapeProvider shapeProvider;
     @Inject
@@ -55,19 +57,19 @@ public class CharacterRenderer implements LifeCycleSystem {
 
     private ModelBatch modelBatch = new ModelBatch();
 
-    private Map<String, ModelInstance> modelInstances = new HashMap<>();
+    private Map<EntityRef, ModelInstance> modelInstances = new HashMap<>();
     private Map<String, Model> models = new HashMap<>();
     private EntityIndex charactersIndex;
 
     @Override
     public void initialize() {
-        charactersIndex = entityIndexManager.addIndexOnComponents(CharacterRenderComponent.class, LocationComponent.class);
+        charactersIndex = entityIndexManager.addIndexOnComponents(ModelRenderComponent.class, LocationComponent.class);
 
         Set<String> textureNames = new HashSet<>();
 
-        for (EntityData entityData : prefabManager.findPrefabsWithComponents(CharacterRenderComponent.class)) {
+        for (EntityData entityData : prefabManager.findPrefabsWithComponents(ModelShapeComponent.class)) {
             EntityRef entityRef = entityManager.wrapEntityData(entityData);
-            for (String textureName : entityRef.getComponent(CharacterRenderComponent.class).getTexturesForParts().values()) {
+            for (String textureName : entityRef.getComponent(ModelShapeComponent.class).getTexturesForParts().values()) {
                 textureNames.add(textureName);
             }
         }
@@ -75,44 +77,56 @@ public class CharacterRenderer implements LifeCycleSystem {
         textureAtlasRegistry.registerTextures(CHARACTERS_ATLAS_ID, textureNames);
     }
 
-    @ReceiveEvent
-    public void characterAdded(AfterComponentAdded event, EntityRef entity, CharacterRenderComponent characterRender, LocationComponent location) {
-        String characterId = characterRender.getId();
-
-        ShapeDef characterShape = shapeProvider.getShapeById(characterRender.getShape());
-
-        ArrayVertexOutput arrayVertexOutput = new ArrayVertexOutput();
-        ShapeOutput.outputShapeToVertexOutput(arrayVertexOutput, characterShape, new TextureRegionMapper() {
-            @Override
-            public TextureRegion getTextureRegion(String textureId) {
-                String textureName = characterRender.getTexturesForParts().get(textureId);
-                if (textureName == null)
-                    return null;
-                return textureAtlasProvider.getTexture(CHARACTERS_ATLAS_ID, textureName);
-            }
-        }, 0, 0, 0);
-
-        MeshPart platform = arrayVertexOutput.generateMeshPart("character");
-
-        Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures(CHARACTERS_ATLAS_ID).get(0)));
-
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        modelBuilder.part(platform, material);
-
-        Model model = modelBuilder.end();
-        models.put(characterId, model);
-        modelInstances.put(characterId, new ModelInstance(model));
+    @Override
+    public void postDestroy() {
+        for (Model model : models.values()) {
+            model.dispose();
+        }
     }
 
     @ReceiveEvent
+    public void characterAdded(AfterComponentAdded event, EntityRef entity, ModelRenderComponent characterRender, LocationComponent location) {
+        String modelPrefab = characterRender.getModelPrefab();
+        if (!models.containsKey(modelPrefab)) {
+            EntityRef modelEntity = entityManager.wrapEntityData(prefabManager.getPrefabByName(modelPrefab));
+            ModelShapeComponent modelShape = modelEntity.getComponent(ModelShapeComponent.class);
+
+            ShapeDef characterShape = shapeProvider.getShapeById(modelShape.getShape());
+
+            ArrayVertexOutput arrayVertexOutput = new ArrayVertexOutput();
+            ShapeOutput.outputShapeToVertexOutput(arrayVertexOutput, characterShape, new TextureRegionMapper() {
+                @Override
+                public TextureRegion getTextureRegion(String textureId) {
+                    String textureName = modelShape.getTexturesForParts().get(textureId);
+                    if (textureName == null)
+                        return null;
+                    return textureAtlasProvider.getTexture(CHARACTERS_ATLAS_ID, textureName);
+                }
+            }, 0, 0, 0);
+
+            MeshPart platform = arrayVertexOutput.generateMeshPart("character");
+
+            Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures(CHARACTERS_ATLAS_ID).get(0)),
+                    new BlendingAttribute());
+
+            ModelBuilder modelBuilder = new ModelBuilder();
+            modelBuilder.begin();
+            modelBuilder.part(platform, material);
+
+            Model model = modelBuilder.end();
+            models.put(modelPrefab, model);
+        }
+        modelInstances.put(entity, new ModelInstance(models.get(modelPrefab)));
+    }
+
+    @ReceiveEvent(priority = -1)
     public void renderCharacters(RenderEnvironment event, EntityRef renderingEntity) {
         if (!modelInstances.isEmpty()) {
             for (EntityRef entityRef : charactersIndex.getEntities()) {
-                CharacterRenderComponent characterRender = entityRef.getComponent(CharacterRenderComponent.class);
+                ModelRenderComponent characterRender = entityRef.getComponent(ModelRenderComponent.class);
                 LocationComponent location = entityRef.getComponent(LocationComponent.class);
 
-                ModelInstance modelInstance = modelInstances.get(characterRender.getId());
+                ModelInstance modelInstance = modelInstances.get(entityRef);
                 modelInstance.transform = new Matrix4().translate(
                         location.getX() + characterRender.getTranslateX(),
                         location.getY() + characterRender.getTranslateY(),
@@ -126,9 +140,7 @@ public class CharacterRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void characterRemoved(BeforeComponentRemoved event, EntityRef entity, CharacterRenderComponent characterRender, LocationComponent location) {
-        String characterId = characterRender.getId();
-        modelInstances.remove(characterId);
-        models.remove(characterId).dispose();
+    public void characterRemoved(BeforeComponentRemoved event, EntityRef entity, ModelRenderComponent characterRender, LocationComponent location) {
+        modelInstances.remove(entity);
     }
 }

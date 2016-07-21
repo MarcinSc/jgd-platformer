@@ -1,0 +1,8 @@
+{
+  "ModelShapeComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "frontAndBack": "model/star.png"
+    }
+  }
+}

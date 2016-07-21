@@ -12,13 +12,9 @@
     "y": 0,
     "z": 0
   },
-  "CharacterRenderComponent": {
-    "id": "player",
-    "shape": "cube",
-    "translateX": -0.5,
-    "texturesForParts": {
-      "all": "blockTiles/Stone.png"
-    }
+  "ModelRenderComponent": {
+    "modelPrefab": "modelPlayer",
+    "translateX": -0.5
   },
   "KineticObjectComponent": {},
   "PlayerControlledComponent": {
@@ -42,5 +38,6 @@
   },
   "CameraFocusComponent": {
     "focusWeight": 1
-  }
+  },
+  "CollectorComponent": {}
 }
