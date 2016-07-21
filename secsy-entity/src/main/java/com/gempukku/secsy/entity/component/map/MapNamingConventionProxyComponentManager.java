@@ -134,6 +134,10 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         private Map<String, MethodHandler> handlerMap = new HashMap<>();
 
         private ComponentDef(Class<? extends Component> clazz) {
+            processDeclaredMethods(clazz);
+        }
+
+        private void processDeclaredMethods(Class<?> clazz) {
             for (Method method : clazz.getDeclaredMethods()) {
                 String methodName = method.getName();
                 if (methodName.startsWith("get")) {
@@ -147,6 +151,9 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
                 } else {
                     throw new IllegalStateException("Invalid component definition, component uses unrecognized method name: " + methodName);
                 }
+            }
+            for (Class<?> parentInterface : clazz.getInterfaces()) {
+                processDeclaredMethods(parentInterface);
             }
         }
 
