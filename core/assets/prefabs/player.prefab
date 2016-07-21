@@ -25,15 +25,15 @@
     "gravityMultiplier": 1
   },
   "CollidingObjectComponent": {
-    "translateX": -0.5,
+    "translateX": -0.4,
     "translateY": 0,
-    "width": 1,
+    "width": 0.8,
     "height": 1
   },
   "RectangleHitboxComponent": {
-    "translateX": -0.5,
+    "translateX": -0.4,
     "translateY": 0,
-    "width": 1,
+    "width": 0.8,
     "height": 1
   },
   "CameraFocusComponent": {
