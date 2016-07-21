@@ -12,5 +12,9 @@
   "CollectibleComponent": {},
   "ScoringCollectibleComponent": {
     "scoreIncrease": 10
+  },
+  "ModelRotateComponent": {},
+  "ConstantModelRotationComponent": {
+    "degreesPerSecond": 180
   }
 }

@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.component;
+package jgd.platformer.gameplay.logic.collectible;
 
 import com.gempukku.secsy.entity.Component;
 

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
@@ -31,8 +30,6 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.gameplay.component.LocationComponent;
-import jgd.platformer.gameplay.component.ModelRenderComponent;
-import jgd.platformer.gameplay.component.ModelShapeComponent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +38,7 @@ import java.util.Set;
 
 @RegisterSystem(profiles = "gameplay")
 public class ModelRenderer implements LifeCycleSystem {
-    private static final String CHARACTERS_ATLAS_ID = "models";
+    private static final String MODELS_ATLAS_ID = "models";
     @Inject
     private ShapeProvider shapeProvider;
     @Inject
@@ -59,11 +56,11 @@ public class ModelRenderer implements LifeCycleSystem {
 
     private Map<EntityRef, ModelInstance> modelInstances = new HashMap<>();
     private Map<String, Model> models = new HashMap<>();
-    private EntityIndex charactersIndex;
+    private EntityIndex modelsIndex;
 
     @Override
     public void initialize() {
-        charactersIndex = entityIndexManager.addIndexOnComponents(ModelRenderComponent.class, LocationComponent.class);
+        modelsIndex = entityIndexManager.addIndexOnComponents(ModelRenderComponent.class, LocationComponent.class);
 
         Set<String> textureNames = new HashSet<>();
 
@@ -74,7 +71,7 @@ public class ModelRenderer implements LifeCycleSystem {
             }
         }
 
-        textureAtlasRegistry.registerTextures(CHARACTERS_ATLAS_ID, textureNames);
+        textureAtlasRegistry.registerTextures(MODELS_ATLAS_ID, textureNames);
     }
 
     @Override
@@ -85,28 +82,28 @@ public class ModelRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void characterAdded(AfterComponentAdded event, EntityRef entity, ModelRenderComponent characterRender, LocationComponent location) {
-        String modelPrefab = characterRender.getModelPrefab();
+    public void objectAdded(AfterComponentAdded event, EntityRef entity, ModelRenderComponent modelRender, LocationComponent location) {
+        String modelPrefab = modelRender.getModelPrefab();
         if (!models.containsKey(modelPrefab)) {
             EntityRef modelEntity = entityManager.wrapEntityData(prefabManager.getPrefabByName(modelPrefab));
             ModelShapeComponent modelShape = modelEntity.getComponent(ModelShapeComponent.class);
 
-            ShapeDef characterShape = shapeProvider.getShapeById(modelShape.getShape());
+            ShapeDef modelShapeDef = shapeProvider.getShapeById(modelShape.getShape());
 
             ArrayVertexOutput arrayVertexOutput = new ArrayVertexOutput();
-            ShapeOutput.outputShapeToVertexOutput(arrayVertexOutput, characterShape, new TextureRegionMapper() {
+            ShapeOutput.outputShapeToVertexOutput(arrayVertexOutput, modelShapeDef, new TextureRegionMapper() {
                 @Override
                 public TextureRegion getTextureRegion(String textureId) {
                     String textureName = modelShape.getTexturesForParts().get(textureId);
                     if (textureName == null)
                         return null;
-                    return textureAtlasProvider.getTexture(CHARACTERS_ATLAS_ID, textureName);
+                    return textureAtlasProvider.getTexture(MODELS_ATLAS_ID, textureName);
                 }
-            }, 0, 0, 0);
+            }, 0, 0, 0, modelShape.getMultiplyX(), modelShape.getMultiplyY(), modelShape.getMultiplyZ());
 
-            MeshPart platform = arrayVertexOutput.generateMeshPart("character");
+            MeshPart platform = arrayVertexOutput.generateMeshPart("model");
 
-            Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures(CHARACTERS_ATLAS_ID).get(0)),
+            Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures(MODELS_ATLAS_ID).get(0)),
                     new BlendingAttribute());
 
             ModelBuilder modelBuilder = new ModelBuilder();
@@ -120,17 +117,27 @@ public class ModelRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent(priority = -1)
-    public void renderCharacters(RenderEnvironment event, EntityRef renderingEntity) {
+    public void renderModels(RenderEnvironment event, EntityRef renderingEntity) {
         if (!modelInstances.isEmpty()) {
-            for (EntityRef entityRef : charactersIndex.getEntities()) {
-                ModelRenderComponent characterRender = entityRef.getComponent(ModelRenderComponent.class);
+            for (EntityRef entityRef : modelsIndex.getEntities()) {
+                ModelRenderComponent modelRender = entityRef.getComponent(ModelRenderComponent.class);
                 LocationComponent location = entityRef.getComponent(LocationComponent.class);
 
                 ModelInstance modelInstance = modelInstances.get(entityRef);
-                modelInstance.transform = new Matrix4().translate(
-                        location.getX() + characterRender.getTranslateX(),
-                        location.getY() + characterRender.getTranslateY(),
-                        location.getZ() + characterRender.getTranslateZ());
+                modelInstance.transform.idt().translate(
+                        location.getX(),
+                        location.getY(),
+                        location.getZ());
+
+                ModelRotateComponent rotation = entityRef.getComponent(ModelRotateComponent.class);
+                if (rotation != null) {
+                    modelInstance.transform.rotate(0, 1, 0, rotation.getRotateY());
+                }
+
+                modelInstance.transform.translate(
+                        modelRender.getTranslateX(),
+                        modelRender.getTranslateY(),
+                        modelRender.getTranslateZ());
             }
 
             modelBatch.begin(event.getCamera());
@@ -140,7 +147,7 @@ public class ModelRenderer implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void characterRemoved(BeforeComponentRemoved event, EntityRef entity, ModelRenderComponent characterRender, LocationComponent location) {
+    public void objectRemoved(BeforeComponentRemoved event, EntityRef entity, ModelRenderComponent modelRender, LocationComponent location) {
         modelInstances.remove(entity);
     }
 }

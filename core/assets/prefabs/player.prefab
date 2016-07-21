@@ -10,7 +10,7 @@
   "LocationComponent": {
     "x": 0,
     "y": 0,
-    "z": 0
+    "z": 0.5
   },
   "ModelRenderComponent": {
     "modelPrefab": "modelPlayer",
@@ -39,5 +39,10 @@
   "CameraFocusComponent": {
     "focusWeight": 1
   },
-  "CollectorComponent": {}
+  "CollectorComponent": {},
+  "ModelRotateComponent": {},
+  "RotateModelOnMovementComponent": {
+    "angleLeft": 180,
+    "angleRight": 0
+  }
 }

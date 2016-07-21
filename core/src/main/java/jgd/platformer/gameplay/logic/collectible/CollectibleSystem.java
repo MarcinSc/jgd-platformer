@@ -5,8 +5,6 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import jgd.platformer.gameplay.component.CollectibleComponent;
-import jgd.platformer.gameplay.component.CollectorComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
 @RegisterSystem
