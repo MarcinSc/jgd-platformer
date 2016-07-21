@@ -229,64 +229,50 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             }
         }
 
-        private Object convertToResult(Object value, Class<?> resultClass) {
+        private Object getDefaultValue(Class<?> resultClass) {
             if (resultClass.isPrimitive()) {
                 if (resultClass == boolean.class) {
-                    if (value == null)
-                        return false;
-                    return value;
-                }
-                Number numberValue = (Number) value;
-                if (resultClass == float.class) {
-                    if (numberValue == null)
-                        return 0f;
-                    return numberValue.floatValue();
+                    return false;
+                } else if (resultClass == float.class) {
+                    return 0f;
                 } else if (resultClass == double.class) {
-                    if (numberValue == null)
-                        return 0d;
-                    return numberValue.doubleValue();
+                    return 0d;
                 } else if (resultClass == long.class) {
-                    if (numberValue == null)
-                        return 0L;
-                    return numberValue.longValue();
+                    return 0L;
                 } else if (resultClass == int.class) {
-                    if (numberValue == null)
-                        return 0;
-                    return numberValue.intValue();
+                    return 0;
                 } else if (resultClass == short.class) {
-                    if (numberValue == null)
-                        return (short) 0;
-                    return numberValue.shortValue();
+                    return (short) 0;
                 } else if (resultClass == char.class) {
-                    if (numberValue == null)
-                        return (char) 0;
-                    return (char) numberValue.intValue();
+                    return (char) 0;
                 } else if (resultClass == byte.class) {
-                    if (numberValue == null)
-                        return (byte) 0;
-                    return numberValue.byteValue();
+                    return (byte) 0;
                 }
             }
+            return null;
+        }
+
+        private Object convertToResult(Object value, Class<?> resultClass) {
             if (value == null)
-                return null;
-            if (resultClass.isAssignableFrom(Number.class)) {
-                if (resultClass == Boolean.class) {
+                return getDefaultValue(resultClass);
+            if (resultClass.isPrimitive() || resultClass.isAssignableFrom(Number.class)) {
+                if (resultClass == boolean.class || resultClass == Boolean.class) {
                     return value;
                 }
                 Number numberValue = (Number) value;
-                if (resultClass == Float.class) {
+                if (resultClass == float.class || resultClass == Float.class) {
                     return numberValue.floatValue();
-                } else if (resultClass == Double.class) {
+                } else if (resultClass == double.class || resultClass == Double.class) {
                     return numberValue.doubleValue();
-                } else if (resultClass == Long.class) {
+                } else if (resultClass == long.class || resultClass == Long.class) {
                     return numberValue.longValue();
-                } else if (resultClass == Integer.class) {
+                } else if (resultClass == int.class || resultClass == Integer.class) {
                     return numberValue.intValue();
-                } else if (resultClass == Short.class) {
+                } else if (resultClass == short.class || resultClass == Short.class) {
                     return numberValue.shortValue();
-                } else if (resultClass == Character.class) {
+                } else if (resultClass == char.class || resultClass == Character.class) {
                     return (char) numberValue.intValue();
-                } else if (resultClass == Byte.class) {
+                } else if (resultClass == byte.class || resultClass == Byte.class) {
                     return numberValue.byteValue();
                 }
             }
