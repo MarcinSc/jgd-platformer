@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering;
+package jgd.platformer.gameplay.rendering.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

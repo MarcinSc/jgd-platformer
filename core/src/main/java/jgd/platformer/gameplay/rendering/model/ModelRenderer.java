@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering;
+package jgd.platformer.gameplay.rendering.model;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -141,7 +141,7 @@ public class ModelRenderer implements LifeCycleSystem {
             }
 
             modelBatch.begin(event.getCamera());
-            modelBatch.render(modelInstances.values());
+            modelBatch.render(modelInstances.values(), event.getEnvironment());
             modelBatch.end();
         }
     }

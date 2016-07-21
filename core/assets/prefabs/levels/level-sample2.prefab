@@ -9,12 +9,16 @@
       "3,0,0": "stone",
       "4,0,0": "stone",
       "5,0,0": "stone",
-      "4,1,-1": "exitPortal"
+      "6,0,0": "stone",
+      "7,0,0": "stone",
+      "8,0,0": "stone",
+      "7,1,-1": "exitPortal"
     },
     "objectCoordinates": {
       "-1.5,3,0.5": "star",
       "-0.5,3.5,0.5": "star",
-      "0.5,3,0.5": "star"
+      "0.5,3,0.5": "star",
+      "7,2,0": "torch"
     }
   },
   "PlayerSpawnComponent": {
@@ -30,7 +34,7 @@
   },
   "PlayerDeathBoundsComponent": {
     "minX": -10,
-    "maxX": 11,
+    "maxX": 14,
     "minY": -5
   }
 }

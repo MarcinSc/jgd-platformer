@@ -1,0 +1,9 @@
+{
+  "PointLightComponent": {
+    "translateX": 0.5,
+    "red": 255,
+    "green": 255,
+    "blue": 127,
+    "intensity": 5
+  }
+}

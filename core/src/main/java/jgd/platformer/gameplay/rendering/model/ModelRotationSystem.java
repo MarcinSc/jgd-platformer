@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering;
+package jgd.platformer.gameplay.rendering.model;
 
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;

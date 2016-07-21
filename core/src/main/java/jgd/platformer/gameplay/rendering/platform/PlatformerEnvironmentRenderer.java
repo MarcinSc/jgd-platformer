@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering;
+package jgd.platformer.gameplay.rendering.platform;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -115,7 +115,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     public void renderTerrain(RenderEnvironment event, EntityRef renderingEntity) {
         if (terrain != null) {
             modelBatch.begin(event.getCamera());
-            modelBatch.render(terrain);
+            modelBatch.render(terrain, event.getEnvironment());
             modelBatch.end();
         }
     }
