@@ -2,6 +2,7 @@ package com.gempukku.gaming.rendering.event;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.gempukku.secsy.entity.event.Event;
 
 public class RenderEnvironment extends Event {
@@ -11,8 +12,10 @@ public class RenderEnvironment extends Event {
     private Texture lightTexture;
     private int shadowFidelity;
     private float ambientLight;
+    private Environment environment;
 
-    public RenderEnvironment(boolean hasDirectionalLight, Camera camera, Camera lightCamera, Texture lightTexture, int shadowFidelity, float ambientLight) {
+    public RenderEnvironment(Environment environment, boolean hasDirectionalLight, Camera camera, Camera lightCamera, Texture lightTexture, int shadowFidelity, float ambientLight) {
+        this.environment = environment;
         this.hasDirectionalLight = hasDirectionalLight;
         this.camera = camera;
         this.lightCamera = lightCamera;
@@ -43,5 +46,9 @@ public class RenderEnvironment extends Event {
 
     public int getShadowFidelity() {
         return shadowFidelity;
+    }
+
+    public Environment getEnvironment() {
+        return environment;
     }
 }

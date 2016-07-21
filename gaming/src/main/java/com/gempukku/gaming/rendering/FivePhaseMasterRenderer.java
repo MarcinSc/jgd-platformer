@@ -183,7 +183,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
     private void normalRenderPass(EntityRef renderingEntity, boolean hasDirectionalLight, float ambientLight) {
         Texture lightTexture = lightFrameBuffer.getColorBufferTexture();
-        renderingEntity.send(new RenderEnvironment(hasDirectionalLight, camera, lightCamera, lightTexture, shadowFidelity, ambientLight));
+        renderingEntity.send(new RenderEnvironment(renderingEntityProvider.getEnvironment(), hasDirectionalLight, camera, lightCamera, lightTexture, shadowFidelity, ambientLight));
     }
 
     private void renderPostEnvironment(EntityRef renderingEntity) {
