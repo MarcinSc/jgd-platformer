@@ -1,6 +1,10 @@
 {
+  "ModelRenderComponent": {
+    "modelPrefab": "modelTorch"
+  },
   "PointLightComponent": {
-    "translateX": 0.5,
+    "translateX": 0.3,
+    "translateZ": 0.1,
     "red": 255,
     "green": 255,
     "blue": 127,

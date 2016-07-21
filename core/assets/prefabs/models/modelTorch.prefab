@@ -1,0 +1,11 @@
+{
+  "ModelShapeComponent": {
+    "shape": "cube",
+    "multiplyX": 1,
+    "multiplyY": 1,
+    "multiplyZ": 0,
+    "texturesForParts": {
+      "front": "model/torch.png"
+    }
+  }
+}
