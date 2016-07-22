@@ -1,34 +1,24 @@
-package com.gempukku.gaming.rendering.postprocess.texturetint;
+package com.gempukku.gaming.rendering.postprocess.tint.color;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.math.Vector2;
 
-public class TextureTintShaderProvider implements ShaderProvider {
-    private TextureTintShader tintShader;
+public class ColorTintShaderProvider implements ShaderProvider {
+    private ColorTintShader tintShader;
     private int sourceTextureIndex;
-    private int tintTextureIndex;
-    private Vector2 tintTextureOrigin;
-    private Vector2 tintTextureSize;
+    private Color color;
     private float factor;
 
     public void setSourceTextureIndex(int sourceTextureIndex) {
         this.sourceTextureIndex = sourceTextureIndex;
     }
 
-    public void setTintTextureIndex(int tintTextureIndex) {
-        this.tintTextureIndex = tintTextureIndex;
-    }
-
-    public void setTintTextureOrigin(Vector2 tintTextureOrigin) {
-        this.tintTextureOrigin = tintTextureOrigin;
-    }
-
-    public void setTintTextureSize(Vector2 tintTextureSize) {
-        this.tintTextureSize = tintTextureSize;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public void setFactor(float factor) {
@@ -40,15 +30,13 @@ public class TextureTintShaderProvider implements ShaderProvider {
         if (tintShader == null) {
             DefaultShader.Config config = new DefaultShader.Config(
                     Gdx.files.internal("shader/viewToScreenCoords.vert").readString(),
-                    Gdx.files.internal("shader/textureTint.frag").readString());
-            tintShader = new TextureTintShader(renderable,
+                    Gdx.files.internal("shader/colorTint.frag").readString());
+            tintShader = new ColorTintShader(renderable,
                     config);
             tintShader.init();
         }
         tintShader.setSourceTextureIndex(sourceTextureIndex);
-        tintShader.setTintTextureIndex(tintTextureIndex);
-        tintShader.setTintTextureOrigin(tintTextureOrigin);
-        tintShader.setTintTextureSize(tintTextureSize);
+        tintShader.setColor(color);
         tintShader.setFactor(factor);
 
         return tintShader;

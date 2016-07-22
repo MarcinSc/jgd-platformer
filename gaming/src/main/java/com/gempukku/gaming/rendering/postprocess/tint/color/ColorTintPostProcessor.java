@@ -1,9 +1,9 @@
-package com.gempukku.gaming.rendering.postprocess.texturetint;
+package com.gempukku.gaming.rendering.postprocess.tint.color;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -11,30 +11,24 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Vector2;
-import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
 import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
-import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
 @RegisterSystem
-public class TextureTintPostProcessor implements LifeCycleSystem {
-    @Inject(optional = true)
-    private TextureAtlasProvider textureAtlasProvider;
-
+public class ColorTintPostProcessor implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
-    private TextureTintShaderProvider tintShaderProvider;
+    private ColorTintShaderProvider tintShaderProvider;
     private ModelInstance modelInstance;
     private Model model;
 
     @Override
     public void preInitialize() {
-        tintShaderProvider = new TextureTintShaderProvider();
+        tintShaderProvider = new ColorTintShaderProvider();
 
         modelBatch = new ModelBatch(tintShaderProvider);
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -51,18 +45,21 @@ public class TextureTintPostProcessor implements LifeCycleSystem {
         modelInstance = new ModelInstance(model);
     }
 
-    @ReceiveEvent(priorityName = "gaming.renderer.tint.texture")
-    public void render(PostProcessRendering event, EntityRef renderingEntity, TextureTintComponent tint) {
+    @ReceiveEvent(priorityName = "gaming.renderer.tint.color")
+    public void render(PostProcessRendering event, EntityRef renderingEntity, ColorTintComponent tint) {
         float factor = tint.getFactor();
 
         if (factor > 0) {
+            tintShaderProvider.setSourceTextureIndex(0);
+            tintShaderProvider.setFactor(factor);
+            tintShaderProvider.setColor(new Color(tint.getRed() / 255f, tint.getGreen() / 255f, tint.getBlue() / 255f, 1f));
+
             PostProcessPipeline postProcessPipeline = event.getPostProcessPipeline();
 
-            tintShaderProvider.setFactor(factor);
+            int textureHandle = postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
 
-            setupTintTexture(tint);
-
-            setupSourceTexture(postProcessPipeline);
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+            Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
             FrameBuffer frameBuffer = postProcessPipeline.borrowFrameBuffer();
             frameBuffer.begin();
@@ -77,27 +74,6 @@ public class TextureTintPostProcessor implements LifeCycleSystem {
             frameBuffer.end();
             postProcessPipeline.finishPostProcess(frameBuffer);
         }
-    }
-
-    private void setupSourceTexture(PostProcessPipeline postProcessPipeline) {
-        tintShaderProvider.setSourceTextureIndex(0);
-
-        int textureHandle = postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
-
-        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
-    }
-
-    private void setupTintTexture(TextureTintComponent tint) {
-        tintShaderProvider.setTintTextureIndex(1);
-        TextureRegion texture = textureAtlasProvider.getTexture(tint.getTextureAtlasId(), tint.getTextureName());
-
-        int tintTextureHandle = texture.getTexture().getTextureObjectHandle();
-        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, tintTextureHandle);
-
-        tintShaderProvider.setTintTextureOrigin(new Vector2(texture.getU(), texture.getV()));
-        tintShaderProvider.setTintTextureSize(new Vector2(texture.getU2() - texture.getU(), texture.getV2() - texture.getV()));
     }
 
     @Override

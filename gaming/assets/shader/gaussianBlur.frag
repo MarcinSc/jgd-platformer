@@ -12,21 +12,21 @@ uniform int u_vertical;
 varying vec2 v_position;
 
 void main() {
-    vec2 textelSize = vec2(1.0 / u_viewportWidth, 1.0 / u_viewportHeight);
+    vec2 pixelSize = vec2(1.0 / u_viewportWidth, 1.0 / u_viewportHeight);
 
     vec4 sampleAccum = vec4(0.0, 0.0, 0.0, 0.0);
 
     for (int i=0; i<=u_blurRadius; i++) {
         float kernel = u_kernel[i];
         if (u_vertical == 1) {
-            sampleAccum += texture2D(u_sourceTexture, v_position + textelSize * vec2(0, i)) * kernel;
+            sampleAccum += texture2D(u_sourceTexture, v_position + pixelSize * vec2(0, i)) * kernel;
             if (i>0) {
-                sampleAccum += texture2D(u_sourceTexture, v_position - textelSize * vec2(0, i)) * kernel;
+                sampleAccum += texture2D(u_sourceTexture, v_position - pixelSize * vec2(0, i)) * kernel;
             }
         } else {
-            sampleAccum += texture2D(u_sourceTexture, v_position + textelSize * vec2(i, 0)) * kernel;
+            sampleAccum += texture2D(u_sourceTexture, v_position + pixelSize * vec2(i, 0)) * kernel;
             if (i>0) {
-                sampleAccum += texture2D(u_sourceTexture, v_position - textelSize * vec2(i, 0)) * kernel;
+                sampleAccum += texture2D(u_sourceTexture, v_position - pixelSize * vec2(i, 0)) * kernel;
             }
         }
     }

@@ -20,22 +20,22 @@ vec3 getBloomForColor(vec3 color) {
 }
 
 vec3 getBloom() {
-    vec2 textelSize = vec2(1.0 / u_viewportWidth, 1.0 / u_viewportHeight);
+    vec2 pixelSize = vec2(1.0 / u_viewportWidth, 1.0 / u_viewportHeight);
 
     vec3 sampleAccum = vec3(0.0);
 
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.326212,-0.40581)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.840144,-0.07358)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.695914,0.457137)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.203345,0.620716)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.96234,-0.194983)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.473434,-0.480026)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.519456,0.767022)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.185461,-0.893124)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.507431,0.064425)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(0.89642,0.412458)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.32194,-0.932615)).rgb);
-    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + textelSize * u_blurRadius * vec2(-0.791559,-0.59771)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.326212,-0.40581)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.840144,-0.07358)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.695914,0.457137)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.203345,0.620716)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.96234,-0.194983)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.473434,-0.480026)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.519456,0.767022)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.185461,-0.893124)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.507431,0.064425)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(0.89642,0.412458)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.32194,-0.932615)).rgb);
+    sampleAccum += getBloomForColor(texture2D(u_sourceTexture, v_position + pixelSize * u_blurRadius * vec2(-0.791559,-0.59771)).rgb);
 
     return sampleAccum / 12.0;
 }

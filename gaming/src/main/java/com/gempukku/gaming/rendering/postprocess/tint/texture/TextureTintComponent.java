@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.postprocess.texturetint;
+package com.gempukku.gaming.rendering.postprocess.tint.texture;
 
 import com.gempukku.secsy.entity.Component;
 

@@ -11,5 +11,9 @@ uniform float u_factor;
 varying vec2 v_position;
 
 void main() {
-    gl_FragColor = mix(texture2D(u_sourceTexture, v_position), texture2D(u_tintTexture, u_tintTextureOrigin + v_position * u_tintTextureSize), u_factor);
+    // The tintTexture is "upside down" in relation to the coordinates we use
+    gl_FragColor = mix(
+        texture2D(u_sourceTexture, v_position),
+        texture2D(u_tintTexture, u_tintTextureOrigin + vec2(v_position.x, 1.0 - v_position.y) * u_tintTextureSize),
+        u_factor);
 }

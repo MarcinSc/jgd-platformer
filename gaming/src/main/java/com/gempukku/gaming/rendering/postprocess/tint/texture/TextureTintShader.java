@@ -1,4 +1,4 @@
-package com.gempukku.gaming.rendering.postprocess.texturetint;
+package com.gempukku.gaming.rendering.postprocess.tint.texture;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
