@@ -6,6 +6,7 @@ import com.gempukku.secsy.entity.SimpleEntity;
 import com.google.common.collect.Iterables;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ComponentEntityIndex implements EntityIndex {
@@ -39,6 +40,11 @@ public class ComponentEntityIndex implements EntityIndex {
     public Iterable<EntityRef> getEntities() {
         return Iterables.transform(new HashSet<>(entitiesInIndex),
                 entity -> callback.createEntityRef(entity));
+    }
+
+    @Override
+    public Iterator<EntityRef> iterator() {
+        return getEntities().iterator();
     }
 
     private boolean hasAllComponents(SimpleEntity entity) {
