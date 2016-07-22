@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.math.Vector2;
 
 public class GaussianBlurShader extends DefaultShader {
     private final int u_sourceTexture = register("u_sourceTexture");
-    private final int u_viewportWidth = register("u_viewportWidth");
-    private final int u_viewportHeight = register("u_viewportHeight");
+    private final int u_pixelSize = register("u_pixelSize");
     private final int u_blurRadius = register("u_blurRadius");
     private final int u_kernel;
     private final int u_vertical = register("u_vertical");
@@ -17,6 +17,7 @@ public class GaussianBlurShader extends DefaultShader {
     private int blurRadius;
     private float[] kernel;
     private boolean vertical;
+    private Vector2 pixelSize = new Vector2();
 
     public GaussianBlurShader(Renderable renderable, Config config) {
         super(renderable, config);
@@ -44,8 +45,8 @@ public class GaussianBlurShader extends DefaultShader {
         super.begin(camera, context);
 
         set(u_sourceTexture, sourceTextureIndex);
-        set(u_viewportWidth, camera.viewportWidth);
-        set(u_viewportHeight, camera.viewportHeight);
+        pixelSize.set(1 / camera.viewportWidth, 1 / camera.viewportHeight);
+        set(u_pixelSize, pixelSize);
         set(u_blurRadius, blurRadius);
         set(u_vertical, vertical ? 1 : 0);
         program.setUniform1fv(u_kernel, kernel, 0, kernel.length);
