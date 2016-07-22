@@ -13,6 +13,8 @@ public class TextureTintShaderProvider implements ShaderProvider {
     private int tintTextureIndex;
     private Vector2 tintTextureOrigin;
     private Vector2 tintTextureSize;
+    private Vector2 repeatFactor = new Vector2(1, 1);
+    private Vector2 tintShift = new Vector2(0, 0);
     private float factor;
 
     public void setSourceTextureIndex(int sourceTextureIndex) {
@@ -29,6 +31,14 @@ public class TextureTintShaderProvider implements ShaderProvider {
 
     public void setTintTextureSize(Vector2 tintTextureSize) {
         this.tintTextureSize = tintTextureSize;
+    }
+
+    public void setRepeatFactor(Vector2 repeatFactor) {
+        this.repeatFactor = repeatFactor;
+    }
+
+    public void setTintShift(Vector2 tintShift) {
+        this.tintShift = tintShift;
     }
 
     public void setFactor(float factor) {
@@ -49,6 +59,8 @@ public class TextureTintShaderProvider implements ShaderProvider {
         tintShader.setTintTextureIndex(tintTextureIndex);
         tintShader.setTintTextureOrigin(tintTextureOrigin);
         tintShader.setTintTextureSize(tintTextureSize);
+        tintShader.setRepeatFactor(repeatFactor);
+        tintShader.setTintShift(tintShift);
         tintShader.setFactor(factor);
 
         return tintShader;

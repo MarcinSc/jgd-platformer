@@ -11,12 +11,16 @@ public class TextureTintShader extends DefaultShader {
     private final int u_tintTexture = register("u_tintTexture");
     private final int u_tintTextureOrigin = register("u_tintTextureOrigin");
     private final int u_tintTextureSize = register("u_tintTextureSize");
+    private final int u_repeatFactor = register("u_repeatFactor");
+    private final int u_tintShift = register("u_tintShift");
     private final int u_factor = register("u_factor");
 
     private int sourceTextureIndex;
     private int tintTextureIndex;
     private Vector2 tintTextureOrigin;
     private Vector2 tintTextureSize;
+    private Vector2 repeatFactor;
+    private Vector2 tintShift;
     private float factor;
 
     public TextureTintShader(Renderable renderable, Config config) {
@@ -39,6 +43,14 @@ public class TextureTintShader extends DefaultShader {
         this.tintTextureSize = tintTextureSize;
     }
 
+    public void setRepeatFactor(Vector2 repeatFactor) {
+        this.repeatFactor = repeatFactor;
+    }
+
+    public void setTintShift(Vector2 tintShift) {
+        this.tintShift = tintShift;
+    }
+
     public void setFactor(float factor) {
         this.factor = factor;
     }
@@ -51,6 +63,8 @@ public class TextureTintShader extends DefaultShader {
         set(u_tintTexture, tintTextureIndex);
         set(u_tintTextureOrigin, tintTextureOrigin);
         set(u_tintTextureSize, tintTextureSize);
+        set(u_repeatFactor, repeatFactor);
+        set(u_tintShift, tintShift);
         set(u_factor, factor);
     }
 }
