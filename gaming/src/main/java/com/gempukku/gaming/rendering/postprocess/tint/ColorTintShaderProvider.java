@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 
-public class TintShaderProvider implements ShaderProvider {
-    private TintShader tintShader;
+public class ColorTintShaderProvider implements ShaderProvider {
+    private ColorTintShader tintShader;
     private int sourceTextureIndex;
     private Color color;
     private float factor;
@@ -30,8 +30,8 @@ public class TintShaderProvider implements ShaderProvider {
         if (tintShader == null) {
             DefaultShader.Config config = new DefaultShader.Config(
                     Gdx.files.internal("shader/viewToScreenCoords.vert").readString(),
-                    Gdx.files.internal("shader/tint.frag").readString());
-            tintShader = new TintShader(renderable,
+                    Gdx.files.internal("shader/colorTint.frag").readString());
+            tintShader = new ColorTintShader(renderable,
                     config);
             tintShader.init();
         }

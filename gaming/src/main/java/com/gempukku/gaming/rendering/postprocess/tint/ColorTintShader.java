@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 
-public class TintShader extends DefaultShader {
+public class ColorTintShader extends DefaultShader {
     private final int u_sourceTexture = register("u_sourceTexture");
     private final int u_color = register("u_color");
     private final int u_factor = register("u_factor");
@@ -15,7 +15,7 @@ public class TintShader extends DefaultShader {
     private Color color;
     private float factor;
 
-    public TintShader(Renderable renderable, Config config) {
+    public ColorTintShader(Renderable renderable, Config config) {
         super(renderable, config);
     }
 
