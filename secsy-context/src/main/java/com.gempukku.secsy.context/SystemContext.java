@@ -13,5 +13,7 @@ public interface SystemContext<S> {
      */
     <T extends S> T getSystem(Class<T> clazz);
 
+    void initializeObject(Object object);
+
     Iterable<S> getSystems();
 }

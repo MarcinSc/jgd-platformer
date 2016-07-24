@@ -19,7 +19,9 @@ public class SECSyContext extends SimpleContext<Object> {
         }
 
         setSystemProducer(producer);
-        setSystemInitializer(new ShareSystemInitializer<>());
+        ShareSystemInitializer<Object> initializer = new ShareSystemInitializer<>();
+        setObjectInitializer(initializer);
+        setSystemExtractor(initializer);
     }
 
     private static class ProfilesActivePredicate implements Predicate<Class<?>> {

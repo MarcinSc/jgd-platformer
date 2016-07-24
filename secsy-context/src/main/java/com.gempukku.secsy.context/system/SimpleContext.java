@@ -3,11 +3,13 @@ package com.gempukku.secsy.context.system;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.util.PriorityCollection;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class SimpleContext<S> implements SystemContext<S> {
     private SystemProducer<S> systemProducer;
-    private SystemInitializer<S> systemInitializer;
+    private SystemExtractor<S> systemExtractor;
+    private ObjectInitializer<S> objectInitializer;
 
     private PriorityCollection<LifeCycleSystem> lifeCycleSystems = new PriorityCollection<>();
 
@@ -18,8 +20,12 @@ public class SimpleContext<S> implements SystemContext<S> {
         this.systemProducer = systemProducer;
     }
 
-    public void setSystemInitializer(SystemInitializer<S> systemInitializer) {
-        this.systemInitializer = systemInitializer;
+    public void setSystemExtractor(SystemExtractor<S> systemExtractor) {
+        this.systemExtractor = systemExtractor;
+    }
+
+    public void setObjectInitializer(ObjectInitializer<S> objectInitializer) {
+        this.objectInitializer = objectInitializer;
     }
 
     public void startup() {
@@ -34,7 +40,8 @@ public class SimpleContext<S> implements SystemContext<S> {
             lifeCycleSystem.preInitialize();
         }
 
-        systemMap = systemInitializer.initializeSystems(systems);
+        systemMap = systemExtractor.extractSystems(systems);
+        objectInitializer.initializeObjects(systems, systemMap);
 
         for (S system : systems) {
             if (system instanceof ContextAwareSystem) {
@@ -59,6 +66,11 @@ public class SimpleContext<S> implements SystemContext<S> {
     }
 
     @Override
+    public void initializeObject(Object object) {
+        objectInitializer.initializeObjects(Collections.singleton(object), systemMap);
+    }
+
+    @Override
     public Iterable<S> getSystems() {
         return systems;
     }
@@ -70,8 +82,6 @@ public class SimpleContext<S> implements SystemContext<S> {
         for (LifeCycleSystem lifeCycleSystem : lifeCycleSystems) {
             lifeCycleSystem.destroy();
         }
-
-        systemInitializer.destroySystems(systems);
 
         for (LifeCycleSystem lifeCycleSystem : lifeCycleSystems) {
             lifeCycleSystem.postDestroy();
