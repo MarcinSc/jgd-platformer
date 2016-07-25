@@ -1,6 +1,8 @@
 package com.gempukku.gaming.ai;
 
 import com.gempukku.gaming.ai.builder.JsonTaskBuilder;
+import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
+import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -14,12 +16,10 @@ import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.reflections.Configuration;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
+import org.reflections.scanners.AbstractScanner;
 import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 import java.io.IOException;
@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(
@@ -45,21 +46,25 @@ public class AISystem implements LifeCycleSystem {
     private Map<String, RootTask> compiledAIs = new HashMap<>();
     private Map<String, Class<? extends AITask>> taskTypes = new HashMap<>();
 
+    @ReceiveEvent
+    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
+        event.addScanner(new AITaskScanner());
+        event.addScanner(new BehaviorScanner());
+    }
+
+    @ReceiveEvent
+    public void initializeAI(ReflectionsScanned event, EntityRef entityRef) {
+        findAllAITasks(event.getReflections());
+
+        loadAllBehaviorJsons(event.getReflections());
+    }
+
     @Override
     public void initialize() {
         aiEntities = entityIndexManager.addIndexOnComponents(AIComponent.class);
-
-        findAllAITasks();
-
-        loadAllBehaviorJsons();
     }
 
-    private void loadAllBehaviorJsons() {
-        Configuration scanBehaviors = new ConfigurationBuilder()
-                .setScanners(new BehaviorScanner())
-                .setUrls(ClasspathHelper.forJavaClassPath());
-
-        Reflections reflections = new Reflections(scanBehaviors);
+    private void loadAllBehaviorJsons(Reflections reflections) {
         Multimap<String, String> resources = reflections.getStore().get(BehaviorScanner.class);
 
         for (String behaviorName : resources.keySet()) {
@@ -82,17 +87,15 @@ public class AISystem implements LifeCycleSystem {
         }
     }
 
-    private void findAllAITasks() {
-        Configuration scanComponents = new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(true))
-                .setUrls(ClasspathHelper.forJavaClassPath());
+    private void findAllAITasks(Reflections reflections) {
+        Collection<String> componentClassNames = reflections.getStore().get(AITaskScanner.class).get(AITask.class.getName());
+        List<Class<? extends AITask>> aiTasks = ReflectionUtils.forNames(componentClassNames, reflections.getConfiguration().getClassLoaders());
 
-        Reflections reflections = new Reflections(scanComponents);
-        for (Class<? extends AITask> aiTasks : reflections.getSubTypesOf(AITask.class)) {
-            String simpleName = aiTasks.getSimpleName();
-            taskTypes.put(simpleName, aiTasks);
+        for (Class<? extends AITask> aiTask : aiTasks) {
+            String simpleName = aiTask.getSimpleName();
+            taskTypes.put(simpleName, aiTask);
             if (simpleName.endsWith("Task"))
-                taskTypes.put(simpleName.substring(0, simpleName.length() - 4), aiTasks);
+                taskTypes.put(simpleName.substring(0, simpleName.length() - 4), aiTask);
         }
     }
 
@@ -120,6 +123,17 @@ public class AISystem implements LifeCycleSystem {
         AITask aiTask = builder.buildTask(null, behaviorData);
 
         return new RootTask(rootTaskId, aiTask);
+    }
+
+    private static class AITaskScanner extends AbstractScanner {
+        private String aiTaskClassName = AITask.class.getName();
+
+        @Override
+        public void scan(Object o) {
+            List<String> interfacesNames = getMetadataAdapter().getInterfacesNames(o);
+            if (interfacesNames.contains(aiTaskClassName))
+                getStore().put(aiTaskClassName, getMetadataAdapter().getClassName(o));
+        }
     }
 
     private static class BehaviorScanner extends ResourcesScanner {
