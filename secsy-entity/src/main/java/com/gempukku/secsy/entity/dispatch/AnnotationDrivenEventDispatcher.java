@@ -3,7 +3,6 @@ package com.gempukku.secsy.entity.dispatch;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.ContextAwareSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.context.util.Prioritable;
 import com.gempukku.secsy.context.util.PriorityCollection;
@@ -21,32 +20,31 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RegisterSystem(
         profiles = "annotationEventDispatcher"
 )
-public class AnnotationDrivenEventDispatcher implements ContextAwareSystem<Object>, LifeCycleSystem, EntityEventListener {
+public class AnnotationDrivenEventDispatcher implements LifeCycleSystem, EntityEventListener {
+    private static final Logger logger = Logger.getLogger(AnnotationDrivenEventDispatcher.class.getName());
     @Inject
     private InternalEntityManager internalEntityManager;
     @Inject(optional = true)
     private PriorityResolver priorityResolver;
+    @Inject
+    private SystemContext systemContext;
 
     private Map<Class<? extends Event>, PriorityCollection<EventListenerDefinition>> eventListenerDefinitions = new HashMap<>();
-    private Iterable<Object> systems;
 
     @Override
-    public void setContext(SystemContext<Object> context) {
-        systems = context.getSystems();
+    public float getPriority() {
+        return 200;
     }
 
     @Override
     public void initialize() {
         internalEntityManager.addEntityEventListener(this);
-    }
-
-    @Override
-    public void postInitialize() {
-        for (Object system : systems) {
+        for (Object system : systemContext.getSystems()) {
             scanSystem(system);
         }
     }
@@ -175,10 +173,21 @@ public class AnnotationDrivenEventDispatcher implements ContextAwareSystem<Objec
                 params[index++] = entity.getComponent(componentParameter);
             }
 
+            long start = System.currentTimeMillis();
             try {
                 method.invoke(system, params);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
+            } finally {
+                long time = System.currentTimeMillis() - start;
+                String message = time + "ms - " + method.getDeclaringClass().getSimpleName() + ":" + method.getName();
+                if (time > 100) {
+                    logger.severe(message);
+                } else if (time > 50) {
+                    logger.warning(message);
+                } else {
+                    logger.fine(message);
+                }
             }
         }
     }

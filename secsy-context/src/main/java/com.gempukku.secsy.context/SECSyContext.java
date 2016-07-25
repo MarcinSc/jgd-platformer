@@ -9,7 +9,7 @@ import org.reflections.Reflections;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class SECSyContext extends SimpleContext<Object> {
+public class SECSyContext extends SimpleContext {
     public SECSyContext(Set<String> profilesActive, Reflections... reflectionsToScan) {
         ReflectionsAnnotatedTypesSystemProducer producer = new ReflectionsAnnotatedTypesSystemProducer(RegisterSystem.class,
                 new ProfilesActivePredicate(profilesActive));
@@ -19,7 +19,7 @@ public class SECSyContext extends SimpleContext<Object> {
         }
 
         setSystemProducer(producer);
-        ShareSystemInitializer<Object> initializer = new ShareSystemInitializer<>();
+        ShareSystemInitializer initializer = new ShareSystemInitializer();
         setObjectInitializer(initializer);
         setSystemExtractor(initializer);
     }

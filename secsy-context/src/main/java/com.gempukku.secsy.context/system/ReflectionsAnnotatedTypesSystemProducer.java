@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class ReflectionsAnnotatedTypesSystemProducer implements SystemProducer<Object> {
+public class ReflectionsAnnotatedTypesSystemProducer implements SystemProducer {
     private Class<? extends Annotation> annotation;
     private Predicate<Class<?>> classPredicate;
 

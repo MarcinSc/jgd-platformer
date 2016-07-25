@@ -2,6 +2,6 @@ package com.gempukku.secsy.context.system;
 
 import java.util.Map;
 
-public interface SystemExtractor<S> {
-    Map<Class<?>, S> extractSystems(Iterable<S> systems);
+public interface SystemExtractor {
+    Map<Class<?>, Object> extractSystems(Iterable<Object> systems);
 }

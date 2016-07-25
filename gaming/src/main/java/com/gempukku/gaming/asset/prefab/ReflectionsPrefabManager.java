@@ -1,9 +1,13 @@
 package com.gempukku.gaming.asset.prefab;
 
 import com.gempukku.gaming.asset.component.NameComponentManager;
+import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
+import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.serialization.ComponentInformation;
 import com.gempukku.secsy.serialization.EntityInformation;
@@ -12,11 +16,7 @@ import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.reflections.Configuration;
-import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 import java.io.IOException;
@@ -36,39 +36,38 @@ public class ReflectionsPrefabManager implements PrefabManager {
 
     private Map<String, EntityData> prefabsByName;
 
-    private synchronized void init() {
-        if (prefabsByName == null) {
-            prefabsByName = new HashMap<>();
-            Configuration scanPrefabs = new ConfigurationBuilder()
-                    .setScanners(new PrefabsScanner())
-                    .setUrls(ClasspathHelper.forJavaClassPath());
+    @ReceiveEvent
+    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
+        event.addScanner(new PrefabsScanner());
+    }
 
-            Reflections reflections = new Reflections(scanPrefabs);
-            Multimap<String, String> resources = reflections.getStore().get(PrefabsScanner.class);
+    @ReceiveEvent
+    public void readPrefabs(ReflectionsScanned event, EntityRef entityRef) {
+        prefabsByName = new HashMap<>();
 
-            for (String prefabName : resources.keySet()) {
-                Collection<String> paths = resources.get(prefabName);
-                if (paths.size() > 1)
-                    throw new IllegalStateException("More than one prefab with the same name found: " + prefabName);
+        Multimap<String, String> resources = event.getReflections().getStore().get(PrefabsScanner.class);
 
+        for (String prefabName : resources.keySet()) {
+            Collection<String> paths = resources.get(prefabName);
+            if (paths.size() > 1)
+                throw new IllegalStateException("More than one prefab with the same name found: " + prefabName);
+
+            try {
+                InputStream prefabInputStream = ReflectionsPrefabManager.class.getResourceAsStream("/" + paths.iterator().next());
                 try {
-                    InputStream prefabInputStream = ReflectionsPrefabManager.class.getResourceAsStream("/" + paths.iterator().next());
-                    try {
-                        EntityData prefabData = readPrefabData(prefabInputStream);
-                        prefabsByName.put(prefabName, prefabData);
-                    } finally {
-                        prefabInputStream.close();
-                    }
-                } catch (IOException | ParseException exp) {
-                    throw new RuntimeException("Unable to read prefab data", exp);
+                    EntityData prefabData = readPrefabData(prefabInputStream);
+                    prefabsByName.put(prefabName, prefabData);
+                } finally {
+                    prefabInputStream.close();
                 }
+            } catch (IOException | ParseException exp) {
+                throw new RuntimeException("Unable to read prefab data", exp);
             }
         }
     }
 
     @Override
     public Iterable<EntityData> findPrefabsWithComponents(Class<? extends Component>... components) {
-        init();
         return Iterables.filter(
                 prefabsByName.values(),
                 prefabData -> {
@@ -82,7 +81,6 @@ public class ReflectionsPrefabManager implements PrefabManager {
 
     @Override
     public EntityData getPrefabByName(String name) {
-        init();
         return prefabsByName.get(name);
     }
 

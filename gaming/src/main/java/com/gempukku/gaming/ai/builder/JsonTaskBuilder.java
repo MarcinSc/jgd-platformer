@@ -11,11 +11,11 @@ import java.util.Map;
 
 public class JsonTaskBuilder implements TaskBuilder {
     private int taskId = 0;
-    private SystemContext<Object> context;
+    private SystemContext context;
     private Map<String, JSONObject> behaviorJsons = new HashMap<>();
     private Map<String, Class<? extends AITask>> taskTypes;
 
-    public JsonTaskBuilder(SystemContext<Object> context, Map<String, JSONObject> behaviorJsons, Map<String, Class<? extends AITask>> taskTypes) {
+    public JsonTaskBuilder(SystemContext context, Map<String, JSONObject> behaviorJsons, Map<String, Class<? extends AITask>> taskTypes) {
         this.context = context;
         this.behaviorJsons = behaviorJsons;
         this.taskTypes = taskTypes;

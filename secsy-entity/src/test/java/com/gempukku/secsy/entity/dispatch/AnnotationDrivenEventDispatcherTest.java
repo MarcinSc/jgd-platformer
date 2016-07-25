@@ -1,7 +1,11 @@
 package com.gempukku.secsy.entity.dispatch;
 
 import com.gempukku.secsy.context.SystemContext;
-import com.gempukku.secsy.entity.*;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.SampleComponent;
+import com.gempukku.secsy.entity.SampleComponent2;
+import com.gempukku.secsy.entity.SampleEvent;
+import com.gempukku.secsy.entity.SampleSystem;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,7 +13,9 @@ import org.mockito.Mockito;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AnnotationDrivenEventDispatcherTest {
     private AnnotationDrivenEventDispatcher dispatcher;
@@ -22,7 +28,6 @@ public class AnnotationDrivenEventDispatcherTest {
         dispatcher = new AnnotationDrivenEventDispatcher();
         SystemContext context = Mockito.mock(SystemContext.class);
         Mockito.when(context.getSystems()).thenReturn(Arrays.asList(sampleSystem));
-        dispatcher.setContext(context);
         dispatcher.postInitialize();
 
         entity = Mockito.mock(EntityRef.class);

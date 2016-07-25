@@ -8,13 +8,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShareSystemInitializer<S> implements ObjectInitializer<S>, SystemExtractor<S> {
+public class ShareSystemInitializer implements ObjectInitializer, SystemExtractor {
     @Override
-    public Map<Class<?>, S> extractSystems(Iterable<S> systems) {
-        Map<Class<?>, S> context = new HashMap<>();
+    public Map<Class<?>, Object> extractSystems(Iterable<Object> systems) {
+        Map<Class<?>, Object> context = new HashMap<>();
 
         // Figure out shared objects
-        for (S system : systems) {
+        for (Object system : systems) {
             final RegisterSystem registerSystemAnnotation = system.getClass().getAnnotation(RegisterSystem.class);
             if (registerSystemAnnotation != null) {
                 for (Class<?> clazz : registerSystemAnnotation.shared()) {
@@ -29,7 +29,7 @@ public class ShareSystemInitializer<S> implements ObjectInitializer<S>, SystemEx
     }
 
     @Override
-    public void initializeObjects(Iterable<?> objects, Map<Class<?>, S> systems) {
+    public void initializeObjects(Iterable<Object> objects, Map<Class<?>, Object> systems) {
         // Enrich systems with shared components
         for (Object object : objects) {
             Class<? extends Object> systemClass = object.getClass();
@@ -43,7 +43,7 @@ public class ShareSystemInitializer<S> implements ObjectInitializer<S>, SystemEx
         }
     }
 
-    private void initForClass(Map<Class<?>, S> context, Object system, Class<? extends Object> systemClass) {
+    private void initForClass(Map<Class<?>, Object> context, Object system, Class<? extends Object> systemClass) {
         for (Field field : systemClass.getDeclaredFields()) {
             final Inject inject = field.getAnnotation(Inject.class);
             if (inject != null) {

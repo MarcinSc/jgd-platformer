@@ -35,7 +35,7 @@ public class SimpleEntityManagerTest {
     public void setup() {
         MapAnnotationDrivenProxyComponentManager componentManager = new MapAnnotationDrivenProxyComponentManager();
         simpleEntityManager = new SimpleEntityManager();
-        ShareSystemInitializer<Object> shareSystemInitializer = new ShareSystemInitializer<>();
+        ShareSystemInitializer shareSystemInitializer = new ShareSystemInitializer();
         Collection<Object> systems = Arrays.asList(componentManager, simpleEntityManager, new MockInternalGameLoop());
         Map<Class<?>, Object> systemMap = shareSystemInitializer.extractSystems(systems);
         shareSystemInitializer.initializeObjects(systems, systemMap);

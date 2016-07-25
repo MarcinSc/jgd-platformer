@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ClassSystemProducer implements SystemProducer<Object> {
+public class ClassSystemProducer implements SystemProducer {
     private Set<Class<?>> systemClasses = new HashSet<>();
 
     public void addClass(Class<?> systemClass) {

@@ -1,14 +1,13 @@
 package com.gempukku.gaming.rendering.shape;
 
+import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
+import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.google.common.collect.Multimap;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.reflections.Configuration;
-import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 import java.io.IOException;
@@ -20,18 +19,19 @@ import java.util.Map;
 @RegisterSystem(
         profiles = "shapeProvider",
         shared = ShapeProvider.class)
-public class ReflectionsShapeProvider implements ShapeProvider, LifeCycleSystem {
+public class ReflectionsShapeProvider implements ShapeProvider {
+    private Map<String, ShapeDef> shapesById;
 
-    private Map<String, ShapeDef> shapesById = new HashMap<>();
+    @ReceiveEvent
+    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
+        event.addScanner(new ShapeScanner());
+    }
 
-    @Override
-    public void preInitialize() {
-        Configuration scanPrefabs = new ConfigurationBuilder()
-                .setScanners(new ShapeScanner())
-                .setUrls(ClasspathHelper.forJavaClassPath());
+    @ReceiveEvent
+    public void readShapes(ReflectionsScanned event, EntityRef entityRef) {
+        shapesById = new HashMap<>();
 
-        Reflections reflections = new Reflections(scanPrefabs);
-        Multimap<String, String> resources = reflections.getStore().get(ShapeScanner.class);
+        Multimap<String, String> resources = event.getReflections().getStore().get(ShapeScanner.class);
 
         ObjectMapper objectMapper = new ObjectMapper();
 

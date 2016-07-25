@@ -1,31 +1,30 @@
 package com.gempukku.gaming.asset.component;
 
+import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
+import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
-import org.reflections.Configuration;
-import org.reflections.Reflections;
+import com.gempukku.secsy.entity.EntityRef;
+import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
         shared = NameComponentManager.class)
-public class ReflectionsNameComponentManager implements NameComponentManager, LifeCycleSystem {
+public class ReflectionsNameComponentManager implements NameComponentManager {
     private Map<String, Class<? extends Component>> componentsByName = new HashMap<>();
     private Map<Class<? extends Component>, String> namesByComponent = new HashMap<>();
 
-    @Override
-    public void preInitialize() {
-        Configuration scanComponents = new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(true))
-                .setUrls(ClasspathHelper.forJavaClassPath());
+    @ReceiveEvent
+    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
+        event.addScanner(new SubTypesScanner(true));
+    }
 
-        Reflections reflections = new Reflections(scanComponents);
-        for (Class<? extends Component> component : reflections.getSubTypesOf(Component.class)) {
+    @ReceiveEvent(priority = 100)
+    public void getComponents(ReflectionsScanned event, EntityRef entityRef) {
+        for (Class<? extends Component> component : event.getReflections().getSubTypesOf(Component.class)) {
             String simpleName = component.getSimpleName();
             componentsByName.put(simpleName, component);
             namesByComponent.put(component, simpleName);

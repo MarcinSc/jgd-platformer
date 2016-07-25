@@ -4,7 +4,6 @@ import com.gempukku.gaming.ai.builder.JsonTaskBuilder;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.ContextAwareSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
@@ -34,21 +33,17 @@ import java.util.Map;
 @RegisterSystem(
         profiles = "ai"
 )
-public class AISystem implements LifeCycleSystem, ContextAwareSystem<Object> {
+public class AISystem implements LifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;
+    @Inject
+    private SystemContext context;
 
     private EntityIndex aiEntities;
 
     private Map<String, JSONObject> behaviorJsons = new HashMap<>();
     private Map<String, RootTask> compiledAIs = new HashMap<>();
     private Map<String, Class<? extends AITask>> taskTypes = new HashMap<>();
-    private SystemContext<Object> context;
-
-    @Override
-    public void setContext(SystemContext<Object> context) {
-        this.context = context;
-    }
 
     @Override
     public void initialize() {

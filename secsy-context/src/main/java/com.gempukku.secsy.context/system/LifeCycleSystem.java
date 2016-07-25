@@ -1,9 +1,11 @@
 package com.gempukku.secsy.context.system;
 
+import com.gempukku.secsy.context.util.Prioritable;
+
 /**
  * Interface for @Systems that want to be notified of context life-cycle.
  */
-public interface LifeCycleSystem {
+public interface LifeCycleSystem extends Prioritable {
     /**
      * Called just after the class is instantiated. In this method this system should initialize itself.
      * At this point none of the other systems have been injected yet.
@@ -43,5 +45,9 @@ public interface LifeCycleSystem {
      * Called after all systems have been destroyed. This is a place where system should clean up after itself.
      */
     default void postDestroy() {
+    }
+
+    default float getPriority() {
+        return 0;
     }
 }

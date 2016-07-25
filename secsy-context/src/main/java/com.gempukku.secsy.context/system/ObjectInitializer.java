@@ -2,6 +2,6 @@ package com.gempukku.secsy.context.system;
 
 import java.util.Map;
 
-public interface ObjectInitializer<S> {
-    void initializeObjects(Iterable<?> objects, Map<Class<?>, S> systems);
+public interface ObjectInitializer {
+    void initializeObjects(Iterable<Object> objects, Map<Class<?>, Object> systems);
 }
