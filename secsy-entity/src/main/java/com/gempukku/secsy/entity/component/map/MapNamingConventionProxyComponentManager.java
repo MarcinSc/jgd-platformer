@@ -6,8 +6,11 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.component.ComponentManager;
 import com.gempukku.secsy.entity.component.InternalComponentManager;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashMap;
@@ -201,7 +204,7 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             MethodHandler methodHandler = handlers.get(method.getName());
             if (methodHandler != null)
-                return methodHandler.handleInvocation(storedValues, changes, readOnly, args);
+                return methodHandler.handleInvocation(proxy, method, storedValues, changes, readOnly, args);
             throw new UnsupportedOperationException("Component method invoked without property defined: " + clazz.getName() + ":" + method.getName());
         }
     }
@@ -216,20 +219,47 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         }
 
         @Override
-        public Object handleInvocation(Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
+        public Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
             final Object changedValue = changes.get(fieldName);
             if (changedValue != null) {
                 if (changedValue == NULL_VALUE) {
-                    return convertToResult(null, resultClass);
+                    return convertToResult(proxy, method, null, resultClass);
                 } else {
-                    return convertToResult(changedValue, resultClass);
+                    return convertToResult(proxy, method, changedValue, resultClass);
                 }
             } else {
-                return convertToResult(storedValues.get(fieldName), resultClass);
+                return convertToResult(proxy, method, storedValues.get(fieldName), resultClass);
             }
         }
 
-        private Object getDefaultValue(Class<?> resultClass) {
+        private Object getDefaultValue(Object proxy, Method method, Class<?> resultClass) {
+            if (method.isDefault()) {
+                // Horrible hack that is required to invoke a default method of an interface
+                // https://rmannibucau.wordpress.com/2014/03/27/java-8-default-interface-methods-and-jdk-dynamic-proxies/
+                try {
+                    final Class<?> declaringClass = method.getDeclaringClass();
+                    final MethodHandles.Lookup lookup = MethodHandles.publicLookup()
+                            .in(declaringClass);
+
+                    // ensure allowed mode will not check visibility
+                    final Field f = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
+                    final int modifiers = f.getModifiers();
+                    if (Modifier.isFinal(modifiers)) { // should be done a single time
+                        final Field modifiersField = Field.class.getDeclaredField("modifiers");
+                        modifiersField.setAccessible(true);
+                        modifiersField.setInt(f, modifiers & ~Modifier.FINAL);
+                        f.setAccessible(true);
+                        f.set(lookup, MethodHandles.Lookup.PRIVATE);
+                    }
+
+                    return lookup
+                            .unreflectSpecial(method, declaringClass)
+                            .bindTo(proxy)
+                            .invokeWithArguments();
+                } catch (Throwable exp) {
+                    throw new RuntimeException("Unable to invoke a method", exp);
+                }
+            }
             if (resultClass.isPrimitive()) {
                 if (resultClass == boolean.class) {
                     return false;
@@ -252,9 +282,9 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             return null;
         }
 
-        private Object convertToResult(Object value, Class<?> resultClass) {
+        private Object convertToResult(Object proxy, Method method, Object value, Class<?> resultClass) {
             if (value == null)
-                return getDefaultValue(resultClass);
+                return getDefaultValue(proxy, method, resultClass);
             if (resultClass.isPrimitive() || resultClass.isAssignableFrom(Number.class)) {
                 if (resultClass == boolean.class || resultClass == Boolean.class) {
                     return value;
@@ -288,7 +318,7 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         }
 
         @Override
-        public Object handleInvocation(Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
+        public Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args) {
             if (readOnly)
                 throw new UnsupportedOperationException("This is a read only component");
             if (args[0] == null) {
@@ -300,6 +330,6 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
     }
 
     private interface MethodHandler {
-        Object handleInvocation(Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args);
+        Object handleInvocation(Object proxy, Method method, Map<String, Object> storedValues, Map<String, Object> changes, boolean readOnly, Object[] args);
     }
 }
