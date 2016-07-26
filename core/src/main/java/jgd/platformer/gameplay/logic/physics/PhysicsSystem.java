@@ -45,9 +45,13 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
 
             LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
 
+            boolean oldGrounded = kineticObject.isGrounded();
+            float oldLocationX = location.getX();
+            float oldLocationY = location.getY();
+
             // s = v*t
-            float newLocationX = location.getX() + velocityX * seconds;
-            float newLocationY = location.getY() + velocityY * seconds;
+            float newLocationX = oldLocationX + velocityX * seconds;
+            float newLocationY = oldLocationY + velocityY * seconds;
 
             CollidingObjectComponent collidingObject = kineticEntity.getComponent(CollidingObjectComponent.class);
             if (collidingObject != null) {
@@ -58,7 +62,11 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
             location.setX(newLocationX);
             location.setY(newLocationY);
 
-            kineticEntity.saveChanges();
+            ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
+            kineticEntity.send(shouldEntityMove);
+
+            if (!shouldEntityMove.isCancelled())
+                kineticEntity.saveChanges();
         }
     }
 

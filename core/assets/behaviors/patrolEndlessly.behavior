@@ -1,0 +1,11 @@
+{
+  "type": "Sequence",
+  "tasks": [
+    {
+      "type": "MoveInDirectionUntilCannot"
+    },
+    {
+      "type": "FlipFacingDirection"
+    }
+  ]
+}
