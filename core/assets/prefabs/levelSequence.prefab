@@ -2,7 +2,8 @@
   "LevelSequenceComponent": {
     "levelNames": [
       "level-sample",
-      "level-sample2"
+      "level-sample2",
+      "level-sample3"
     ]
   }
 }

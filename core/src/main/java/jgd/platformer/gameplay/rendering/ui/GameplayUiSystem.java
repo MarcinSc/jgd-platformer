@@ -112,6 +112,7 @@ public class GameplayUiSystem implements LifeCycleSystem {
     @ReceiveEvent
     public void playerLoaded(AfterPlayerCreated event, EntityRef entity, LivesComponent lives) {
         updateLives(lives);
+        scoreLabel.setText("Score: " + 0);
     }
 
     @ReceiveEvent

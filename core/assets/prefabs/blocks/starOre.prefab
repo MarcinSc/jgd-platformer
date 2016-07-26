@@ -1,0 +1,26 @@
+{
+  "BlockComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "all": "blockTiles/StarOre.png"
+    }
+  },
+  "CollisionObstacleComponent": {
+    "translateX": 0,
+    "translateY": 0,
+    "width": 1,
+    "height": 1
+  },
+  "BlockEntityComponent": {},
+  "SpawnEntityOnOverlapComponent": {
+    "prefabName": "star",
+    "distanceX": 0.5,
+    "distanceY": 1
+  },
+  "RectangleHitboxComponent": {
+    "translateX": 0,
+    "translateY": -0.1,
+    "width": 1,
+    "height": 0.1
+  }
+}

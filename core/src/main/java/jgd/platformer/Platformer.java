@@ -43,8 +43,9 @@ public class Platformer extends ApplicationAdapter {
                 .setScanners(new TypeAnnotationsScanner())
                 .setUrls(ClasspathHelper.forJavaClassPath());
 
-        menuContext = createMenuContext(scanBasedOnAnnotations);
-        gameplayContext = createGameplayContext(scanBasedOnAnnotations);
+        Reflections reflections = new Reflections(scanBasedOnAnnotations);
+        menuContext = createMenuContext(reflections);
+        gameplayContext = createGameplayContext(reflections);
 
         inputEventQueue = new InputEventQueue();
         Gdx.input.setInputProcessor(inputEventQueue);
@@ -52,7 +53,7 @@ public class Platformer extends ApplicationAdapter {
         lastUpdateTime = System.currentTimeMillis();
     }
 
-    private SECSyContext createMenuContext(Configuration scanBasedOnAnnotations) {
+    private SECSyContext createMenuContext(Reflections reflections) {
         Set<String> menuActiveProfiles = new HashSet<>();
         menuActiveProfiles.add("menu");
         menuActiveProfiles.add("gameLoop");
@@ -67,7 +68,7 @@ public class Platformer extends ApplicationAdapter {
         menuActiveProfiles.add("stageUi");
         menuActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, new Reflections(scanBasedOnAnnotations));
+        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, reflections);
         menuContext.startup();
 
         System.out.println("Systems in menu context");
@@ -78,7 +79,7 @@ public class Platformer extends ApplicationAdapter {
         return menuContext;
     }
 
-    private SECSyContext createGameplayContext(Configuration scanBasedOnAnnotations) {
+    private SECSyContext createGameplayContext(Reflections reflections) {
         Set<String> gameplayActiveProfiles = new HashSet<>();
         gameplayActiveProfiles.add("gameplay");
         gameplayActiveProfiles.add("gameLoop");
@@ -94,7 +95,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("stageUi");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, new Reflections(scanBasedOnAnnotations));
+        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, reflections);
         gameplayContext.startup();
 
         System.out.println("Systems in gameplay context");
