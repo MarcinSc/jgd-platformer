@@ -1,15 +1,17 @@
 package com.gempukku.gaming.ai;
 
-public class RootTask {
+import java.util.Collection;
+
+public class RootTask<Reference extends AIReference> {
     private String id;
-    private AITask task;
+    private AITask<Reference> task;
 
     public RootTask(String id, AITask task) {
         this.id = id;
         this.task = task;
     }
 
-    public void processAI(AIReference reference) {
+    public void processAI(Reference reference) {
         Boolean started = reference.getValue(id, "started", Boolean.class);
         if (started == null) {
             AITaskResult result = task.startTask(reference);
@@ -22,5 +24,9 @@ public class RootTask {
                 reference.removeValue(id, "started");
             }
         }
+    }
+
+    public Collection<AITask<Reference>> getRunningTasks(Reference reference) {
+        return task.getRunningTasks(reference);
     }
 }

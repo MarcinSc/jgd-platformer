@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public abstract class AbstractAITask implements AITask {
+public abstract class AbstractAITask<Reference extends AIReference> implements AITask<Reference> {
     private AITask parent;
     private String id;
 
@@ -27,7 +27,7 @@ public abstract class AbstractAITask implements AITask {
     }
 
     @Override
-    public Collection<AITask> getRunningTasks(AIReference reference) {
+    public Collection<AITask<Reference>> getRunningTasks(Reference reference) {
         return Collections.singleton(this);
     }
 }

@@ -17,5 +17,7 @@ public class EntityRefReference extends MapAIReference {
 
     @Override
     public void storeValues() {
+        entityRef.getComponent(AIComponent.class).setValues(getValues());
+        entityRef.saveChanges();
     }
 }

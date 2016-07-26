@@ -16,9 +16,7 @@ import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
-import org.reflections.scanners.AbstractScanner;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.vfs.Vfs;
 
@@ -28,13 +26,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RegisterSystem(
-        profiles = "ai"
+        profiles = "ai",
+        shared = AIEngine.class
 )
-public class AISystem implements LifeCycleSystem {
+public class AISystem implements LifeCycleSystem, AIEngine {
     @Inject
     private EntityIndexManager entityIndexManager;
     @Inject
@@ -48,7 +48,6 @@ public class AISystem implements LifeCycleSystem {
 
     @ReceiveEvent
     public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
-        event.addScanner(new AITaskScanner());
         event.addScanner(new BehaviorScanner());
     }
 
@@ -62,6 +61,29 @@ public class AISystem implements LifeCycleSystem {
     @Override
     public void initialize() {
         aiEntities = entityIndexManager.addIndexOnComponents(AIComponent.class);
+    }
+
+    @Override
+    public Iterable<AITask<EntityRefReference>> getRunningTasks(EntityRef entityRef) {
+        AIComponent ai = entityRef.getComponent(AIComponent.class);
+        String aiName = ai.getAiName();
+        RootTask aiRootTask = compiledAIs.get(aiName);
+        return aiRootTask.getRunningTasks(new EntityRefReference(entityRef));
+    }
+
+    @Override
+    public <T extends AITask<EntityRefReference>> Iterable<T> getRunningTasksOfType(EntityRef entityRef, Class<T> clazz) {
+        Set<T> result = new HashSet<>();
+        for (AITask<EntityRefReference> entityRefReferenceAITask : getRunningTasks(entityRef)) {
+            if (entityRefReferenceAITask.getClass() == clazz)
+                result.add((T) entityRefReferenceAITask);
+        }
+        return result;
+    }
+
+    @Override
+    public EntityRefReference getReference(EntityRef entityRef) {
+        return new EntityRefReference(entityRef);
     }
 
     private void loadAllBehaviorJsons(Reflections reflections) {
@@ -88,8 +110,7 @@ public class AISystem implements LifeCycleSystem {
     }
 
     private void findAllAITasks(Reflections reflections) {
-        Collection<String> componentClassNames = reflections.getStore().get(AITaskScanner.class).get(AITask.class.getName());
-        List<Class<? extends AITask>> aiTasks = ReflectionUtils.forNames(componentClassNames, reflections.getConfiguration().getClassLoaders());
+        Set<Class<? extends AITask>> aiTasks = reflections.getSubTypesOf(AITask.class);
 
         for (Class<? extends AITask> aiTask : aiTasks) {
             String simpleName = aiTask.getSimpleName();
@@ -123,17 +144,6 @@ public class AISystem implements LifeCycleSystem {
         AITask aiTask = builder.buildTask(null, behaviorData);
 
         return new RootTask(rootTaskId, aiTask);
-    }
-
-    private static class AITaskScanner extends AbstractScanner {
-        private String aiTaskClassName = AITask.class.getName();
-
-        @Override
-        public void scan(Object o) {
-            List<String> interfacesNames = getMetadataAdapter().getInterfacesNames(o);
-            if (interfacesNames.contains(aiTaskClassName))
-                getStore().put(aiTaskClassName, getMetadataAdapter().getClassName(o));
-        }
     }
 
     private static class BehaviorScanner extends ResourcesScanner {

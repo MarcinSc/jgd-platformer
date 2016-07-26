@@ -2,14 +2,14 @@ package com.gempukku.gaming.ai;
 
 import java.util.Collection;
 
-public interface AITask {
-    AITaskResult startTask(AIReference reference);
+public interface AITask<Reference extends AIReference> {
+    AITaskResult startTask(Reference reference);
 
-    AITaskResult continueTask(AIReference reference);
+    AITaskResult continueTask(Reference reference);
 
-    void cancelTask(AIReference reference);
+    void cancelTask(Reference reference);
 
     AITask getParent();
 
-    Collection<AITask> getRunningTasks(AIReference reference);
+    Collection<AITask<Reference>> getRunningTasks(Reference reference);
 }

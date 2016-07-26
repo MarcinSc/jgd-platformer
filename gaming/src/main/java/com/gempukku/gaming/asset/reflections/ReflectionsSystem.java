@@ -9,6 +9,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanner;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
@@ -31,6 +32,7 @@ public class ReflectionsSystem implements LifeCycleSystem, Prioritable {
         entity.send(scanners);
 
         List<Scanner> scannersList = scanners.getScanners();
+        scannersList.add(new SubTypesScanner());
 
         Configuration scanConfiguration = new ConfigurationBuilder()
                 .setScanners(scannersList.toArray(new Scanner[scannersList.size()]))

@@ -29,4 +29,8 @@ public abstract class MapAIReference implements AIReference {
     private String getKey(String taskId, String name) {
         return taskId + "." + name;
     }
+
+    public Map<String, Object> getValues() {
+        return values;
+    }
 }

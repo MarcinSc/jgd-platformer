@@ -29,8 +29,11 @@ public class SequenceTask extends AbstractAITask {
     @Override
     public AITaskResult continueTask(AIReference reference) {
         int index = reference.getValue(getId(), INDEX_KEY, Integer.class);
+        AITaskResult result = tasks.get(index).continueTask(reference);
+        if (processResult(reference, index, result))
+            return result;
 
-        return executeTasks(reference, index);
+        return executeTasks(reference, index + 1);
     }
 
     @Override
@@ -50,18 +53,24 @@ public class SequenceTask extends AbstractAITask {
     }
 
     private AITaskResult executeTasks(AIReference reference, int index) {
-        while (index < tasks.size()) {
-            AITask aiTask = tasks.get(index);
+        for (int i = index; i < tasks.size(); i++) {
+            AITask aiTask = tasks.get(i);
             AITaskResult result = aiTask.startTask(reference);
-            if (result == AITaskResult.FAILURE) {
-                reference.removeValue(getId(), INDEX_KEY);
+            if (processResult(reference, i, result))
                 return result;
-            } else if (result == AITaskResult.RUNNING) {
-                reference.setValue(getId(), INDEX_KEY, index);
-                return result;
-            }
         }
         reference.removeValue(getId(), INDEX_KEY);
         return AITaskResult.SUCCESS;
+    }
+
+    private boolean processResult(AIReference reference, int index, AITaskResult result) {
+        if (result == AITaskResult.FAILURE) {
+            reference.removeValue(getId(), INDEX_KEY);
+            return true;
+        } else if (result == AITaskResult.RUNNING) {
+            reference.setValue(getId(), INDEX_KEY, index);
+            return true;
+        }
+        return false;
     }
 }
