@@ -36,37 +36,41 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
     public void processPhysics() {
         float seconds = timeManager.getTimeSinceLastUpdate() / 1000f;
 
-        calculateNewVelocityAndAcceleration(seconds);
+        if (seconds > 0) {
+            calculateNewVelocityAndAcceleration(seconds);
 
-        for (EntityRef kineticEntity : kineticObjectEntities.getEntities()) {
-            KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
-            float velocityX = kineticObject.getVelocityX();
-            float velocityY = kineticObject.getVelocityY();
+            for (EntityRef kineticEntity : kineticObjectEntities.getEntities()) {
+                KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
+                float velocityX = kineticObject.getVelocityX();
+                float velocityY = kineticObject.getVelocityY();
 
-            LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
+                LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
 
-            boolean oldGrounded = kineticObject.isGrounded();
-            float oldLocationX = location.getX();
-            float oldLocationY = location.getY();
+                boolean oldGrounded = kineticObject.isGrounded();
+                float oldLocationX = location.getX();
+                float oldLocationY = location.getY();
 
-            // s = v*t
-            float newLocationX = oldLocationX + velocityX * seconds;
-            float newLocationY = oldLocationY + velocityY * seconds;
+                // s = v*t
+                float newLocationX = oldLocationX + velocityX * seconds;
+                float newLocationY = oldLocationY + velocityY * seconds;
 
-            CollidingObjectComponent collidingObject = kineticEntity.getComponent(CollidingObjectComponent.class);
-            if (collidingObject != null) {
-                newLocationY = resolveVerticalCollisions(kineticEntity, collidingObject, kineticObject, velocityY, newLocationX, newLocationY);
-                newLocationX = resolveHorizontalCollisions(kineticEntity, collidingObject, kineticObject, velocityX, newLocationX, newLocationY);
+                CollidingObjectComponent collidingObject = kineticEntity.getComponent(CollidingObjectComponent.class);
+                if (collidingObject != null) {
+                    newLocationY = resolveVerticalCollisions(kineticEntity, collidingObject, kineticObject, velocityY, newLocationX, newLocationY);
+                    newLocationX = resolveHorizontalCollisions(kineticEntity, collidingObject, kineticObject, velocityX, newLocationX, newLocationY);
+                }
+
+                location.setX(newLocationX);
+                location.setY(newLocationY);
+
+                ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
+                kineticEntity.send(shouldEntityMove);
+
+                if (!shouldEntityMove.isCancelled()) {
+                    kineticEntity.saveChanges();
+                    kineticEntity.send(new EntityMovementProcessed(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY));
+                }
             }
-
-            location.setX(newLocationX);
-            location.setY(newLocationY);
-
-            ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
-            kineticEntity.send(shouldEntityMove);
-
-            if (!shouldEntityMove.isCancelled())
-                kineticEntity.saveChanges();
         }
     }
 

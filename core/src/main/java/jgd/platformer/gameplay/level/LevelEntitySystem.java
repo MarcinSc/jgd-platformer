@@ -50,5 +50,11 @@ public class LevelEntitySystem {
                 result.saveChanges();
             }
         }
+
+        if (level.getAdditionalObjects() != null) {
+            for (String additionalObject : level.getAdditionalObjects()) {
+                entityManager.createEntity(prefabManager.getPrefabByName(additionalObject));
+            }
+        }
     }
 }

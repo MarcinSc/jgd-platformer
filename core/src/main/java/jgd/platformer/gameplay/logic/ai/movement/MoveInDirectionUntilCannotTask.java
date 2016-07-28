@@ -19,7 +19,7 @@ public class MoveInDirectionUntilCannotTask extends AbstractAITask<EntityRefRefe
     @Override
     public AITaskResult startTask(EntityRefReference reference) {
         EntityRef entityRef = reference.getEntityRef();
-        entityRef.createComponent(AIApplyMovementIfDoesNotFallComponent.class);
+        entityRef.createComponent(AIApplyMovementIfPossibleComponent.class);
         entityRef.saveChanges();
         return AITaskResult.RUNNING;
     }
@@ -30,7 +30,7 @@ public class MoveInDirectionUntilCannotTask extends AbstractAITask<EntityRefRefe
             reference.removeValue(getId(), CANCELLED_KEY);
 
             EntityRef entityRef = reference.getEntityRef();
-            entityRef.removeComponents(AIApplyMovementIfDoesNotFallComponent.class);
+            entityRef.removeComponents(AIApplyMovementIfPossibleComponent.class);
             entityRef.saveChanges();
 
             return AITaskResult.SUCCESS;
@@ -43,7 +43,7 @@ public class MoveInDirectionUntilCannotTask extends AbstractAITask<EntityRefRefe
         reference.removeValue(getId(), CANCELLED_KEY);
 
         EntityRef entityRef = reference.getEntityRef();
-        entityRef.removeComponents(AIApplyMovementIfDoesNotFallComponent.class);
+        entityRef.removeComponents(AIApplyMovementIfPossibleComponent.class);
         entityRef.saveChanges();
     }
 

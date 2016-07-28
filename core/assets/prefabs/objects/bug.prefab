@@ -32,5 +32,8 @@
   },
   "AIMovementConfigurationComponent": {
     "movementVelocity": 2
+  },
+  "FactionMemberComponent": {
+    "factionName": "bug"
   }
 }

@@ -44,5 +44,8 @@
   "RotateModelOnMovementComponent": {
     "angleLeft": 180,
     "angleRight": 0
+  },
+  "FactionMemberComponent": {
+    "factionName": "player"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "FactionComponent": {
+    "name": "bug",
+    "enemies": [
+      "player"
+    ]
+  }
+}

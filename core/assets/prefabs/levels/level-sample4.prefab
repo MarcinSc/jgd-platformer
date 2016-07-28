@@ -5,16 +5,20 @@
       "-4,0,0": "stone",
       "-3,0,0": "stone",
       "3,0,0": "stone",
-      "4,0,0": "stone",
-      "5,0,0": "stone",
-      "6,0,0": "stone",
-      "7,0,0": "stone",
+      "4,-1,0": "stone",
+      "5,-1,0": "stone",
+      "6,-1,0": "stone",
+      "7,-1,0": "stone",
       "8,0,0": "stone",
-      "7,1,-1": "exitPortal"
+      "7,0,-1": "exitPortal"
     },
     "objectCoordinates": {
       "5,1,0.5": "bug"
-    }
+    },
+    "additionalObjects": [
+      "playerFaction",
+      "bugFaction"
+    ]
   },
   "PlayerSpawnComponent": {
     "x": -5,
