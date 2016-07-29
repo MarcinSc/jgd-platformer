@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ParallelOneTask<Reference extends AIReference> extends AbstractAITask<Reference> {
     private List<AITask<Reference>> tasks;
@@ -61,6 +62,10 @@ public class ParallelOneTask<Reference extends AIReference> extends AbstractAITa
 
     @Override
     public Collection<AITask<Reference>> getRunningTasks(Reference reference) {
-        return new HashSet<>(tasks);
+        Set<AITask<Reference>> result = new HashSet<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            result.addAll(tasks.get(i).getRunningTasks(reference));
+        }
+        return result;
     }
 }
