@@ -1,11 +1,14 @@
 {
-  "type": "Sequence",
-  "tasks": [
-    {
-      "type": "MoveInDirectionUntilCannot"
-    },
-    {
-      "type": "FlipFacingDirection"
-    }
-  ]
+  "type": "Repeat",
+  "task": {
+    "type": "Sequence",
+    "tasks": [
+      {
+        "type": "MoveInDirectionUntilCannot"
+      },
+      {
+        "type": "FlipFacingDirection"
+      }
+    ]
+  }
 }

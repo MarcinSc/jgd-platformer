@@ -1,0 +1,15 @@
+{
+  "type": "Sequence",
+  "tasks": [
+    {
+      "type": "FindEnemyInRange"
+    },
+    {
+      "type": "MaxFrequency",
+      "frequency": 3000,
+      "task": {
+        "type": "Attack"
+      }
+    }
+  ]
+}

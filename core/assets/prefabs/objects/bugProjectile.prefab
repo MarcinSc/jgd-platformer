@@ -1,0 +1,31 @@
+{
+  "ModelRenderComponent": {
+    "modelPrefab": "modelBugProjectile",
+    "translateX": -0.25,
+    "translateY": -0.25
+  },
+  "KineticObjectComponent": {},
+  "CollidingObjectComponent": {
+    "translateX": -0.25,
+    "translateY": 0,
+    "width": 0.5,
+    "height": 0.5
+  },
+  "RectangleHitboxComponent": {
+    "translateX": -0.25,
+    "translateY": 0,
+    "width": 0.5,
+    "height": 0.5
+  },
+  "ModelRotateComponent": {},
+  "RotateModelOnMovementComponent": {
+    "angleLeft": 180,
+    "angleRight": 0
+  },
+  "FacingDirectionComponent": {
+    "direction": "right"
+  },
+  "FactionMemberComponent": {
+    "factionName": "bug"
+  }
+}

@@ -7,15 +7,13 @@ import com.gempukku.gaming.ai.builder.TaskBuilder;
 
 import java.util.Map;
 
-public class AttemptTimesTask<Reference extends AIReference> extends AbstractAITask<Reference> {
+public class AttemptTimesTask<Reference extends AIReference> extends AbstractWrapperAITask<Reference> {
     private int times;
-    private AITask<Reference> task;
 
     public AttemptTimesTask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
         super(id, parent, taskBuilder, taskData);
 
         times = ((Number) taskData.get("times")).intValue();
-        task = taskBuilder.buildTask(this, (Map<String, Object>) taskData.get("task"));
     }
 
     @Override
@@ -26,7 +24,7 @@ public class AttemptTimesTask<Reference extends AIReference> extends AbstractAIT
 
     private AITaskResult executeFrom(Reference reference, int start) {
         for (int i = start; i < times; i++) {
-            AITaskResult result = task.startTask(reference);
+            AITaskResult result = getTask().startTask(reference);
             if (result == AITaskResult.SUCCESS) {
                 return result;
             } else if (result == AITaskResult.RUNNING) {
@@ -40,7 +38,7 @@ public class AttemptTimesTask<Reference extends AIReference> extends AbstractAIT
     @Override
     public AITaskResult continueTask(Reference reference) {
         int start = reference.getValue(getId(), "i", Integer.class);
-        AITaskResult result = task.continueTask(reference);
+        AITaskResult result = getTask().continueTask(reference);
         if (result == AITaskResult.SUCCESS) {
             reference.removeValue(getId(), "i");
             return result;
@@ -58,6 +56,6 @@ public class AttemptTimesTask<Reference extends AIReference> extends AbstractAIT
     @Override
     public void cancelTask(Reference reference) {
         reference.removeValue(getId(), "i");
-        task.cancelTask(reference);
+        getTask().cancelTask(reference);
     }
 }

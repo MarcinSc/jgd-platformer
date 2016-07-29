@@ -1,0 +1,45 @@
+{
+  "ModelRenderComponent": {
+    "modelPrefab": "modelBugWithGun",
+    "translateX": -0.5
+  },
+  "KineticObjectComponent": {},
+  "AffectedByGravityComponent": {
+    "gravityMultiplier": 1
+  },
+  "CollidingObjectComponent": {
+    "translateX": -0.5,
+    "translateY": 0,
+    "width": 1,
+    "height": 1
+  },
+  "RectangleHitboxComponent": {
+    "translateX": -0.5,
+    "translateY": 0,
+    "width": 1,
+    "height": 1
+  },
+  "ModelRotateComponent": {},
+  "RotateModelOnMovementComponent": {
+    "angleLeft": 180,
+    "angleRight": 0
+  },
+  "AIComponent": {
+    "aiName": "patrolAndAttack"
+  },
+  "FacingDirectionComponent": {
+    "direction": "right"
+  },
+  "AIMovementConfigurationComponent": {
+    "movementVelocity": 2
+  },
+  "FactionMemberComponent": {
+    "factionName": "bug"
+  },
+  "AttackProjectileComponent": {
+    "projectilePrefab": "bugProjectile",
+    "distanceX": 0.5,
+    "distanceY": 0.5,
+    "dissipateDuration": 3000
+  }
+}

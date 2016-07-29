@@ -1,0 +1,17 @@
+{
+  "type": "Sequence",
+  "tasks": [
+    {
+      "type": "MaxLength",
+      "length": 3000,
+      "task": {
+        "type": "Import",
+        "behavior": "patrolEndlessly"
+      }
+    },
+    {
+      "type": "Import",
+      "behavior": "attackEnemy"
+    }
+  ]
+}

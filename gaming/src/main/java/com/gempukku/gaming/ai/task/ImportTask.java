@@ -5,6 +5,7 @@ import com.gempukku.gaming.ai.AITask;
 import com.gempukku.gaming.ai.AITaskResult;
 import com.gempukku.gaming.ai.builder.TaskBuilder;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class ImportTask<Reference extends AIReference> extends AbstractAITask<Reference> {
@@ -28,5 +29,10 @@ public class ImportTask<Reference extends AIReference> extends AbstractAITask<Re
     @Override
     public void cancelTask(Reference reference) {
         task.cancelTask(reference);
+    }
+
+    @Override
+    public Collection<AITask<Reference>> getRunningTasks(Reference reference) {
+        return task.getRunningTasks(reference);
     }
 }
