@@ -2,13 +2,13 @@ package com.gempukku.gaming.rendering;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
+import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PostProcessPipelineImpl implements PostProcessPipeline {
+public class RenderPipelineImpl implements RenderPipeline {
     private int width;
     private int height;
 
@@ -17,7 +17,7 @@ public class PostProcessPipelineImpl implements PostProcessPipeline {
     private List<FrameBuffer> freeFrameBuffers = new LinkedList<>();
     private List<FrameBuffer> borrowedFrameBuffers = new LinkedList<>();
 
-    public PostProcessPipelineImpl(int width, int height) {
+    public RenderPipelineImpl(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -62,7 +62,7 @@ public class PostProcessPipelineImpl implements PostProcessPipeline {
         }
     }
 
-    public FrameBuffer getSourceBuffer() {
+    public FrameBuffer getCurrentBuffer() {
         return mainBuffer;
     }
 

@@ -18,4 +18,8 @@ public interface ColorTintComponent extends Component {
     float getFactor();
 
     void setFactor(float factor);
+
+    boolean isPostUi();
+
+    void setPostUi(boolean postUi);
 }

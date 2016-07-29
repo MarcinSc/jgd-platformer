@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
-import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
+import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.gaming.rendering.postprocess.tint.texture.TextureTintShaderProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -71,7 +71,7 @@ public class GrainPostProcessor implements LifeCycleSystem {
         float factor = tint.getFactor();
 
         if (factor > 0) {
-            PostProcessPipeline postProcessPipeline = event.getPostProcessPipeline();
+            RenderPipeline renderPipeline = event.getRenderPipeline();
 
             Random rnd = new Random();
             tintShaderProvider.setTintShift(new Vector2(rnd.nextFloat(), rnd.nextFloat()));
@@ -80,9 +80,9 @@ public class GrainPostProcessor implements LifeCycleSystem {
 
             setupTintTexture(event.getCamera(), tint);
 
-            setupSourceTexture(postProcessPipeline);
+            setupSourceTexture(renderPipeline);
 
-            FrameBuffer frameBuffer = postProcessPipeline.borrowFrameBuffer();
+            FrameBuffer frameBuffer = renderPipeline.borrowFrameBuffer();
             frameBuffer.begin();
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -93,14 +93,14 @@ public class GrainPostProcessor implements LifeCycleSystem {
             modelBatch.end();
 
             frameBuffer.end();
-            postProcessPipeline.finishPostProcess(frameBuffer);
+            renderPipeline.finishPostProcess(frameBuffer);
         }
     }
 
-    private void setupSourceTexture(PostProcessPipeline postProcessPipeline) {
+    private void setupSourceTexture(RenderPipeline renderPipeline) {
         tintShaderProvider.setSourceTextureIndex(0);
 
-        int textureHandle = postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
+        int textureHandle = renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle();
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
         Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);

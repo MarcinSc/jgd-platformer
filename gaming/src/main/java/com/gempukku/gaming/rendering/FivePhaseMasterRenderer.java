@@ -1,7 +1,12 @@
 package com.gempukku.gaming.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -9,7 +14,13 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.gempukku.gaming.rendering.event.*;
+import com.gempukku.gaming.rendering.event.PostProcessRendering;
+import com.gempukku.gaming.rendering.event.PostRenderEnvironment;
+import com.gempukku.gaming.rendering.event.PostUiProcessRendering;
+import com.gempukku.gaming.rendering.event.RenderBackdrop;
+import com.gempukku.gaming.rendering.event.RenderEnvironment;
+import com.gempukku.gaming.rendering.event.RenderEnvironmentForLight;
+import com.gempukku.gaming.rendering.event.UiRendering;
 import com.gempukku.gaming.rendering.lighting.DirectionalLightProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -32,7 +43,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
     private static int shadowFidelity = 4;
 
-    private PostProcessPipelineImpl postProcessPipeline;
+    private RenderPipelineImpl renderPipeline;
     private CopyShaderProvider copyShaderProvider;
     private ModelInstance copyModelInstance;
     private Model copyModel;
@@ -66,7 +77,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         lightFrameBuffer.dispose();
         copyModel.dispose();
         copyModelBatch.dispose();
-        postProcessPipeline.dispose();
+        renderPipeline.dispose();
     }
 
     @Override
@@ -77,10 +88,10 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
     private void updateCameraAndBuffers(int width, int height) {
         camera = new PerspectiveCamera(75, width, height);
-        if (postProcessPipeline == null) {
-            postProcessPipeline = new PostProcessPipelineImpl(width, height);
+        if (renderPipeline == null) {
+            renderPipeline = new RenderPipelineImpl(width, height);
         } else {
-            postProcessPipeline.resetSize(width, height);
+            renderPipeline.resetSize(width, height);
         }
     }
 
@@ -97,7 +108,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
                 renderLightMap(renderingEntity);
             }
 
-            FrameBuffer drawFrameBuffer = postProcessPipeline.startPipeline();
+            FrameBuffer drawFrameBuffer = renderPipeline.startPipeline();
             try {
                 float ambientLight = hasDirectionalLight ? directionalLightProvider.getAmbientLight() : 1f;
                 renderCameraView(renderingEntity, drawFrameBuffer, hasDirectionalLight, ambientLight);
@@ -106,9 +117,11 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
                 renderUi(renderingEntity);
 
+                postUiProcess(renderingEntity);
+
                 renderToScreen();
             } finally {
-                postProcessPipeline.finishPipeline();
+                renderPipeline.finishPipeline();
             }
         } else {
             cleanBuffer();
@@ -119,7 +132,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         copyShaderProvider.setSourceTextureIndex(0);
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle());
+        Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle());
 
         cleanBuffer();
 
@@ -129,9 +142,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
     }
 
     private void renderUi(EntityRef renderingEntity) {
-        postProcessPipeline.getSourceBuffer().begin();
-        renderingEntity.send(new RenderUi());
-        postProcessPipeline.getSourceBuffer().end();
+        renderingEntity.send(new UiRendering(renderPipeline, camera));
     }
 
     private void setupRenderingCamera() {
@@ -140,7 +151,11 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
     }
 
     private void postProcess(EntityRef renderingEntity) {
-        renderingEntity.send(new PostProcessRendering(postProcessPipeline, camera));
+        renderingEntity.send(new PostProcessRendering(renderPipeline, camera));
+    }
+
+    private void postUiProcess(EntityRef renderingEntity) {
+        renderingEntity.send(new PostUiProcessRendering(renderPipeline, camera));
     }
 
     private void renderCameraView(EntityRef renderingEntity, FrameBuffer drawFrameBuffer, boolean hasDirectionalLight, float ambientLight) {

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
-import com.gempukku.gaming.rendering.postprocess.PostProcessPipeline;
+import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
@@ -52,22 +52,22 @@ public class GaussianBlurPostProcessor implements LifeCycleSystem {
             blurShaderProvider.setSourceTextureIndex(0);
             blurShaderProvider.setBlurRadius(blurRadius);
 
-            PostProcessPipeline postProcessPipeline = event.getPostProcessPipeline();
+            RenderPipeline renderPipeline = event.getRenderPipeline();
 
             blurShaderProvider.setVertical(true);
-            executeBlur(event, postProcessPipeline);
+            executeBlur(event, renderPipeline);
             blurShaderProvider.setVertical(false);
-            executeBlur(event, postProcessPipeline);
+            executeBlur(event, renderPipeline);
         }
     }
 
-    private void executeBlur(PostProcessRendering event, PostProcessPipeline postProcessPipeline) {
-        int textureHandle = postProcessPipeline.getSourceBuffer().getColorBufferTexture().getTextureObjectHandle();
+    private void executeBlur(PostProcessRendering event, RenderPipeline renderPipeline) {
+        int textureHandle = renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle();
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
         Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
-        FrameBuffer frameBuffer = postProcessPipeline.borrowFrameBuffer();
+        FrameBuffer frameBuffer = renderPipeline.borrowFrameBuffer();
         frameBuffer.begin();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -78,7 +78,7 @@ public class GaussianBlurPostProcessor implements LifeCycleSystem {
         modelBatch.end();
 
         frameBuffer.end();
-        postProcessPipeline.finishPostProcess(frameBuffer);
+        renderPipeline.finishPostProcess(frameBuffer);
     }
 
     @Override

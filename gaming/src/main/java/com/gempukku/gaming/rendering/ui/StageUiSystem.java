@@ -4,7 +4,7 @@ import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.gempukku.gaming.rendering.ScreenResized;
-import com.gempukku.gaming.rendering.event.RenderUi;
+import com.gempukku.gaming.rendering.event.UiRendering;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -22,8 +22,10 @@ public class StageUiSystem implements UiProcessor, StageProvider {
     private Stage stage = new Stage(new ScreenViewport());
 
     @ReceiveEvent(priorityName = "gaming.renderer.stage")
-    public void renderUi(RenderUi event, EntityRef renderingEntity) {
+    public void renderUi(UiRendering event, EntityRef renderingEntity) {
+        event.getRenderPipeline().getCurrentBuffer().begin();
         stage.draw();
+        event.getRenderPipeline().getCurrentBuffer().end();
     }
 
     @Override
