@@ -7,26 +7,26 @@ import com.gempukku.gaming.ai.builder.TaskBuilder;
 
 import java.util.Map;
 
-public class ImportTask extends AbstractAITask {
-    private AITask task;
+public class ImportTask<Reference extends AIReference> extends AbstractAITask<Reference> {
+    private AITask<Reference> task;
 
-    public ImportTask(String id, AITask parent, TaskBuilder taskBuilder, Map<String, Object> taskData) {
+    public ImportTask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
         super(id, parent, taskBuilder, taskData);
         task = taskBuilder.loadBehavior(this, (String) taskData.get("behavior"));
     }
 
     @Override
-    public AITaskResult startTask(AIReference reference) {
+    public AITaskResult startTask(Reference reference) {
         return task.startTask(reference);
     }
 
     @Override
-    public AITaskResult continueTask(AIReference reference) {
+    public AITaskResult continueTask(Reference reference) {
         return task.continueTask(reference);
     }
 
     @Override
-    public void cancelTask(AIReference reference) {
+    public void cancelTask(Reference reference) {
         task.cancelTask(reference);
     }
 }

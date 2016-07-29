@@ -9,26 +9,26 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class SelectorTask extends AbstractAITask {
+public class SelectorTask<Reference extends AIReference> extends AbstractAITask<Reference> {
     private static final String INDEX_KEY = "index";
 
-    private List<AITask> tasks;
+    private List<AITask<Reference>> tasks;
 
-    public SelectorTask(String id, AITask parent, TaskBuilder taskBuilder, Map<String, Object> taskData) {
+    public SelectorTask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
         super(id, parent, taskBuilder, taskData);
 
         tasks = TaskCollectionUtil.buildTasks(this, taskBuilder, (List<Map<String, Object>>) taskData.get("tasks"));
     }
 
     @Override
-    public AITaskResult startTask(AIReference reference) {
+    public AITaskResult startTask(Reference reference) {
         int index = 0;
 
         return executeTasks(reference, index);
     }
 
     @Override
-    public AITaskResult continueTask(AIReference reference) {
+    public AITaskResult continueTask(Reference reference) {
         int index = reference.getValue(getId(), INDEX_KEY, Integer.class);
         AITaskResult result = tasks.get(index).continueTask(reference);
         if (processResult(reference, index, result))
@@ -38,14 +38,14 @@ public class SelectorTask extends AbstractAITask {
     }
 
     @Override
-    public void cancelTask(AIReference reference) {
+    public void cancelTask(Reference reference) {
         int index = reference.getValue(getId(), INDEX_KEY, Integer.class);
         tasks.get(index).cancelTask(reference);
         reference.removeValue(getId(), INDEX_KEY);
     }
 
     @Override
-    public Collection<AITask> getRunningTasks(AIReference reference) {
+    public Collection<AITask<Reference>> getRunningTasks(Reference reference) {
         Integer index = reference.getValue(getId(), INDEX_KEY, Integer.class);
         if (index != null) {
             return tasks.get(index).getRunningTasks(reference);
@@ -53,7 +53,7 @@ public class SelectorTask extends AbstractAITask {
         return null;
     }
 
-    private AITaskResult executeTasks(AIReference reference, int index) {
+    private AITaskResult executeTasks(Reference reference, int index) {
         for (int i = index; i < tasks.size(); i++) {
             AITask aiTask = tasks.get(i);
             AITaskResult result = aiTask.startTask(reference);
@@ -64,7 +64,7 @@ public class SelectorTask extends AbstractAITask {
         return AITaskResult.FAILURE;
     }
 
-    private boolean processResult(AIReference reference, int index, AITaskResult result) {
+    private boolean processResult(Reference reference, int index, AITaskResult result) {
         if (result == AITaskResult.SUCCESS) {
             reference.removeValue(getId(), INDEX_KEY);
             return true;

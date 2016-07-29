@@ -6,7 +6,7 @@ public class RootTask<Reference extends AIReference> {
     private String id;
     private AITask<Reference> task;
 
-    public RootTask(String id, AITask task) {
+    public RootTask(String id, AITask<Reference> task) {
         this.id = id;
         this.task = task;
     }

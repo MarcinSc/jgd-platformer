@@ -12,7 +12,7 @@ public abstract class AbstractAITask<Reference extends AIReference> implements A
     private AITask parent;
     private String id;
 
-    public AbstractAITask(String id, AITask parent, TaskBuilder taskBuilder, Map<String, Object> taskData) {
+    public AbstractAITask(String id, AITask parent, TaskBuilder<Reference> taskBuilder, Map<String, Object> taskData) {
         this.id = id;
         this.parent = parent;
     }

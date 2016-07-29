@@ -24,11 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RegisterSystem(
         profiles = "ai",
@@ -43,8 +39,8 @@ public class AISystem implements LifeCycleSystem, AIEngine {
     private EntityIndex aiEntities;
 
     private Map<String, JSONObject> behaviorJsons = new HashMap<>();
-    private Map<String, RootTask> compiledAIs = new HashMap<>();
-    private Map<String, Class<? extends AITask>> taskTypes = new HashMap<>();
+    private Map<String, RootTask<EntityRefReference>> compiledAIs = new HashMap<>();
+    private Map<String, Class<? extends AITask<EntityRefReference>>> taskTypes = new HashMap<>();
 
     @ReceiveEvent
     public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
@@ -67,7 +63,7 @@ public class AISystem implements LifeCycleSystem, AIEngine {
     public Iterable<AITask<EntityRefReference>> getRunningTasks(EntityRef entityRef) {
         AIComponent ai = entityRef.getComponent(AIComponent.class);
         String aiName = ai.getAiName();
-        RootTask aiRootTask = compiledAIs.get(aiName);
+        RootTask<EntityRefReference> aiRootTask = compiledAIs.get(aiName);
         return aiRootTask.getRunningTasks(new EntityRefReference(entityRef));
     }
 
@@ -114,9 +110,10 @@ public class AISystem implements LifeCycleSystem, AIEngine {
 
         for (Class<? extends AITask> aiTask : aiTasks) {
             String simpleName = aiTask.getSimpleName();
-            taskTypes.put(simpleName, aiTask);
+            Class<? extends AITask<EntityRefReference>> aiTaskClass = (Class<? extends AITask<EntityRefReference>>) aiTask;
+            taskTypes.put(simpleName, aiTaskClass);
             if (simpleName.endsWith("Task"))
-                taskTypes.put(simpleName.substring(0, simpleName.length() - 4), aiTask);
+                taskTypes.put(simpleName.substring(0, simpleName.length() - 4), aiTaskClass);
         }
     }
 
@@ -125,7 +122,7 @@ public class AISystem implements LifeCycleSystem, AIEngine {
         for (EntityRef aiEntity : aiEntities) {
             AIComponent ai = aiEntity.getComponent(AIComponent.class);
             String aiName = ai.getAiName();
-            RootTask aiRootTask = compiledAIs.get(aiName);
+            RootTask<EntityRefReference> aiRootTask = compiledAIs.get(aiName);
             if (aiRootTask == null) {
                 aiRootTask = createAi(aiName);
                 compiledAIs.put(aiName, aiRootTask);
@@ -136,14 +133,14 @@ public class AISystem implements LifeCycleSystem, AIEngine {
         }
     }
 
-    private RootTask createAi(String aiName) {
+    private RootTask<EntityRefReference> createAi(String aiName) {
         JSONObject behaviorData = behaviorJsons.get(aiName);
 
-        JsonTaskBuilder builder = new JsonTaskBuilder(context, behaviorJsons, taskTypes);
+        JsonTaskBuilder<EntityRefReference> builder = new JsonTaskBuilder<EntityRefReference>(context, behaviorJsons, taskTypes);
         String rootTaskId = builder.getNextId();
-        AITask aiTask = builder.buildTask(null, behaviorData);
+        AITask<EntityRefReference> aiTask = builder.buildTask(null, behaviorData);
 
-        return new RootTask(rootTaskId, aiTask);
+        return new RootTask<EntityRefReference>(rootTaskId, aiTask);
     }
 
     private static class BehaviorScanner extends ResourcesScanner {
