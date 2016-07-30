@@ -40,6 +40,8 @@
     "projectilePrefab": "bugProjectile",
     "distanceX": 0.5,
     "distanceY": 0.5,
-    "dissipateDuration": 3000
+    "dissipateDuration": 3000,
+    "projectileShootFrequency": 3000,
+    "projectileSpeed": 6
   }
 }

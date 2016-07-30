@@ -1,17 +1,19 @@
 {
-  "type": "Sequence",
+  "type": "ParallelAll",
   "tasks": [
     {
-      "type": "MaxLength",
-      "length": 3000,
-      "task": {
-        "type": "Import",
-        "behavior": "patrolEndlessly"
-      }
+      "type": "Import",
+      "behavior": "patrolEndlessly"
     },
     {
-      "type": "Import",
-      "behavior": "attackEnemy"
+      "type": "RepeatOncePerFrame",
+      "task": {
+        "type": "Succeeder",
+        "task": {
+          "type": "Import",
+          "behavior": "attackEnemy"
+        }
+      }
     }
   ]
 }

@@ -15,8 +15,13 @@ public class AttackTask extends AbstractAITask<EntityRefReference> {
 
     @Override
     public AITaskResult startTask(EntityRefReference reference) {
-        reference.getEntityRef().send(new PerformAttack());
-        return AITaskResult.SUCCESS;
+        PerformAttack attack = new PerformAttack();
+        reference.getEntityRef().send(attack);
+
+        if (attack.isSuccess())
+            return AITaskResult.SUCCESS;
+        else
+            return AITaskResult.FAILURE;
     }
 
     @Override

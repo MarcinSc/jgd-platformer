@@ -10,4 +10,12 @@ public interface AttackProjectileComponent extends Component {
     float getDistanceY();
 
     long getDissipateDuration();
+
+    long getProjectileShootFrequency();
+
+    long getLastProjectileShot();
+
+    void setLastProjectileShot(long lastProjectileShot);
+
+    float getProjectileSpeed();
 }
