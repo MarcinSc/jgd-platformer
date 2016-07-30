@@ -1,6 +1,7 @@
 package com.gempukku.gaming.rendering.postprocess.tint.color;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
+import com.gempukku.gaming.rendering.event.PostUiProcessRendering;
 import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
@@ -48,24 +50,22 @@ public class ColorTintPostProcessor implements LifeCycleSystem {
     @ReceiveEvent(priorityName = "gaming.renderer.tint.preUi.color")
     public void processPreUi(PostProcessRendering event, EntityRef renderingEntity, ColorTintComponent tint) {
         if (!tint.isPostUi())
-            postProcess(event, tint);
+            postProcess(tint, event.getRenderPipeline(), event.getCamera());
     }
 
     @ReceiveEvent(priorityName = "gaming.renderer.tint.postUi.color")
-    public void processPostUi(PostProcessRendering event, EntityRef renderingEntity, ColorTintComponent tint) {
+    public void processPostUi(PostUiProcessRendering event, EntityRef renderingEntity, ColorTintComponent tint) {
         if (tint.isPostUi())
-            postProcess(event, tint);
+            postProcess(tint, event.getRenderPipeline(), event.getCamera());
     }
 
-    private void postProcess(PostProcessRendering event, ColorTintComponent tint) {
+    private void postProcess(ColorTintComponent tint, RenderPipeline renderPipeline, Camera camera) {
         float factor = tint.getFactor();
 
         if (factor > 0) {
             tintShaderProvider.setSourceTextureIndex(0);
             tintShaderProvider.setFactor(factor);
             tintShaderProvider.setColor(new Color(tint.getRed() / 255f, tint.getGreen() / 255f, tint.getBlue() / 255f, 1f));
-
-            RenderPipeline renderPipeline = event.getRenderPipeline();
 
             int textureHandle = renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle();
 
@@ -78,7 +78,7 @@ public class ColorTintPostProcessor implements LifeCycleSystem {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-            modelBatch.begin(event.getCamera());
+            modelBatch.begin(camera);
             modelBatch.render(modelInstance);
             modelBatch.end();
 

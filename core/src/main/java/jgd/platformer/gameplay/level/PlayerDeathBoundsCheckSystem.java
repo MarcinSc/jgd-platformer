@@ -29,16 +29,20 @@ public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
     @ReceiveEvent
     public void checkForPlayerOutOfBounds(GameLoopUpdate event, EntityRef entityRef) {
         for (EntityRef playerEntity : playerEntities.getEntities()) {
-            for (EntityRef deathBounds : deathBoundsEntities.getEntities()) {
-                LocationComponent location = playerEntity.getComponent(LocationComponent.class);
-                float playerX = location.getX();
-                float playerY = location.getY();
+            ShouldDeathBoundsCheck check = new ShouldDeathBoundsCheck();
+            playerEntity.send(check);
+            if (!check.isCancelled()) {
+                for (EntityRef deathBounds : deathBoundsEntities.getEntities()) {
+                    LocationComponent location = playerEntity.getComponent(LocationComponent.class);
+                    float playerX = location.getX();
+                    float playerY = location.getY();
 
-                PlayerDeathBoundsComponent deathBound = deathBounds.getComponent(PlayerDeathBoundsComponent.class);
-                if (deathBound.getMaxX() < playerX
-                        || deathBound.getMinX() > playerX
-                        || deathBound.getMinY() > playerY) {
-                    playerEntity.send(new PlayerDeath());
+                    PlayerDeathBoundsComponent deathBound = deathBounds.getComponent(PlayerDeathBoundsComponent.class);
+                    if (deathBound.getMaxX() < playerX
+                            || deathBound.getMinX() > playerX
+                            || deathBound.getMinY() > playerY) {
+                        playerEntity.send(new PlayerDeath());
+                    }
                 }
             }
         }

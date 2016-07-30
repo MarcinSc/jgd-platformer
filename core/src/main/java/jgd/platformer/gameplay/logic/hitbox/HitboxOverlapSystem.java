@@ -44,13 +44,17 @@ public class HitboxOverlapSystem {
             EntityRef entity = hitboxEntity.getKey();
             Rectangle2D shape = hitboxEntity.getValue();
 
-            for (Map.Entry<EntityRef, Rectangle2D> otherHitboxEntity : hitboxEntities.entrySet()) {
-                EntityRef otherEntity = otherHitboxEntity.getKey();
-                if (!entity.equals(otherEntity)) {
-                    Rectangle2D otherShape = otherHitboxEntity.getValue();
+            ShouldEntityHitboxOverlap overlap = new ShouldEntityHitboxOverlap();
+            entity.send(overlap);
+            if (!overlap.isCancelled()) {
+                for (Map.Entry<EntityRef, Rectangle2D> otherHitboxEntity : hitboxEntities.entrySet()) {
+                    EntityRef otherEntity = otherHitboxEntity.getKey();
+                    if (!entity.equals(otherEntity)) {
+                        Rectangle2D otherShape = otherHitboxEntity.getValue();
 
-                    if (shape.intersects(otherShape)) {
-                        eventsToFire.add(new OverlapEventToFire(entity, new HitboxOverlapEvent(otherEntity)));
+                        if (shape.intersects(otherShape)) {
+                            eventsToFire.add(new OverlapEventToFire(entity, new HitboxOverlapEvent(otherEntity)));
+                        }
                     }
                 }
             }

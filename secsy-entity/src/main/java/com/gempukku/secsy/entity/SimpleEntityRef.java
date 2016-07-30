@@ -135,6 +135,7 @@ public class SimpleEntityRef implements EntityRef {
 
         removedComponents.clear();
         newComponents.clear();
+        usedComponents.clear();
 
         entityListener.entitiesModified(Collections.singleton(entity));
 
