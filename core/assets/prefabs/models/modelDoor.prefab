@@ -1,0 +1,13 @@
+{
+  "ModelShapeComponent": {
+    "shape": "cube",
+    "multiplyX": 0.2,
+    "multiplyY": 2,
+    "multiplyZ": 0.9,
+    "texturesForParts": {
+      "leftAndRight": "model/door-side.png",
+      "topAndBottom": "model/door-front.png",
+      "frontAndBack": "model/door-front.png"
+    }
+  }
+}

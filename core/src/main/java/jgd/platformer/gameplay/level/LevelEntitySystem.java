@@ -7,6 +7,7 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.io.EntityData;
+import jgd.platformer.gameplay.component.BaseLocationComponent;
 import jgd.platformer.gameplay.component.LocationComponent;
 
 import java.util.Map;
@@ -47,6 +48,14 @@ public class LevelEntitySystem {
                 location.setX(Float.parseFloat(locationSplit[0]));
                 location.setY(Float.parseFloat(locationSplit[1]));
                 location.setZ(Float.parseFloat(locationSplit[2]));
+
+                if (result.hasComponent(BaseLocationComponent.class)) {
+                    BaseLocationComponent baseLocation = result.getComponent(BaseLocationComponent.class);
+                    baseLocation.setX(Float.parseFloat(locationSplit[0]));
+                    baseLocation.setY(Float.parseFloat(locationSplit[1]));
+                    baseLocation.setZ(Float.parseFloat(locationSplit[2]));
+                }
+
                 result.saveChanges();
             }
         }

@@ -1,0 +1,17 @@
+{
+  "ModelRenderComponent": {
+    "modelPrefab": "modelDoor",
+    "translateX": 0.4,
+    "translateZ": 0.05
+  },
+  "CollisionObstacleComponent": {
+    "translateX": 0.4,
+    "width": 0.2,
+    "height": 2
+  },
+  "ConstantModelTranslateComponent": {
+    "cycleTime": 3000,
+    "distanceY": 2
+  },
+  "BaseLocationComponent": {}
+}
