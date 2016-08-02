@@ -14,9 +14,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
-@RegisterSystem(profiles = "gameplay")
-public class HitboxOverlapSystem {
+@RegisterSystem(profiles = "gameplay", shared = HitboxOverlapManager.class)
+public class HitboxOverlapSystem implements HitboxOverlapManager {
     private Map<EntityRef, Rectangle2D> hitboxEntities = new HashMap<>();
 
     @ReceiveEvent
@@ -63,6 +64,21 @@ public class HitboxOverlapSystem {
         for (OverlapEventToFire overlapEventToFire : eventsToFire) {
             overlapEventToFire.entity.send(overlapEventToFire.hitboxOverlapEvent);
         }
+    }
+
+    @Override
+    public Iterable<EntityRef> findOverlappedEntities(Rectangle2D rectangle, Predicate<EntityRef> filter) {
+        List<EntityRef> result = new LinkedList<>();
+        for (Map.Entry<EntityRef, Rectangle2D> hitboxEntity : hitboxEntities.entrySet()) {
+            EntityRef entity = hitboxEntity.getKey();
+            if (filter.test(entity)) {
+                Rectangle2D shape = hitboxEntity.getValue();
+                if (shape.intersects(rectangle))
+                    result.add(entity);
+            }
+        }
+
+        return result;
     }
 
     private Rectangle2D createShape(RectangleHitboxComponent rectangleHitbox, LocationComponent location) {

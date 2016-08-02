@@ -47,5 +47,6 @@
   },
   "FactionMemberComponent": {
     "factionName": "player"
-  }
+  },
+  "PlatformMovableComponent": {}
 }

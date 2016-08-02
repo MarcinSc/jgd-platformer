@@ -10,8 +10,13 @@
     "height": 2
   },
   "ConstantModelTranslateComponent": {
-    "cycleTime": 3000,
-    "distanceY": 2
+    "beforeTime": 1000,
+    "moveAwayTime": 3000,
+    "awayTime": 2000,
+    "moveBackTime": 1000,
+    "distanceY": 2,
+    "interpolationAway": "linear",
+    "interpolationBack": "bounceOut"
   },
   "BaseLocationComponent": {}
 }

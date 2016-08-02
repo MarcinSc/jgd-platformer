@@ -1,5 +1,7 @@
 package jgd.platformer.gameplay.logic.transform;
 
+import com.badlogic.gdx.math.Interpolation;
+import com.gempukku.gaming.interpolation.InterpolationUtil;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -37,15 +39,29 @@ public class ModelTranslateSystem implements LifeCycleSystem {
             LocationComponent location = translateEntity.getComponent(LocationComponent.class);
             BaseLocationComponent baseLocation = translateEntity.getComponent(BaseLocationComponent.class);
 
-            long baseTime = time - translate.getStartTime();
-            long timeInCycle = baseTime % translate.getCycleTime();
+            long baseTime = time - translate.getPhaseShift();
+
+            int beforeTime = translate.getBeforeTime();
+            int moveAwayTime = translate.getMoveAwayTime();
+            int awayTime = translate.getAwayTime();
+            int moveBackTime = translate.getMoveBackTime();
+
+            int cycleTime = beforeTime + moveAwayTime
+                    + awayTime + moveBackTime;
+
+            long timeInCycle = baseTime % cycleTime;
 
             float a;
-            float halfCycleLength = translate.getCycleTime() / 2f;
-            if (timeInCycle < halfCycleLength) {
-                a = timeInCycle / halfCycleLength;
+            if (timeInCycle < beforeTime) {
+                a = 0;
+            } else if (timeInCycle < beforeTime + moveAwayTime) {
+                Interpolation interpolation = InterpolationUtil.getInterpolation(translate.getInterpolationAway());
+                a = interpolation.apply(1f * (timeInCycle - beforeTime) / moveAwayTime);
+            } else if (timeInCycle < beforeTime + moveAwayTime + awayTime) {
+                a = 1;
             } else {
-                a = 1 - (timeInCycle - halfCycleLength) / halfCycleLength;
+                Interpolation interpolation = InterpolationUtil.getInterpolation(translate.getInterpolationBack());
+                a = 1f - interpolation.apply(1f * (timeInCycle - (beforeTime + moveAwayTime + awayTime)) / moveBackTime);
             }
 
             location.setX(baseLocation.getX() + a * translate.getDistanceX());

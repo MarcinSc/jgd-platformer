@@ -1,0 +1,13 @@
+{
+  "ModelShapeComponent": {
+    "shape": "cube",
+    "multiplyX": 2,
+    "multiplyY": 1,
+    "multiplyZ": 1,
+    "texturesForParts": {
+      "top": "blockTiles/Grass.png",
+      "bottom": "blockTiles/Dirt.png",
+      "sides": "blockTiles/GrassSide.png"
+    }
+  }
+}
