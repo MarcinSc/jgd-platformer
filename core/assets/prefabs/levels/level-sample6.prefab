@@ -7,12 +7,17 @@
       "-2,-2,0": "stone",
       "-1,-2,0": "stone",
       "0,-2,0": "stone",
+      "8,-2,0": "stone",
+      "9,-2,0": "stone",
+      "10,-2,0": "stone",
+
       "-3,1,0": "stone",
       "-3,2,0": "stone",
-      "-1,-1,-1": "exitPortal"
+      "9,-1,-1": "exitPortal"
     },
     "objectCoordinates": {
-      "-3,-1,0": "cycleDoor"
+      "-3,-1,0": "cycleDoor",
+      "1,-2,0": "movingPlatform"
     }
   },
   "PlayerSpawnComponent": {
@@ -28,7 +33,7 @@
   },
   "PlayerDeathBoundsComponent": {
     "minX": -10,
-    "maxX": 6,
+    "maxX": 15,
     "minY": -7
   }
 }
