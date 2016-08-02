@@ -93,12 +93,15 @@ public class SimpleEntityManagerTest {
         assertNull(sourceComponent.getValue());
 
         // Unsaved change is not visible in the source
+        component = copy.getComponent(SampleComponent.class);
         component.setValue("value");
         assertNull(sourceComponent.getValue());
         assertEquals("value", component.getValue());
 
         // Changes are immediately visible in the source after save
         copy.saveChanges();
+
+        component = copy.getComponent(SampleComponent.class);
         assertEquals("value", sourceComponent.getValue());
         assertEquals("value", component.getValue());
     }
@@ -200,6 +203,7 @@ public class SimpleEntityManagerTest {
         Listener listener = new Listener();
         simpleEntityManager.addEntityEventListener(listener);
 
+        component = entity.getComponent(SampleComponent.class);
         component.setValue("value");
 
         assertEquals(0, listener.events.size());

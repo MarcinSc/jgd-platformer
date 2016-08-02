@@ -37,6 +37,8 @@ public interface InternalComponentManager {
      */
     <T extends Component> void saveComponent(T originalComponent, T changedComponent);
 
+    void invalidateComponent(Component component);
+
     /**
      * Returns the class used to represent the component.
      *

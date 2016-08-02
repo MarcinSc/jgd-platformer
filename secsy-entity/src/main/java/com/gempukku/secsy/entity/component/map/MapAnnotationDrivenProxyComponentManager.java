@@ -69,6 +69,11 @@ public class MapAnnotationDrivenProxyComponentManager implements ComponentManage
     }
 
     @Override
+    public void invalidateComponent(Component component) {
+        extractComponentView(component).invalidate();
+    }
+
+    @Override
     public boolean hasSameValues(Component component1, Component component2) {
         ComponentView componentView1 = extractComponentView(component1);
         ComponentView componentView2 = extractComponentView(component2);
@@ -171,6 +176,7 @@ public class MapAnnotationDrivenProxyComponentManager implements ComponentManage
         private Map<String, Object> storedValues;
         private Map<String, Object> changes = new HashMap<>();
         private boolean readOnly;
+        private boolean invalid;
 
         private ComponentView(EntityRef entity, Class<? extends Component> clazz, Map<String, Object> storedValues,
                               boolean readOnly) {
@@ -180,8 +186,15 @@ public class MapAnnotationDrivenProxyComponentManager implements ComponentManage
             this.readOnly = readOnly;
         }
 
+        public void invalidate() {
+            invalid = true;
+        }
+
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (invalid)
+                throw new IllegalStateException("Attempted to invoke a method on a Component that had it's state saved");
+
             final GetProperty get = method.getAnnotation(GetProperty.class);
             if (get != null) {
                 return handleGet(get.value());

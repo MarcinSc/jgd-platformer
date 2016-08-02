@@ -10,10 +10,11 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 public class HealthSystem {
     @ReceiveEvent
     public void playerDied(PlayerDeath playerDeath, EntityRef entity, LivesComponent livesComponent) {
-        livesComponent.setLivesCount(livesComponent.getLivesCount() - 1);
+        int newLivesCount = livesComponent.getLivesCount() - 1;
+        livesComponent.setLivesCount(newLivesCount);
         entity.saveChanges();
 
-        if (livesComponent.getLivesCount() == 0) {
+        if (newLivesCount == 0) {
             entity.send(new PlayerWithoutLives());
         }
     }

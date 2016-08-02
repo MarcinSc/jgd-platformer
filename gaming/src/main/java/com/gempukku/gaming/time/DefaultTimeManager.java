@@ -30,6 +30,7 @@ public class DefaultTimeManager implements TimeManager, InternalTimeManager {
             time = timeEntity.createComponent(TimeComponent.class);
             time.setTime(0);
             timeEntity.saveChanges();
+            time = timeEntity.getComponent(TimeComponent.class);
         }
         return time;
     }

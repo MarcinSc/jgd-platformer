@@ -67,8 +67,9 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                 kineticEntity.send(shouldEntityMove);
 
                 if (!shouldEntityMove.isCancelled()) {
+                    boolean newGrounded = kineticObject.isGrounded();
                     kineticEntity.saveChanges();
-                    kineticEntity.send(new EntityMovementProcessed(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY));
+                    kineticEntity.send(new EntityMovementProcessed(oldGrounded, oldLocationX, oldLocationY, newGrounded, newLocationX, newLocationY));
                 }
             }
         }
