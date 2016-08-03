@@ -73,6 +73,56 @@ public class SequenceTaskTest {
         Mockito.verifyNoMoreInteractions(task1, task2);
     }
 
+    @Test
+    public void continueFirstPass() {
+        AIReference reference = new SampleMapAIReference();
+
+        AITask task1 = Mockito.mock(AITask.class);
+        AITask task2 = Mockito.mock(AITask.class);
+
+        Mockito.when(task1.startTask(reference)).thenReturn(AITaskResult.RUNNING);
+        Mockito.when(task1.continueTask(reference)).thenReturn(AITaskResult.SUCCESS);
+        Mockito.when(task2.startTask(reference)).thenReturn(AITaskResult.SUCCESS);
+
+        SequenceTask task = sequenceTask(task1, task2);
+
+        assertEquals(AITaskResult.RUNNING, task.startTask(reference));
+        Mockito.verify(task1).startTask(reference);
+
+        Mockito.verifyNoMoreInteractions(task1, task2);
+
+        assertEquals(AITaskResult.SUCCESS, task.continueTask(reference));
+        Mockito.verify(task1).continueTask(reference);
+        Mockito.verify(task2).startTask(reference);
+
+        Mockito.verifyNoMoreInteractions(task1, task2);
+    }
+
+    @Test
+    public void continueSecondPass() {
+        AIReference reference = new SampleMapAIReference();
+
+        AITask task1 = Mockito.mock(AITask.class);
+        AITask task2 = Mockito.mock(AITask.class);
+
+        Mockito.when(task1.startTask(reference)).thenReturn(AITaskResult.SUCCESS);
+        Mockito.when(task2.startTask(reference)).thenReturn(AITaskResult.RUNNING);
+        Mockito.when(task2.continueTask(reference)).thenReturn(AITaskResult.SUCCESS);
+
+        SequenceTask task = sequenceTask(task1, task2);
+
+        assertEquals(AITaskResult.RUNNING, task.startTask(reference));
+        Mockito.verify(task1).startTask(reference);
+        Mockito.verify(task2).startTask(reference);
+
+        Mockito.verifyNoMoreInteractions(task1, task2);
+
+        assertEquals(AITaskResult.SUCCESS, task.continueTask(reference));
+        Mockito.verify(task2).continueTask(reference);
+
+        Mockito.verifyNoMoreInteractions(task1, task2);
+    }
+
     private SequenceTask sequenceTask(AITask... tasks) {
         TaskBuilder taskBuilder = Mockito.mock(TaskBuilder.class);
         OngoingStubbing<AITask> stubbing = Mockito.when(taskBuilder.buildTask(Mockito.any(), Mockito.any()));
