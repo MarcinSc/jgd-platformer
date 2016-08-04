@@ -95,6 +95,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("stageUi");
         gameplayActiveProfiles.add("ai");
         gameplayActiveProfiles.add("delayActions");
+        gameplayActiveProfiles.add("entitySpawner");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
         SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, reflections);

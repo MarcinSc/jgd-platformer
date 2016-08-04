@@ -9,15 +9,19 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.ai.FacingDirectionComponent;
-import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
+import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RegisterSystem(
         profiles = "gameplay"
 )
 public class CombatSystem {
+    @Inject
+    private PlatformerEntitySpawner platformerEntitySpawner;
     @Inject
     private PrefabManager prefabManager;
     @Inject
@@ -42,10 +46,10 @@ public class CombatSystem {
     }
 
     private void shootProjectile(EntityRef entityRef, AttackProjectileComponent attackProjectile, LocationComponent location) {
-        EntityData projectilePrefab = prefabManager.getPrefabByName(attackProjectile.getProjectilePrefab());
-        EntityRef projectile = entityManager.createEntity(projectilePrefab);
+        Map<String, Object> projectileRecipe = attackProjectile.getProjectileRecipe();
+        String prefabName = (String) projectileRecipe.get("prefabName");
+        Map<String, Object> changes = (Map<String, Object>) projectileRecipe.get("changes");
 
-        LocationComponent projectileLocation = projectile.createComponent(LocationComponent.class);
         float distanceX = attackProjectile.getDistanceX();
         if (entityRef.hasComponent(FacingDirectionComponent.class)) {
             String entityDirection = entityRef.getComponent(FacingDirectionComponent.class).getDirection();
@@ -54,20 +58,21 @@ public class CombatSystem {
                 distanceX = -distanceX;
                 projectileSpeed = -projectileSpeed;
             }
-            if (projectile.hasComponent(FacingDirectionComponent.class)) {
-                projectile.getComponent(FacingDirectionComponent.class).setDirection(entityDirection);
-            }
-            if (entityRef.hasComponent(KineticObjectComponent.class)) {
-                KineticObjectComponent kineticObject = projectile.getComponent(KineticObjectComponent.class);
-                kineticObject.setVelocityX(projectileSpeed);
-            }
+
+            Map<String, Object> directionValues = new HashMap<>();
+            directionValues.put("direction", entityDirection);
+            changes.put("?FacingDirectionComponent", directionValues);
+
+            Map<String, Object> kineticValues = new HashMap<>();
+            kineticValues.put("velocityX", projectileSpeed);
+            changes.put("?KineticObjectComponent", kineticValues);
         }
-        projectileLocation.setX(distanceX + location.getX());
-        projectileLocation.setY(attackProjectile.getDistanceY() + location.getY());
-        projectileLocation.setZ(location.getZ());
 
+        float x = distanceX + location.getX();
+        float y = attackProjectile.getDistanceY() + location.getY();
+        float z = location.getZ();
 
-        projectile.saveChanges();
+        EntityRef projectile = platformerEntitySpawner.createEntityAt(x, y, z, prefabName, changes);
 
         delayManager.addDelayedAction(projectile, "dissipateProjectile", attackProjectile.getDissipateDuration());
     }

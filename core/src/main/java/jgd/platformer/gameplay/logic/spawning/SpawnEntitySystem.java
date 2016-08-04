@@ -10,8 +10,12 @@ import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "gameplay"
+)
 public class SpawnEntitySystem {
+    @Inject
+    private PlatformerEntitySpawner platformerEntitySpawner;
     @Inject
     private PrefabManager prefabManager;
     @Inject
@@ -21,12 +25,10 @@ public class SpawnEntitySystem {
     public void hitboxHit(HitboxOverlapEvent event, EntityRef entityRef, SpawnEntityOnOverlapComponent spawnEntity, LocationComponent spawnerLocation) {
         EntityRef otherEntity = event.getOtherEntity();
         if (otherEntity.hasComponent(PlayerComponent.class)) {
-            EntityRef spawnedEntity = entityManager.createEntity(prefabManager.getPrefabByName(spawnEntity.getPrefabName()));
-            LocationComponent location = spawnedEntity.createComponent(LocationComponent.class);
-            location.setX(spawnerLocation.getX() + spawnEntity.getDistanceX());
-            location.setY(spawnerLocation.getY() + spawnEntity.getDistanceY());
-            location.setZ(spawnerLocation.getZ() + spawnEntity.getDistanceZ());
-            spawnedEntity.saveChanges();
+            platformerEntitySpawner.createEntityFromRecipeAt(
+                    spawnerLocation.getX() + spawnEntity.getDistanceX(),
+                    spawnerLocation.getY() + spawnEntity.getDistanceY(),
+                    spawnerLocation.getZ() + spawnEntity.getDistanceZ(), spawnEntity.getPrefabName());
 
             entityRef.removeComponents(SpawnEntityOnOverlapComponent.class);
             entityRef.saveChanges();

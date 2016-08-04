@@ -37,7 +37,10 @@
     "factionName": "bug"
   },
   "AttackProjectileComponent": {
-    "projectilePrefab": "bugProjectile",
+    "projectileRecipe": {
+      "prefabName": "bugProjectile",
+      "changes": {}
+    },
     "distanceX": 0.5,
     "distanceY": 0.5,
     "dissipateDuration": 3000,

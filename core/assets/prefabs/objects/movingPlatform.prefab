@@ -7,11 +7,6 @@
     "height": 1
   },
   "ConstantModelTranslateComponent": {
-    "beforeTime": 2000,
-    "moveAwayTime": 3000,
-    "awayTime": 2000,
-    "moveBackTime": 3000,
-    "distanceX": 5,
     "interpolationAway": "linear",
     "interpolationBack": "linear"
   },

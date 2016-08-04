@@ -7,13 +7,14 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.io.EntityData;
-import jgd.platformer.gameplay.component.BaseLocationComponent;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
 
 import java.util.Map;
 
 @RegisterSystem(profiles = "gameplay")
 public class LevelEntitySystem {
+    @Inject
+    private PlatformerEntitySpawner platformerEntitySpawner;
     @Inject
     private PrefabManager prefabManager;
     @Inject
@@ -27,42 +28,36 @@ public class LevelEntitySystem {
             EntityData entityData = prefabManager.getPrefabByName(prefabName);
             EntityRef blockData = entityManager.wrapEntityData(entityData);
             if (blockData.hasComponent(BlockEntityComponent.class)) {
-                EntityRef result = entityManager.createEntity(entityData);
-                LocationComponent location = result.createComponent(LocationComponent.class);
                 String[] locationSplit = locationStr.split(",");
-                location.setX(Float.parseFloat(locationSplit[0]));
-                location.setY(Float.parseFloat(locationSplit[1]));
-                location.setZ(Float.parseFloat(locationSplit[2]));
-                result.saveChanges();
+                float x = Float.parseFloat(locationSplit[0]);
+                float y = Float.parseFloat(locationSplit[1]);
+                float z = Float.parseFloat(locationSplit[2]);
+                platformerEntitySpawner.createEntityFromRecipeAt(x, y, z, prefabName);
             }
         }
 
         if (level.getObjectCoordinates() != null) {
-            for (Map.Entry<String, String> objectCoordinates : level.getObjectCoordinates().entrySet()) {
+            for (Map.Entry<String, Object> objectCoordinates : level.getObjectCoordinates().entrySet()) {
                 String locationStr = objectCoordinates.getKey();
-                String prefabName = objectCoordinates.getValue();
-                EntityData entityData = prefabManager.getPrefabByName(prefabName);
-                EntityRef result = entityManager.createEntity(entityData);
-                LocationComponent location = result.createComponent(LocationComponent.class);
+                Object value = objectCoordinates.getValue();
+
                 String[] locationSplit = locationStr.split(",");
-                location.setX(Float.parseFloat(locationSplit[0]));
-                location.setY(Float.parseFloat(locationSplit[1]));
-                location.setZ(Float.parseFloat(locationSplit[2]));
+                float x = Float.parseFloat(locationSplit[0]);
+                float y = Float.parseFloat(locationSplit[1]);
+                float z = Float.parseFloat(locationSplit[2]);
+                if (value instanceof String) {
+                    platformerEntitySpawner.createEntityFromRecipeAt(x, y, z, (String) value);
+                } else {
+                    Map<String, Object> objectMapDef = (Map<String, Object>) value;
 
-                if (result.hasComponent(BaseLocationComponent.class)) {
-                    BaseLocationComponent baseLocation = result.getComponent(BaseLocationComponent.class);
-                    baseLocation.setX(Float.parseFloat(locationSplit[0]));
-                    baseLocation.setY(Float.parseFloat(locationSplit[1]));
-                    baseLocation.setZ(Float.parseFloat(locationSplit[2]));
+                    platformerEntitySpawner.createEntityAt(x, y, z, (String) objectMapDef.get("prefabName"), (Map<String, Object>) objectMapDef.get("changes"));
                 }
-
-                result.saveChanges();
             }
         }
 
         if (level.getAdditionalObjects() != null) {
             for (String additionalObject : level.getAdditionalObjects()) {
-                entityManager.createEntity(prefabManager.getPrefabByName(additionalObject));
+                platformerEntitySpawner.createEntityFromRecipe(additionalObject);
             }
         }
     }

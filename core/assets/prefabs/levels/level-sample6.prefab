@@ -10,14 +10,24 @@
       "8,-2,0": "stone",
       "9,-2,0": "stone",
       "10,-2,0": "stone",
-
       "-3,1,0": "stone",
       "-3,2,0": "stone",
       "9,-1,-1": "exitPortal"
     },
     "objectCoordinates": {
       "-3,-1,0": "cycleDoor",
-      "1,-2,0": "movingPlatform"
+      "1,-2,0": {
+        "prefabName": "movingPlatform",
+        "changes": {
+          "ConstantModelTranslateComponent": {
+            "beforeTime": 2000,
+            "moveAwayTime": 3000,
+            "awayTime": 2000,
+            "moveBackTime": 3000,
+            "distanceX": 5
+          }
+        }
+      }
     }
   },
   "PlayerSpawnComponent": {
