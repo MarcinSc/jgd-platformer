@@ -22,24 +22,22 @@ public class ModelTranslateOnSignalSystem {
     public void moveEntity(SignalActivated event, EntityRef entityRef, ModelTranslateOnSignalComponent translateOnSignal, BaseLocationComponent baseLocation, LocationComponent location) {
         long time = timeManager.getTime();
         ModelTranslateOverTimeComponent translateOverTime = entityRef.getComponent(ModelTranslateOverTimeComponent.class);
-        if (translateOverTime == null) {
+        if (translateOverTime == null)
             translateOverTime = entityRef.createComponent(ModelTranslateOverTimeComponent.class);
-            translateOverTime.setDistanceX(translateOnSignal.getDistanceX());
-            translateOverTime.setDistanceY(translateOnSignal.getDistanceY());
-            translateOverTime.setDistanceZ(translateOnSignal.getDistanceZ());
-            translateOverTime.setStartTime(time);
-            translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
-            translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
-            translateOverTime.setReverse(false);
-        } else {
-            translateOverTime.setDistanceX(translateOnSignal.getDistanceX());
-            translateOverTime.setDistanceY(translateOnSignal.getDistanceY());
-            translateOverTime.setDistanceZ(translateOnSignal.getDistanceZ());
-            translateOverTime.setStartTime(time);
-            translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
-            translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
-            translateOverTime.setReverse(false);
-        }
+
+        translateOverTime.setSourceX(location.getX());
+        translateOverTime.setSourceY(location.getY());
+        translateOverTime.setSourceZ(location.getZ());
+
+        translateOverTime.setDestinationX(baseLocation.getX() + translateOnSignal.getDistanceX());
+        translateOverTime.setDestinationY(baseLocation.getY() + translateOnSignal.getDistanceY());
+        translateOverTime.setDestinationZ(baseLocation.getZ() + translateOnSignal.getDistanceZ());
+
+        translateOverTime.setStartTime(time);
+        translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
+
+        translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
+
         entityRef.saveChanges();
     }
 
@@ -47,24 +45,23 @@ public class ModelTranslateOnSignalSystem {
     public void moveEntityBack(SignalDeactivated event, EntityRef entityRef, ModelTranslateOnSignalComponent translateOnSignal, BaseLocationComponent baseLocation, LocationComponent location) {
         long time = timeManager.getTime();
         ModelTranslateOverTimeComponent translateOverTime = entityRef.getComponent(ModelTranslateOverTimeComponent.class);
-        if (translateOverTime == null) {
+        if (translateOverTime == null)
             translateOverTime = entityRef.createComponent(ModelTranslateOverTimeComponent.class);
-            translateOverTime.setDistanceX(translateOnSignal.getDistanceX());
-            translateOverTime.setDistanceY(translateOnSignal.getDistanceY());
-            translateOverTime.setDistanceZ(translateOnSignal.getDistanceZ());
-            translateOverTime.setStartTime(time);
-            translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
-            translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
-            translateOverTime.setReverse(true);
-        } else {
-            translateOverTime.setDistanceX(translateOnSignal.getDistanceX());
-            translateOverTime.setDistanceY(translateOnSignal.getDistanceY());
-            translateOverTime.setDistanceZ(translateOnSignal.getDistanceZ());
-            translateOverTime.setStartTime(time);
-            translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
-            translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
-            translateOverTime.setReverse(true);
-        }
+
+        translateOverTime.setSourceX(location.getX());
+        translateOverTime.setSourceY(location.getY());
+        translateOverTime.setSourceZ(location.getZ());
+
+        translateOverTime.setDestinationX(baseLocation.getX());
+        translateOverTime.setDestinationY(baseLocation.getY());
+        translateOverTime.setDestinationZ(baseLocation.getZ());
+
+        translateOverTime.setStartTime(time);
+        translateOverTime.setMoveTime(translateOnSignal.getMoveTime());
+
+        translateOverTime.setInterpolation(translateOnSignal.getInterpolation());
+
+        entityRef.saveChanges();
         entityRef.saveChanges();
     }
 }

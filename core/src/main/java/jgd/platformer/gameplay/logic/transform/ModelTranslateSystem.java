@@ -90,11 +90,9 @@ public class ModelTranslateSystem implements LifeCycleSystem {
                 translateOverTimeEntity.removeComponents(ModelTranslateOverTimeComponent.class);
                 a = 1;
             }
-            if (translate.isReverse())
-                a = 1 - a;
-            location.setX(baseLocation.getX() + a * translate.getDistanceX());
-            location.setY(baseLocation.getY() + a * translate.getDistanceY());
-            location.setZ(baseLocation.getZ() + a * translate.getDistanceZ());
+            location.setX(translate.getSourceX() + a * (translate.getDestinationX() - translate.getSourceX()));
+            location.setY(translate.getSourceY() + a * (translate.getDestinationY() - translate.getSourceY()));
+            location.setZ(translate.getSourceZ() + a * (translate.getDestinationZ() - translate.getSourceZ()));
             translateOverTimeEntity.saveChanges();
         }
 

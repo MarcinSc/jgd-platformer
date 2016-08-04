@@ -3,31 +3,36 @@ package jgd.platformer.gameplay.logic.transform;
 import com.gempukku.secsy.entity.Component;
 
 public interface ModelTranslateOverTimeComponent extends Component {
-    float getDistanceX();
+    float getSourceX();
 
-    void setDistanceX(float distanceX);
+    void setSourceX(float sourceX);
 
-    float getDistanceY();
+    float getSourceY();
 
-    void setDistanceY(float distanceY);
+    void setSourceY(float sourceY);
 
-    float getDistanceZ();
+    float getSourceZ();
 
-    void setDistanceZ(float distanceZ);
+    void setSourceZ(float sourceZ);
+
+    float getDestinationX();
+
+    void setDestinationX(float destinationX);
+
+    float getDestinationY();
+
+    void setDestinationY(float destinationY);
+
+    float getDestinationZ();
+
+    void setDestinationZ(float destinationZ);
 
     long getStartTime();
-
     void setStartTime(long startTime);
 
     long getMoveTime();
-
     void setMoveTime(long moveTime);
 
     String getInterpolation();
-
     void setInterpolation(String interpolation);
-
-    boolean isReverse();
-
-    void setReverse(boolean reverse);
 }
