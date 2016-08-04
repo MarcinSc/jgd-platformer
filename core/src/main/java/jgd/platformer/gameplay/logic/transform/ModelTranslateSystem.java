@@ -24,10 +24,12 @@ public class ModelTranslateSystem implements LifeCycleSystem {
     private TimeManager timeManager;
 
     private EntityIndex translateEntities;
+    private EntityIndex translateOverTimeEntities;
 
     @Override
     public void initialize() {
         translateEntities = entityIndexManager.addIndexOnComponents(ConstantModelTranslateComponent.class, LocationComponent.class, BaseLocationComponent.class);
+        translateOverTimeEntities = entityIndexManager.addIndexOnComponents(ModelTranslateOverTimeComponent.class, LocationComponent.class, BaseLocationComponent.class);
     }
 
     @ReceiveEvent
@@ -69,5 +71,32 @@ public class ModelTranslateSystem implements LifeCycleSystem {
             location.setZ(baseLocation.getZ() + a * translate.getDistanceZ());
             translateEntity.saveChanges();
         }
+
+        for (EntityRef translateOverTimeEntity : translateOverTimeEntities) {
+            ModelTranslateOverTimeComponent translate = translateOverTimeEntity.getComponent(ModelTranslateOverTimeComponent.class);
+            LocationComponent location = translateOverTimeEntity.getComponent(LocationComponent.class);
+            BaseLocationComponent baseLocation = translateOverTimeEntity.getComponent(BaseLocationComponent.class);
+
+            long progress = time - translate.getStartTime();
+            long moveTime = translate.getMoveTime();
+
+            float a;
+            if (progress < 0) {
+                a = 0;
+            } else if (progress < moveTime) {
+                Interpolation interpolation = InterpolationUtil.getInterpolation(translate.getInterpolation());
+                a = interpolation.apply(1f * progress / moveTime);
+            } else {
+                translateOverTimeEntity.removeComponents(ModelTranslateOverTimeComponent.class);
+                a = 1;
+            }
+            if (translate.isReverse())
+                a = 1 - a;
+            location.setX(baseLocation.getX() + a * translate.getDistanceX());
+            location.setY(baseLocation.getY() + a * translate.getDistanceY());
+            location.setZ(baseLocation.getZ() + a * translate.getDistanceZ());
+            translateOverTimeEntity.saveChanges();
+        }
+
     }
 }

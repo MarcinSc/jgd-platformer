@@ -48,5 +48,6 @@
   "FactionMemberComponent": {
     "factionName": "player"
   },
-  "PlatformMovableComponent": {}
+  "PlatformMovableComponent": {},
+  "ActivateHitboxOverlapSignalProducerComponent": {}
 }

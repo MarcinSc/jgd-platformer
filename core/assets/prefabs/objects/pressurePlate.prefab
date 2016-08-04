@@ -1,0 +1,18 @@
+{
+  "ModelRenderComponent": {
+    "modelPrefab": "modelPressurePlate"
+  },
+  "CollisionObstacleComponent": {
+    "width": 1,
+    "height": 0.1,
+    "collideSides": [
+      "DOWN"
+    ]
+  },
+  "SignalProducerComponent": {},
+  "HitboxOverlapSignalProducerComponent": {
+    "translateY": 0.1,
+    "width": 1,
+    "height": 0.1
+  }
+}
