@@ -7,7 +7,11 @@
   "CollisionObstacleComponent": {
     "translateX": 0.4,
     "width": 0.2,
-    "height": 2
+    "height": 2,
+    "collideSides": [
+      "LEFT",
+      "RIGHT"
+    ]
   },
   "ConstantModelTranslateComponent": {
     "beforeTime": 1000,
