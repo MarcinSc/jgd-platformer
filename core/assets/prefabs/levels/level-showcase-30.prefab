@@ -13,10 +13,16 @@
       "14,5,0": "stone",
       "15,5,0": "stone",
       "16,5,0": "stone",
+      "6,6.5,0": "stone",
+      "7,6.5,0": "stone",
+      "8,6.5,0": "stone",
       "9,6.5,0": "stone",
       "10,6.5,0": "stone",
       "11,6.5,0": "stone",
-      "10,7.5,-1": "exitPortal"
+      "9,9.5,0": "stone",
+      "9,10.5,0": "stone",
+      "9,11.5,0": "stone",
+      "7,7.5,-1": "exitPortal"
     },
     "objectCoordinates": {
       "-2,1,0.5": "bugWithGun",
@@ -44,6 +50,22 @@
             "moveBackTime": 3000,
             "distanceX": 5,
             "distanceY": 3
+          }
+        }
+      },
+      "10,7.5,0": {
+        "prefabName": "pressurePlate",
+        "changes": {
+          "SignalProducerComponent": {
+            "channel": "signal"
+          }
+        }
+      },
+      "9,7.5,0": {
+        "prefabName": "signalDoor",
+        "changes": {
+          "SignalConsumerComponent": {
+            "channel": "signal"
           }
         }
       }
