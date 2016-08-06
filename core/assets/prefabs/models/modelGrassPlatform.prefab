@@ -2,7 +2,7 @@
   "ModelShapeComponent": {
     "shape": "cube",
     "multiplyX": 2,
-    "multiplyY": 1,
+    "multiplyY": 0.5,
     "multiplyZ": 1,
     "texturesForParts": {
       "top": "blockTiles/Grass.png",

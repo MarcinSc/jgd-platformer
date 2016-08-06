@@ -1,0 +1,20 @@
+{
+  "ModelRenderComponent": {
+    "modelPrefab": "modelStonePlatform"
+  },
+  "CollisionObstacleComponent": {
+    "width": 2,
+    "height": 0.5
+  },
+  "ConstantModelTranslateComponent": {
+    "interpolationAway": "linear",
+    "interpolationBack": "linear"
+  },
+  "BaseLocationComponent": {},
+  "PlatformComponent": {
+    "translateX": 0,
+    "translateY": 0.5,
+    "width": 2,
+    "height": 0.1
+  }
+}

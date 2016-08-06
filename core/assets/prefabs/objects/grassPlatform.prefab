@@ -1,10 +1,13 @@
 {
   "ModelRenderComponent": {
-    "modelPrefab": "modelMovingPlatform"
+    "modelPrefab": "modelGrassPlatform"
   },
   "CollisionObstacleComponent": {
     "width": 2,
-    "height": 1
+    "height": 0.5,
+    "collideSides": [
+      "DOWN"
+    ]
   },
   "ConstantModelTranslateComponent": {
     "interpolationAway": "linear",
@@ -13,7 +16,7 @@
   "BaseLocationComponent": {},
   "PlatformComponent": {
     "translateX": 0,
-    "translateY": 1,
+    "translateY": 0.5,
     "width": 2,
     "height": 0.1
   }
