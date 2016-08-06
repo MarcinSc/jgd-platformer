@@ -35,5 +35,6 @@
   },
   "FactionMemberComponent": {
     "factionName": "bug"
-  }
+  },
+  "PlatformMovableComponent": {}
 }

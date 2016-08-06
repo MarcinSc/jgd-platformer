@@ -46,5 +46,6 @@
     "dissipateDuration": 3000,
     "projectileShootFrequency": 3000,
     "projectileSpeed": 6
-  }
+  },
+  "PlatformMovableComponent": {}
 }
