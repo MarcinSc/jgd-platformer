@@ -12,7 +12,13 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RegisterSystem(
         profiles = {"delayActions"}, shared = DelayManager.class)
@@ -118,8 +124,8 @@ public class DelayedActionSystem implements DelayManager {
         if (delayedActionComponent != null) {
             final long oldWakeUp = findSmallestWakeUp(delayedActionComponent.getActionIdWakeUp());
             delayedActionComponent.getActionIdWakeUp().put(actionId, scheduleTime);
-            entity.saveChanges();
             final long newWakeUp = findSmallestWakeUp(delayedActionComponent.getActionIdWakeUp());
+            entity.saveChanges();
             if (oldWakeUp < newWakeUp) {
                 delayedOperationsSortedByTime.remove(oldWakeUp, entity);
                 delayedOperationsSortedByTime.put(newWakeUp, entity);
@@ -143,8 +149,8 @@ public class DelayedActionSystem implements DelayManager {
             final long oldWakeUp = findSmallestWakeUp(periodicActionComponent.getActionIdWakeUp());
             periodicActionComponent.getActionIdWakeUp().put(actionId, scheduleTime);
             periodicActionComponent.getActionIdPeriod().put(actionId, period);
-            entity.saveChanges();
             final long newWakeUp = findSmallestWakeUp(periodicActionComponent.getActionIdWakeUp());
+            entity.saveChanges();
             if (oldWakeUp < newWakeUp) {
                 periodicOperationsSortedByTime.remove(oldWakeUp, entity);
                 periodicOperationsSortedByTime.put(newWakeUp, entity);
