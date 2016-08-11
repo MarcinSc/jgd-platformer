@@ -1,9 +1,6 @@
 {
   "ModelShapeComponent": {
     "shape": "cube",
-    "multiplyX": 2,
-    "multiplyY": 0.5,
-    "multiplyZ": 1,
     "texturesForParts": {
       "all": "blockTiles/Stone.png"
     }

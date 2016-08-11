@@ -4,6 +4,9 @@
   "RenderedShapeComponent": {
     "modelPrefab": "modelPressurePlate"
   },
+  "ModelScaleComponent": {
+    "scaleY": 0.1
+  },
   "CollisionObstacleComponent": {
     "width": 1,
     "height": 0.1,

@@ -19,12 +19,21 @@
       "1,-1.5,0": {
         "prefabName": "stonePlatform",
         "changes": {
+          "RenderedMultiShapeComponent": {
+            "shapeCount": 3
+          },
+          "CollisionObstacleComponent": {
+            "width": 3
+          },
+          "PlatformComponent": {
+            "width": 3
+          },
           "ConstantModelTranslateComponent": {
             "beforeTime": 2000,
             "moveAwayTime": 3000,
             "awayTime": 2000,
             "moveBackTime": 3000,
-            "distanceX": 5
+            "distanceX": 4
           }
         }
       }

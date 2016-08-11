@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering.model;
+package jgd.platformer.gameplay.rendering.model.shape;
 
 import com.gempukku.secsy.entity.Component;
 

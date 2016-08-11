@@ -6,6 +6,11 @@
     "translateX": -0.25,
     "translateY": -0.25
   },
+  "ModelScaleComponent": {
+    "scaleX": 0.5,
+    "scaleY": 0.5,
+    "scaleZ": 0.01
+  },
   "KineticObjectComponent": {},
   "CollidingObjectComponent": {
     "translateX": -0.25,

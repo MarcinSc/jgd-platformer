@@ -18,6 +18,9 @@
     "modelPrefab": "modelPlayer",
     "translateX": -0.5
   },
+  "ModelScaleComponent": {
+    "scaleZ": 0.01
+  },
   "KineticObjectComponent": {},
   "PlayerControlledComponent": {
     "movementVelocity": 4,

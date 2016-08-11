@@ -6,6 +6,11 @@
     "translateX": 0.4,
     "translateZ": 0.05
   },
+  "ModelScaleComponent": {
+    "scaleX": 0.2,
+    "scaleY": 2,
+    "scaleZ": 0.9
+  },
   "CollisionObstacleComponent": {
     "translateX": 0.4,
     "width": 0.2,

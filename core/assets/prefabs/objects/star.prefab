@@ -5,6 +5,9 @@
     "modelPrefab": "modelStar",
     "translateX": -0.5
   },
+  "ModelScaleComponent": {
+    "scaleZ": 0.01
+  },
   "RectangleHitboxComponent": {
     "translateX": -0.5,
     "translateY": 0,

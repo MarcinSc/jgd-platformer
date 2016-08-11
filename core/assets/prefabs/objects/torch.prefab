@@ -4,6 +4,9 @@
   "RenderedShapeComponent": {
     "modelPrefab": "modelTorch"
   },
+  "ModelScaleComponent": {
+    "scaleZ": 0.01
+  },
   "PointLightComponent": {
     "translateX": 0.3,
     "translateZ": 0.1,

@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.rendering.model;
+package jgd.platformer.gameplay.rendering.model.shape;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -25,6 +25,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.io.EntityData;
+import jgd.platformer.gameplay.rendering.model.GetModelInstance;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,7 +91,7 @@ public class ModelShapeRenderingSystem implements LifeCycleSystem {
                         return null;
                     return textureAtlasProvider.getTexture(MODELS_ATLAS_ID, textureName);
                 }
-            }, 0, 0, 0, modelShape.getMultiplyX(), modelShape.getMultiplyY(), modelShape.getMultiplyZ());
+            }, 0, 0, 0);
 
             MeshPart platform = arrayVertexOutput.generateMeshPart("model");
 
@@ -119,12 +120,12 @@ public class ModelShapeRenderingSystem implements LifeCycleSystem {
         result.transform.idt().translate(event.getLocation());
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
-        result.transform.scale(event.getScale().x, event.getScale().y, event.getScale().z);
-
         result.transform.translate(
                 renderedShape.getTranslateX(),
                 renderedShape.getTranslateY(),
                 renderedShape.getTranslateZ());
+
+        result.transform.scale(event.getScale().x, event.getScale().y, event.getScale().z);
 
         event.appendModelInstance(result);
     }

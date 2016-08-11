@@ -1,8 +1,14 @@
 {
   "ModelRenderComponent": {
   },
-  "RenderedShapeComponent": {
-    "modelPrefab": "modelStonePlatform"
+  "RenderedMultiShapeComponent": {
+    "modelPrefab": "modelStonePlatform",
+    "shapeCount": 2,
+    "shapeAdvanceX": 1
+  },
+  "ModelScaleComponent": {
+    "scaleX": 1,
+    "scaleY": 0.5
   },
   "CollisionObstacleComponent": {
     "width": 2,

@@ -1,9 +1,6 @@
 {
   "ModelShapeComponent": {
     "shape": "cube",
-    "multiplyX": 1,
-    "multiplyY": 0.1,
-    "multiplyZ": 1,
     "texturesForParts": {
       "all": "model/pressure-plate.png"
     }

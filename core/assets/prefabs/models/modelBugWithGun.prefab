@@ -1,9 +1,6 @@
 {
   "ModelShapeComponent": {
     "shape": "cube",
-    "multiplyX": 1,
-    "multiplyY": 1,
-    "multiplyZ": 0,
     "texturesForParts": {
       "front": "characters/bug-with-gun-right.png",
       "back": "characters/bug-with-gun-left.png"
