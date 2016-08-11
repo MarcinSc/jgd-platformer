@@ -2,10 +2,13 @@ package jgd.platformer.gameplay.logic.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
+import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import jgd.platformer.gameplay.audio.AudioManager;
 import jgd.platformer.gameplay.logic.physics.ApplyPhysicsForces;
 import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
 
@@ -13,9 +16,19 @@ import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
         profiles = {"gameplay", "keyboard"}
 )
 public class KeyboardSystem implements LifeCycleSystem {
+    @Inject
+    private AudioManager audioManager;
+
+    private Sound jumpSound;
+
     private int[] leftKeys = {Input.Keys.LEFT, Input.Keys.A};
     private int[] rightKeys = {Input.Keys.RIGHT, Input.Keys.D};
     private int[] jumpKeys = {Input.Keys.SPACE};
+
+    @Override
+    public void initialize() {
+        jumpSound = Gdx.audio.newSound(Gdx.files.internal("audio/sfx_jump.ogg"));
+    }
 
     @ReceiveEvent
     public void applyMovement(ApplyPhysicsForces event, EntityRef entity, PlayerControlledComponent playerControlled, KineticObjectComponent kineticObject) {
@@ -32,6 +45,7 @@ public class KeyboardSystem implements LifeCycleSystem {
             }
 
             if (isAnyPressed(jumpKeys)) {
+                audioManager.playSound(jumpSound);
                 event.setBaseVelocityY(playerControlled.getJumpVelocity());
             } else {
                 event.setBaseVelocityY(0);
