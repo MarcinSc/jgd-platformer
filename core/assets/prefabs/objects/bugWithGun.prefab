@@ -1,5 +1,7 @@
 {
   "ModelRenderComponent": {
+  },
+  "RenderedShapeComponent": {
     "modelPrefab": "modelBugWithGun",
     "translateX": -0.5
   },

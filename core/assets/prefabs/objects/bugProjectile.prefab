@@ -1,5 +1,7 @@
 {
   "ModelRenderComponent": {
+  },
+  "RenderedShapeComponent": {
     "modelPrefab": "modelBugProjectile",
     "translateX": -0.25,
     "translateY": -0.25

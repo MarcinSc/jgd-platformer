@@ -13,6 +13,8 @@
     "z": 0.5
   },
   "ModelRenderComponent": {
+  },
+  "RenderedShapeComponent": {
     "modelPrefab": "modelPlayer",
     "translateX": -0.5
   },

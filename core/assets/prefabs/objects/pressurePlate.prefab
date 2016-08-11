@@ -1,5 +1,7 @@
 {
   "ModelRenderComponent": {
+  },
+  "RenderedShapeComponent": {
     "modelPrefab": "modelPressurePlate"
   },
   "CollisionObstacleComponent": {
