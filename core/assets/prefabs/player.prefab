@@ -14,12 +14,16 @@
   },
   "ModelRenderComponent": {
   },
-  "RenderedShapeComponent": {
-    "modelPrefab": "modelPlayer",
-    "translateX": -0.5
+  "G3DModelComponent": {
+    "modelFile": "model/duke/duke.g3dj",
+    "scaleX": 0.1,
+    "scaleY": 0.115,
+    "scaleZ": 0.1
   },
-  "ModelScaleComponent": {
-    "scaleZ": 0.01
+  "G3DModelAnimationComponent": {
+    "idleAnimation": "Armature|Idle",
+    "walkAnimation": "Armature|Walk",
+    "walkAnimationSpeed": 2
   },
   "KineticObjectComponent": {},
   "PlayerControlledComponent": {
@@ -47,8 +51,8 @@
   "CollectorComponent": {},
   "ModelRotateComponent": {},
   "RotateModelOnMovementComponent": {
-    "angleLeft": 180,
-    "angleRight": 0
+    "angleLeft": 270,
+    "angleRight": 90
   },
   "FactionMemberComponent": {
     "factionName": "player"

@@ -9,8 +9,7 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.audio.AudioManager;
-import jgd.platformer.gameplay.logic.physics.ApplyPhysicsForces;
-import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
+import jgd.platformer.gameplay.logic.physics.*;
 
 @RegisterSystem(
         profiles = {"gameplay", "keyboard"}
@@ -38,10 +37,13 @@ public class KeyboardSystem implements LifeCycleSystem {
 
             if (leftPressed && !rightPressed) {
                 event.setBaseVelocityX(-playerControlled.getMovementVelocity());
+                entity.send(new ModelWalks());
             } else if (rightPressed && !leftPressed) {
                 event.setBaseVelocityX(playerControlled.getMovementVelocity());
+                entity.send(new ModelWalks());
             } else {
                 event.setBaseVelocityX(0);
+                entity.send(new ModelIdles());
             }
 
             if (isAnyPressed(jumpKeys)) {
@@ -50,6 +52,8 @@ public class KeyboardSystem implements LifeCycleSystem {
             } else {
                 event.setBaseVelocityY(0);
             }
+        } else {
+            entity.send(new ModelFalls());
         }
     }
 
