@@ -70,7 +70,6 @@ public class G3DRenderingSystem implements LifeCycleSystem {
         String playedAnimation = animation.getPlayedAnimation();
         String walkAnimation = animation.getWalkAnimation();
         if (playedAnimation == null || !playedAnimation.equals(walkAnimation)) {
-            System.out.println("Set animation");
             float walkAnimationSpeed = animation.getWalkAnimationSpeed();
 
             animation.setPlayedAnimation(walkAnimation);
