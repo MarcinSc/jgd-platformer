@@ -1,0 +1,13 @@
+{
+  "ModelRenderComponent": {
+  },
+  "SignalIndicatorComponent": {
+    "signalOffRed": 63,
+    "signalOffGreen": 0,
+    "signalOffBlue": 0,
+    "signalOnRed": 255,
+    "signalOnGreen": 127,
+    "signalOnBlue": 0
+  },
+  "SignalConsumerComponent": {}
+}

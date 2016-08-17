@@ -1,9 +1,13 @@
-package jgd.platformer.gameplay.rendering.model.shape;
+package jgd.platformer.gameplay.rendering.model.color;
 
 import com.gempukku.secsy.entity.Component;
 
-public interface RenderedShapeComponent extends Component {
-    String getModelPrefab();
+public interface ModelColoredCuboidComponent extends Component {
+    int getRed();
+
+    int getGreen();
+
+    int getBlue();
 
     float getTranslateX();
 

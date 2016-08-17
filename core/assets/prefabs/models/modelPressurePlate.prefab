@@ -2,7 +2,7 @@
   "ModelShapeComponent": {
     "shape": "cube",
     "texturesForParts": {
-      "all": "model/pressure-plate.png"
+      "all": "blockTiles/Stone.png"
     }
   }
 }

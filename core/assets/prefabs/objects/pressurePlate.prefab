@@ -2,21 +2,20 @@
   "ModelRenderComponent": {
   },
   "RenderedShapeComponent": {
-    "modelPrefab": "modelPressurePlate"
+    "modelPrefab": "modelPressurePlate",
+    "scaleY": 0.9
   },
-  "ModelScaleComponent": {
+  "ModelColoredCuboidComponent": {
+    "translateY": 0.9,
     "scaleY": 0.1
   },
   "CollisionObstacleComponent": {
     "width": 1,
-    "height": 0.1,
-    "collideSides": [
-      "DOWN"
-    ]
+    "height": 1
   },
   "SignalProducerComponent": {},
   "HitboxOverlapSignalProducerComponent": {
-    "translateY": 0.1,
+    "translateY": 1,
     "width": 1,
     "height": 0.1
   }

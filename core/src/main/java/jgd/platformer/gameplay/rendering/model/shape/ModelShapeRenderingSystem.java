@@ -125,7 +125,10 @@ public class ModelShapeRenderingSystem implements LifeCycleSystem {
                 renderedShape.getTranslateY(),
                 renderedShape.getTranslateZ());
 
-        result.transform.scale(event.getScale().x, event.getScale().y, event.getScale().z);
+        result.transform.scale(
+                event.getScale().x * renderedShape.getScaleX(),
+                event.getScale().y * renderedShape.getScaleY(),
+                event.getScale().z * renderedShape.getScaleZ());
 
         event.appendModelInstance(result);
     }

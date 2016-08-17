@@ -4,7 +4,6 @@
       "0,0,0": "stone",
       "1,0,0": "stone",
       "2,0,0": "stone",
-      "3,0,0": "stone",
       "4,0,0": "stone",
       "5,0,0": "stone",
       "6,0,0": "stone",
@@ -19,26 +18,22 @@
       "2,5,0": "stone",
       "3,5,0": "stone",
       "4,5,0": "stone",
-      "5,5,0": "stone",
       "6,5,0": "stone",
       "7,5,0": "stone",
       "7,6,0": "stone",
       "7,7,0": "stone"
     },
     "objectCoordinates": {
-      "3,1,0": {
+      "3,0,0": {
         "prefabName": "pressurePlate",
         "changes": {
           "SignalProducerComponent": {
             "channel": "spawnGhost"
-          }
-        }
-      },
-      "5,6,0": {
-        "prefabName": "pressurePlate",
-        "changes": {
-          "SignalProducerComponent": {
-            "channel": "openDoor"
+          },
+          "ModelColoredCuboidComponent": {
+            "red": 255,
+            "green": 0,
+            "blue": 0
           }
         }
       },
@@ -50,11 +45,50 @@
           }
         }
       },
+      "1,5,1": {
+        "prefabName": "signalIndicator",
+        "changes": {
+          "SignalConsumerComponent": {
+            "channel": "spawnGhost"
+          },
+          "SignalIndicatorComponent": {
+            "baseRed": 255,
+            "baseGreen": 0,
+            "baseBlue": 0
+          }
+        }
+      },
+      "5,5,0": {
+        "prefabName": "pressurePlate",
+        "changes": {
+          "SignalProducerComponent": {
+            "channel": "openDoor"
+          },
+          "ModelColoredCuboidComponent": {
+            "red": 0,
+            "green": 0,
+            "blue": 255
+          }
+        }
+      },
       "5,1,0": {
         "prefabName": "signalDoor",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "openDoor"
+          }
+        }
+      },
+      "5,3,1": {
+        "prefabName": "signalIndicator",
+        "changes": {
+          "SignalConsumerComponent": {
+            "channel": "openDoor"
+          },
+          "SignalIndicatorComponent": {
+            "baseRed": 0,
+            "baseGreen": 0,
+            "baseBlue": 255
           }
         }
       }
