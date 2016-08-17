@@ -10,4 +10,8 @@ public interface G3DModelComponent extends Component {
     float getScaleY();
 
     float getScaleZ();
+
+    default float getOpacity() {
+        return 1;
+    }
 }

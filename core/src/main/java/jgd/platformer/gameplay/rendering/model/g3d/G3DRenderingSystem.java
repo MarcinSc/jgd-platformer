@@ -1,8 +1,10 @@
 package jgd.platformer.gameplay.rendering.model.g3d;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -100,6 +102,15 @@ public class G3DRenderingSystem implements LifeCycleSystem {
         AnimationController animationController = modelAnimations.get(entityRef);
 
         ModelInstance result = modelInstances.get(entityRef);
+
+        for (Material material : result.materials) {
+            float opacity = g3dModel.getOpacity();
+            if (opacity == 1) {
+                material.remove(BlendingAttribute.Type);
+            } else {
+                material.set(new BlendingAttribute(true, opacity));
+            }
+        }
 
         result.transform.idt();
         if (animationController != null) {

@@ -111,7 +111,7 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
         resultY = Math.max(Math.min(resultY, cameraBounds.getMaxY()), cameraBounds.getMinY());
 
         camera.position.set(resultX, resultY + CAMERA_ABOVE_OBJECTS, DISTANCE_FROM_TERRAIN);
-        cameraLight.set(Color.WHITE, resultX, resultY + CAMERA_ABOVE_OBJECTS + CAMERA_LIGHT_Y_DISTANCE, DISTANCE_FROM_TERRAIN, 130f);
+        cameraLight.set(Color.WHITE, resultX, resultY + CAMERA_ABOVE_OBJECTS + CAMERA_LIGHT_Y_DISTANCE, DISTANCE_FROM_TERRAIN, 60f);
 
         camera.lookAt(resultX, resultY + CAMERA_ABOVE_OBJECTS, 0);
         camera.up.set(0, 1, 0);

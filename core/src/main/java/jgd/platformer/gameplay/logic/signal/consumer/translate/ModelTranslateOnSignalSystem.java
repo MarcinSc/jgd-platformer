@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.logic.signal.consumer;
+package jgd.platformer.gameplay.logic.signal.consumer.translate;
 
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
