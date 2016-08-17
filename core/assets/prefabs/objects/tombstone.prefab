@@ -3,12 +3,13 @@
   },
   "RenderedShapeComponent": {
     "modelPrefab": "modelTombstone",
-    "translateZ": -1
+    "translateZ": -0.5
   },
   "SignalConsumerComponent": {
   },
   "SpawnEntityOnSignalComponent": {
     "prefabName": "ghost",
-    "distanceZ": 0.5
+    "distanceZ": 0.5,
+    "distanceX": 0.5
   }
 }

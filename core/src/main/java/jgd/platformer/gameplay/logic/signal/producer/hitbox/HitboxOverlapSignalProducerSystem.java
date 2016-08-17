@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.logic.signal;
+package jgd.platformer.gameplay.logic.signal.producer.hitbox;
 
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -10,6 +10,7 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapManager;
+import jgd.platformer.gameplay.logic.signal.SignalManager;
 
 import java.awt.geom.Rectangle2D;
 
