@@ -35,8 +35,13 @@ public class StageUiSystem implements UiProcessor, StageProvider {
 
     @Override
     public void processUi(InputEventQueue inputEventQueue) {
-        inputEventQueue.setProcessor(stage);
+        inputEventQueue.setProcessor(this);
         inputEventQueue.drain();
+        processUi();
+    }
+
+    @Override
+    public void processUi() {
         stage.act(timeManager.getTimeSinceLastUpdate() / 1000f);
     }
 
@@ -44,5 +49,45 @@ public class StageUiSystem implements UiProcessor, StageProvider {
     public void screenResized(ScreenResized screenResized, EntityRef entity) {
         stage.getViewport().update(screenResized.getWidth(), screenResized.getHeight(), true);
         stage.getViewport().apply();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return stage.keyDown(keycode);
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return stage.keyTyped(character);
+    }
+
+    @Override
+    public boolean keyUp(int keyCode) {
+        return stage.keyUp(keyCode);
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return stage.mouseMoved(screenX, screenY);
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return stage.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return stage.touchDragged(screenX, screenY, pointer);
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return stage.touchUp(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return stage.scrolled(amount);
     }
 }
