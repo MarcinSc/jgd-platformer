@@ -10,5 +10,5 @@ public interface LevelComponent extends Component {
 
     Map<String, Object> getObjectCoordinates();
 
-    List<String> getAdditionalObjects();
+    List<Object> getAdditionalObjects();
 }

@@ -120,7 +120,7 @@ public class MainMenuSystem implements LifeCycleSystem {
                         renderingEntityProvider.getRenderingEntity().send(new MusicVolumeSet(musicSlider.getValue()));
                     }
                 });
-        musicSlider.setValue(0.03f);
+        musicSlider.setValue(0.01f);
 
         Slider fxSlider = new Slider(0, 1, 0.01f, false, sliderStyle);
         fxSlider.addListener(

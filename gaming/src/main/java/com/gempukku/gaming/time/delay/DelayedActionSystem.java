@@ -12,13 +12,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RegisterSystem(
         profiles = {"delayActions"}, shared = DelayManager.class)
@@ -52,16 +46,19 @@ public class DelayedActionSystem implements DelayManager {
         operationsToInvoke.stream().filter(EntityRef::exists).forEach(delayedEntity -> {
             final DelayedActionComponent delayedActions = delayedEntity.getComponent(DelayedActionComponent.class);
 
-            final Set<String> actionIds = removeActionsUpTo(delayedActions, currentWorldTime);
-            saveOrRemoveComponent(delayedEntity, delayedActions);
-            delayedEntity.saveChanges();
+            if (delayedActions != null) {
+                final Set<String> actionIds = removeActionsUpTo(delayedActions, currentWorldTime);
+                saveOrRemoveComponent(delayedEntity, delayedActions);
+                Map<String, Long> actionIdWakeUp = delayedActions.getActionIdWakeUp();
+                delayedEntity.saveChanges();
 
-            if (!delayedActions.getActionIdWakeUp().isEmpty()) {
-                delayedOperationsSortedByTime.put(findSmallestWakeUp(delayedActions.getActionIdWakeUp()), delayedEntity);
-            }
+                if (!actionIdWakeUp.isEmpty()) {
+                    delayedOperationsSortedByTime.put(findSmallestWakeUp(actionIdWakeUp), delayedEntity);
+                }
 
-            for (String actionId : actionIds) {
-                delayedEntity.send(new DelayedActionTriggeredEvent(actionId));
+                for (String actionId : actionIds) {
+                    delayedEntity.send(new DelayedActionTriggeredEvent(actionId));
+                }
             }
         });
     }
@@ -82,16 +79,19 @@ public class DelayedActionSystem implements DelayManager {
         operationsToInvoke.stream().filter(EntityRef::exists).forEach(periodicEntity -> {
             final PeriodicActionComponent periodicActionComponent = periodicEntity.getComponent(PeriodicActionComponent.class);
 
-            final Set<String> actionIds = getTriggeredActionsAndReschedule(periodicActionComponent, currentWorldTime);
-            saveOrRemoveComponent(periodicEntity, periodicActionComponent);
-            periodicEntity.saveChanges();
+            if (periodicActionComponent != null) {
+                final Set<String> actionIds = getTriggeredActionsAndReschedule(periodicActionComponent, currentWorldTime);
+                saveOrRemoveComponent(periodicEntity, periodicActionComponent);
+                Map<String, Long> actionIdWakeUp = periodicActionComponent.getActionIdWakeUp();
+                periodicEntity.saveChanges();
 
-            if (!periodicActionComponent.getActionIdWakeUp().isEmpty()) {
-                periodicOperationsSortedByTime.put(findSmallestWakeUp(periodicActionComponent.getActionIdWakeUp()), periodicEntity);
-            }
+                if (!actionIdWakeUp.isEmpty()) {
+                    periodicOperationsSortedByTime.put(findSmallestWakeUp(actionIdWakeUp), periodicEntity);
+                }
 
-            for (String actionId : actionIds) {
-                periodicEntity.send(new PeriodicActionTriggeredEvent(actionId));
+                for (String actionId : actionIds) {
+                    periodicEntity.send(new PeriodicActionTriggeredEvent(actionId));
+                }
             }
         });
     }

@@ -7,6 +7,8 @@ import java.util.Map;
 public interface PlatformerEntitySpawner {
     EntityRef createEntityFromRecipe(String additionalObject);
 
+    EntityRef createEntity(String prefabName, Map<String, Object> changes);
+
     EntityRef createEntityFromRecipeAt(float x, float y, float z, String recipe);
 
     EntityRef createEntityAt(float x, float y, float z, String prefabName, Map<String, Object> changes);

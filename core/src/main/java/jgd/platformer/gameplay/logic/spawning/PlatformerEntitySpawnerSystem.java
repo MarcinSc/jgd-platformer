@@ -24,6 +24,11 @@ public class PlatformerEntitySpawnerSystem implements PlatformerEntitySpawner {
     }
 
     @Override
+    public EntityRef createEntity(String prefabName, Map<String, Object> changes) {
+        return entitySpawner.spawnEntity(prefabName, changes);
+    }
+
+    @Override
     public EntityRef createEntityFromRecipeAt(float x, float y, float z, String recipe) {
         EntityRef result = entitySpawner.spawnEntityFromRecipe(recipe);
 

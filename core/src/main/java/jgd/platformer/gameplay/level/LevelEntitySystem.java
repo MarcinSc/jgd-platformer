@@ -56,8 +56,13 @@ public class LevelEntitySystem {
         }
 
         if (level.getAdditionalObjects() != null) {
-            for (String additionalObject : level.getAdditionalObjects()) {
-                platformerEntitySpawner.createEntityFromRecipe(additionalObject);
+            for (Object additionalObject : level.getAdditionalObjects()) {
+                if (additionalObject instanceof String) {
+                    platformerEntitySpawner.createEntityFromRecipe((String) additionalObject);
+                } else {
+                    Map<String, Object> objectDef = (Map<String, Object>) additionalObject;
+                    platformerEntitySpawner.createEntity((String) objectDef.get("prefabName"), (Map<String, Object>) objectDef.get("changes"));
+                }
             }
         }
     }
