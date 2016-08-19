@@ -1,3 +1,4 @@
 Credits where credit is due:
 music_jewels.ogg - courtesy of pixelsphere.org / The Cynic Project http://cynicmusic.com/ downloaded from http://opengameart.org/content/crystal-cave-mysterious-ambience-seamless-loop
 sfx_jump.ogg - courtesy of Blender Foundation downloaded from http://opengameart.org/content/jump-sound-effect-yo-frankie (and converted to ogg)
+turn_stove_on_01.ogg - coursey of TinyWorlds downloaded from http://opengameart.org/content/stove-switch

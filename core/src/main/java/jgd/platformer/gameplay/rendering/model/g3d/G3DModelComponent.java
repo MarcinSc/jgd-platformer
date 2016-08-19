@@ -5,13 +5,25 @@ import com.gempukku.secsy.entity.Component;
 public interface G3DModelComponent extends Component {
     String getModelFile();
 
-    float getScaleX();
+    default float getScaleX() {
+        return 1;
+    }
 
-    float getScaleY();
+    default float getScaleY() {
+        return 1;
+    }
 
-    float getScaleZ();
+    default float getScaleZ() {
+        return 1;
+    }
 
     default float getOpacity() {
         return 1;
     }
+
+    float getTranslateX();
+
+    float getTranslateY();
+
+    float getTranslateZ();
 }

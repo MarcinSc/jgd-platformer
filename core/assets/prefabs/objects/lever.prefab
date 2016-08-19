@@ -1,0 +1,35 @@
+{
+  "ModelRenderComponent": {
+  },
+  "G3DModelComponent": {
+    "modelFile": "model/lever/lever.g3dj",
+    "translateX": 0.5,
+    "translateZ": 0.95,
+    "scaleX": 0.5,
+    "scaleY": 1.3,
+    "scaleZ": 1.5
+  },
+  "G3DModelColorComponent": {
+    "materialId": "Base"
+  },
+  "ModelRotateComponent": {
+    "rotateY": 270
+  },
+  "SignalProducerComponent": {
+  },
+  "RectangleHitboxComponent": {
+    "translateX": 0.1,
+    "width": 0.8,
+    "height": 1
+  },
+  "HitboxActivateComponent": {},
+  "PlaySoundOnActivateComponent": {
+    "sound": "audio/turn_stove_on_01.ogg"
+  },
+  "SwitchSignalOnActivateComponent": {},
+  "G3DModelAnimationComponent": {},
+  "G3DModelActivateComponent": {
+    "activateAnimation": "Armature|TurnOff",
+    "deactivateAnimation": "Armature|TurnOn"
+  }
+}

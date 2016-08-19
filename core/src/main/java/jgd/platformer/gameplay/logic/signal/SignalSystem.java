@@ -73,6 +73,11 @@ public class SignalSystem implements SignalManager, LifeCycleSystem {
         }
     }
 
+    @Override
+    public boolean isProducing(EntityRef entityRef) {
+        return entityRef.getComponent(SignalProducerComponent.class).isProducingSignal();
+    }
+
     private boolean isChannelProducing(String channel) {
         for (EntityRef signalProducerEntity : signalProducers) {
             SignalProducerComponent signalProducer = signalProducerEntity.getComponent(SignalProducerComponent.class);

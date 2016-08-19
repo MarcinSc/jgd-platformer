@@ -3,6 +3,7 @@ package jgd.platformer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputEventQueue;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.gempukku.gaming.rendering.RenderingEngine;
 import com.gempukku.gaming.rendering.ui.UiProcessor;
@@ -96,6 +97,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("ai");
         gameplayActiveProfiles.add("delayActions");
         gameplayActiveProfiles.add("entitySpawner");
+        gameplayActiveProfiles.add("eventInputProcessor");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
         SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, reflections);
@@ -134,7 +136,10 @@ public class Platformer extends ApplicationAdapter {
 
             gameplayContext.getSystem(PhysicsEngine.class).processPhysics();
 
-            gameplayContext.getSystem(UiProcessor.class).processUi(inputEventQueue);
+            inputEventQueue.setProcessor(gameplayContext.getSystem(InputProcessor.class));
+            inputEventQueue.drain();
+
+            gameplayContext.getSystem(UiProcessor.class).processUi();
 
             gameplayContext.getSystem(InternalGameLoop.class).processUpdate();
 

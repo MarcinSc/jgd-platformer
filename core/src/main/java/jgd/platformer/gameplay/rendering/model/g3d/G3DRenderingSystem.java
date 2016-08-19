@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -14,8 +15,6 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
-import jgd.platformer.gameplay.logic.physics.ModelIdles;
-import jgd.platformer.gameplay.logic.physics.ModelWalks;
 import jgd.platformer.gameplay.rendering.model.GetModelInstance;
 
 import java.util.HashMap;
@@ -68,32 +67,17 @@ public class G3DRenderingSystem implements LifeCycleSystem {
     }
 
     @ReceiveEvent
-    public void modelWalks(ModelWalks event, EntityRef entity, G3DModelAnimationComponent animation) {
+    public void playAnimation(PlayAnimation event, EntityRef entity, G3DModelAnimationComponent animation) {
         String playedAnimation = animation.getPlayedAnimation();
-        String walkAnimation = animation.getWalkAnimation();
-        if (playedAnimation == null || !playedAnimation.equals(walkAnimation)) {
-            float walkAnimationSpeed = animation.getWalkAnimationSpeed();
+        String animationName = event.getAnimationName();
+        if (playedAnimation == null || !playedAnimation.equals(animationName)) {
+            float speedMultiplier = event.getSpeedMultiplier();
 
-            animation.setPlayedAnimation(walkAnimation);
+            animation.setPlayedAnimation(animationName);
             entity.saveChanges();
 
             AnimationController animationController = modelAnimations.get(entity);
-            animationController.animate(walkAnimation, -1, walkAnimationSpeed, null, 0.1f);
-        }
-    }
-
-    @ReceiveEvent
-    public void modelIdles(ModelIdles event, EntityRef entity, G3DModelAnimationComponent animation) {
-        String playedAnimation = animation.getPlayedAnimation();
-        String idleAnimation = animation.getIdleAnimation();
-        if (playedAnimation == null || !playedAnimation.equals(idleAnimation)) {
-            float idleAnimationSpeed = animation.getIdleAnimationSpeed();
-
-            animation.setPlayedAnimation(idleAnimation);
-            entity.saveChanges();
-
-            AnimationController animationController = modelAnimations.get(entity);
-            animationController.animate(idleAnimation, -1, idleAnimationSpeed, null, 0.1f);
+            animationController.animate(animationName, event.getLoopCount(), speedMultiplier, null, event.getTransitionTime());
         }
     }
 
@@ -112,12 +96,25 @@ public class G3DRenderingSystem implements LifeCycleSystem {
             }
         }
 
+        G3DModelColorComponent color = entityRef.getComponent(G3DModelColorComponent.class);
+        if (color != null) {
+            Material material = result.getMaterial(color.getMaterialId());
+            material.set(ColorAttribute.createDiffuse(
+                    color.getRed() / 255f,
+                    color.getGreen() / 255f,
+                    color.getBlue() / 255f,
+                    1f));
+        }
+
         result.transform.idt();
         if (animationController != null) {
             float seconds = timeManager.getTimeSinceLastUpdate() / 1000f;
             animationController.update(seconds);
         }
-        result.transform.translate(event.getLocation());
+        result.transform.translate(
+                event.getLocation().x + g3dModel.getTranslateX(),
+                event.getLocation().y + g3dModel.getTranslateY(),
+                event.getLocation().z + g3dModel.getTranslateZ());
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
         result.transform.scale(

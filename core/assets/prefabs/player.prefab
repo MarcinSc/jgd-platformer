@@ -21,6 +21,8 @@
     "scaleZ": 0.1
   },
   "G3DModelAnimationComponent": {
+  },
+  "G3DModelMovementComponent": {
     "idleAnimation": "Armature|Idle",
     "walkAnimation": "Armature|Walk",
     "walkAnimationSpeed": 2

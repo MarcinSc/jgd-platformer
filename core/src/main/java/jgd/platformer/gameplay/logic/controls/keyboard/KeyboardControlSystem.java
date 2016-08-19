@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay.logic.controls;
+package jgd.platformer.gameplay.logic.controls.keyboard;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -9,12 +9,13 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.audio.AudioManager;
+import jgd.platformer.gameplay.logic.controls.PlayerControlledComponent;
 import jgd.platformer.gameplay.logic.physics.*;
 
 @RegisterSystem(
         profiles = {"gameplay", "keyboard"}
 )
-public class KeyboardSystem implements LifeCycleSystem {
+public class KeyboardControlSystem implements LifeCycleSystem {
     @Inject
     private AudioManager audioManager;
 
