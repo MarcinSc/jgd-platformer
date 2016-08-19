@@ -1,13 +1,10 @@
 package com.gempukku.gaming.asset.prefab;
 
 import com.gempukku.gaming.asset.component.NameComponentManager;
-import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
-import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
+import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
-import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.serialization.ComponentInformation;
 import com.gempukku.secsy.serialization.EntityInformation;
@@ -16,7 +13,11 @@ import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.reflections.Configuration;
+import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 import java.io.IOException;
@@ -30,22 +31,30 @@ import java.util.Map;
 @RegisterSystem(
         profiles = "prefabManager",
         shared = PrefabManager.class)
-public class ReflectionsPrefabManager implements PrefabManager {
+public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager {
     @Inject
     private NameComponentManager nameComponentManager;
 
     private Map<String, EntityData> prefabsByName;
 
-    @ReceiveEvent
-    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
-        event.addScanner(new PrefabsScanner());
+    @Override
+    public float getPriority() {
+        return 100;
     }
 
-    @ReceiveEvent
-    public void readPrefabs(ReflectionsScanned event, EntityRef entityRef) {
+    @Override
+    public void initialize() {
+        Configuration scanConfiguration = new ConfigurationBuilder()
+                .setScanners(new PrefabsScanner())
+                .setUrls(ClasspathHelper.forPackage("prefabs"));
+
+        initializePrefabs(new Reflections(scanConfiguration));
+    }
+
+    private void initializePrefabs(Reflections reflections) {
         prefabsByName = new HashMap<>();
 
-        Multimap<String, String> resources = event.getReflections().getStore().get(PrefabsScanner.class);
+        Multimap<String, String> resources = reflections.getStore().get(PrefabsScanner.class);
 
         for (String prefabName : resources.keySet()) {
             Collection<String> paths = resources.get(prefabName);
