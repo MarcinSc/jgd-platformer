@@ -23,7 +23,7 @@
   "SignalConsumerComponent": {},
   "ModelTranslateOnSignalComponent": {
     "distanceY": 2,
-    "moveTime": 3000,
+    "moveTime": 1500,
     "interpolation": "linear"
   },
   "BaseLocationComponent": {}
