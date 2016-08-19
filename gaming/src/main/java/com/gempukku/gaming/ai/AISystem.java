@@ -1,8 +1,7 @@
 package com.gempukku.gaming.ai;
 
 import com.gempukku.gaming.ai.builder.JsonTaskBuilder;
-import com.gempukku.gaming.asset.reflections.GatherReflectionScanners;
-import com.gempukku.gaming.asset.reflections.ReflectionsScanned;
+import com.gempukku.gaming.asset.JavaPackageProvider;
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -16,15 +15,24 @@ import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @RegisterSystem(
         profiles = "ai",
@@ -35,6 +43,8 @@ public class AISystem implements LifeCycleSystem, AIEngine {
     private EntityIndexManager entityIndexManager;
     @Inject
     private SystemContext context;
+    @Inject
+    private JavaPackageProvider javaPackageProvider;
 
     private EntityIndex aiEntities;
 
@@ -42,20 +52,30 @@ public class AISystem implements LifeCycleSystem, AIEngine {
     private Map<String, RootTask<EntityRefReference>> compiledAIs = new HashMap<>();
     private Map<String, Class<? extends AITask<EntityRefReference>>> taskTypes = new HashMap<>();
 
-    @ReceiveEvent
-    public void createScanner(GatherReflectionScanners event, EntityRef entityRef) {
-        event.addScanner(new BehaviorScanner());
-    }
-
-    @ReceiveEvent
-    public void initializeAI(ReflectionsScanned event, EntityRef entityRef) {
-        findAllAITasks(event.getReflections());
-
-        loadAllBehaviorJsons(event.getReflections());
+    @Override
+    public float getPriority() {
+        return 100;
     }
 
     @Override
     public void initialize() {
+        Configuration behaviorsConfiguration = new ConfigurationBuilder()
+                .setScanners(new BehaviorScanner())
+                .setUrls(ClasspathHelper.forPackage("behaviors", ClasspathHelper.contextClassLoader()));
+
+        loadAllBehaviorJsons(new Reflections(behaviorsConfiguration));
+
+        Set<URL> contextLocations = new HashSet<>();
+        for (String javaPackage : javaPackageProvider.getJavaPackages()) {
+            contextLocations.addAll(ClasspathHelper.forPackage(javaPackage, ClasspathHelper.contextClassLoader()));
+        }
+
+        Configuration taskConfiguration = new ConfigurationBuilder()
+                .setScanners(new SubTypesScanner())
+                .setUrls(contextLocations);
+
+        findAllAITasks(new Reflections(taskConfiguration));
+
         aiEntities = entityIndexManager.addIndexOnComponents(AIComponent.class);
     }
 

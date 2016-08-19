@@ -1,8 +1,13 @@
 package com.gempukku.secsy.context.system;
 
+import org.reflections.Configuration;
 import org.reflections.Reflections;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +25,12 @@ public class ReflectionsAnnotatedTypesSystemProducer implements SystemProducer {
         this.classPredicate = classPredicate;
     }
 
-    public void scanReflections(Reflections reflections) {
-        for (Class<?> type : reflections.getTypesAnnotatedWith(annotation)) {
+    public void scanReflections(Collection<URL> urlsToScan) {
+        Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
+                .setScanners(new TypeAnnotationsScanner())
+                .setUrls(urlsToScan);
+
+        for (Class<?> type : new Reflections(scanBasedOnAnnotations).getTypesAnnotatedWith(annotation)) {
             if (classPredicate.test(type))
                 systemsDetected.add(type);
         }

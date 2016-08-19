@@ -4,19 +4,18 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.ReflectionsAnnotatedTypesSystemProducer;
 import com.gempukku.secsy.context.system.ShareSystemInitializer;
 import com.gempukku.secsy.context.system.SimpleContext;
-import org.reflections.Reflections;
 
+import java.net.URL;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
 
 public class SECSyContext extends SimpleContext {
-    public SECSyContext(Set<String> profilesActive, Reflections... reflectionsToScan) {
+    public SECSyContext(Set<String> profilesActive, Collection<URL> urlsToScan) {
         ReflectionsAnnotatedTypesSystemProducer producer = new ReflectionsAnnotatedTypesSystemProducer(RegisterSystem.class,
                 new ProfilesActivePredicate(profilesActive));
 
-        for (Reflections reflections : reflectionsToScan) {
-            producer.scanReflections(reflections);
-        }
+        producer.scanReflections(urlsToScan);
 
         setSystemProducer(producer);
         ShareSystemInitializer initializer = new ShareSystemInitializer();
