@@ -1,20 +1,23 @@
 package com.gempukku.gaming.asset.texture;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 
-import java.io.File;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RegisterSystem(
         profiles = "textureAtlas", shared = {TextureAtlasProvider.class, TextureAtlasRegistry.class})
@@ -33,45 +36,24 @@ public class ReflectionsTextureAtlasProvider implements TextureAtlasProvider, Te
 
     @Override
     public void postInitialize() {
-        // Delete everything from the temp directory
-        FileHandle temp = Gdx.files.local("temp");
-        if (temp.exists()) {
-            File atlasLocation = temp.file();
-
-            for (File file : atlasLocation.listFiles()) {
-                file.delete();
-            }
-        }
-
         textureList = new HashMap<>();
         textures = new HashMap<>();
         textureAtlases = new HashMap<>();
 
         for (String textureAtlasId : texturesToRegister.keySet()) {
-            TexturePacker.Settings settings = new TexturePacker.Settings();
-            settings.maxWidth = 512;
-            settings.maxHeight = 512;
-            settings.silent = true;
-            settings.duplicatePadding = true;
-
-            File resourceRoot = new File(ReflectionsTextureAtlasProvider.class.getResource("/badlogic.jpg").getPath()).getParentFile().getParentFile();
-            TexturePacker texturePacker = new TexturePacker(resourceRoot, settings);
+            PixmapPacker packer = new PixmapPacker(512, 512, Pixmap.Format.RGBA8888, 2, false);
+            packer.setDuplicateBorder(true);
 
             for (String texturePath : texturesToRegister.get(textureAtlasId)) {
-                URL textureResource = ReflectionsTextureAtlasProvider.class.getResource("/" + texturePath);
-                texturePacker.addImage(new File(textureResource.getPath()));
+                packer.pack(texturePath, new Pixmap(Gdx.files.internal(texturePath)));
             }
 
-            FileHandle atlasFileHandle = Gdx.files.local("temp/" + textureAtlasId + ".atlas");
-
-            texturePacker.pack(temp.file(), textureAtlasId);
-
-            TextureAtlas textureAtlas = new TextureAtlas(atlasFileHandle);
+            TextureAtlas textureAtlas = packer.generateTextureAtlas(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear, false);
 
             Map<String, TextureRegion> textureMapInAtlas = new HashMap<>();
             for (TextureAtlas.AtlasRegion atlasRegion : textureAtlas.getRegions()) {
                 String name = atlasRegion.name;
-                textureMapInAtlas.put(name.substring(name.indexOf('/') + 1), atlasRegion);
+                textureMapInAtlas.put(name, atlasRegion);
             }
 
             List<Texture> texturesInAtlas = new ArrayList<>();
@@ -92,6 +74,6 @@ public class ReflectionsTextureAtlasProvider implements TextureAtlasProvider, Te
 
     @Override
     public TextureRegion getTexture(String textureAtlasId, String name) {
-        return textures.get(textureAtlasId).get(name.substring(0, name.lastIndexOf('.')));
+        return textures.get(textureAtlasId).get(name);
     }
 }
