@@ -10,7 +10,7 @@
       "6,-1,0": "stone",
       "7,-1,0": "stone",
       "8,0,0": "stone",
-      "7,0,-1": "exitPortal"
+      "7,0,0": "exitPortal"
     },
     "objectCoordinates": {
       "5,1,0.5": "bug"

@@ -22,7 +22,7 @@
       "9,9.5,0": "stone",
       "9,10.5,0": "stone",
       "9,11.5,0": "stone",
-      "7,7.5,-1": "exitPortal"
+      "7,7.5,0": "exitPortal"
     },
     "objectCoordinates": {
       "-2,1,0.5": "bugWithGun",

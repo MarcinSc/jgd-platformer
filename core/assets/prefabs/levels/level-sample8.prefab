@@ -10,7 +10,7 @@
       "7,0,0": "stone",
       "8,0,0": "stone",
       "9,0,0": "stone",
-      "8,1,-1": "exitPortal",
+      "8,1,0": "exitPortal",
       "5,3,0": "stone",
       "5,4,0": "stone",
       "0,5,0": "stone",

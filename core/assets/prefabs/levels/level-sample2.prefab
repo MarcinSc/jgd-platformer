@@ -10,7 +10,7 @@
       "6,0,0": "stone",
       "7,0,0": "stone",
       "8,0,0": "stone",
-      "7,1,-1": "exitPortal"
+      "7,1,0": "exitPortal"
     },
     "objectCoordinates": {
       "-0.5,3,0.5": "star",

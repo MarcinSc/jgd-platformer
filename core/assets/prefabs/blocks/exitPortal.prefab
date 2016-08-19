@@ -1,6 +1,7 @@
 {
   "BlockComponent": {
     "shape": "cube",
+    "translateZ": -1,
     "texturesForParts": {
       "front": "blockTiles/ExitPortal.png"
     }

@@ -12,7 +12,7 @@
       "10,-2,0": "stone",
       "-3,1,0": "stone",
       "-3,2,0": "stone",
-      "9,-1,-1": "exitPortal"
+      "9,-1,0": "exitPortal"
     },
     "objectCoordinates": {
       "-3,-1,0": "cycleDoor",

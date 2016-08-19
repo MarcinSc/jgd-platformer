@@ -82,7 +82,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
                         return null;
                     return textureAtlasProvider.getTexture("platforms", textureName);
                 }
-            }, x, y, z);
+            }, x + blockDef.getTranslateX(), y + blockDef.getTranslateY(), z + blockDef.getTranslateZ());
         }
 
         MeshPart platform = vertices.generateMeshPart("platform");
