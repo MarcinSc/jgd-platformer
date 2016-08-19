@@ -12,12 +12,9 @@ import com.gempukku.secsy.context.SECSyContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
 import jgd.platformer.gameplay.logic.physics.PhysicsEngine;
 import jgd.platformer.menu.GameState;
-import org.reflections.Configuration;
-import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,13 +37,12 @@ public class Platformer extends ApplicationAdapter {
     public void create() {
         fpsLogger = new FPSLogger();
 
-        Configuration scanBasedOnAnnotations = new ConfigurationBuilder()
-                .setScanners(new TypeAnnotationsScanner())
-                .setUrls(ClasspathHelper.forJavaClassPath());
+        Set<URL> urlsToScan = new HashSet<>();
+        urlsToScan.addAll(ClasspathHelper.forPackage("com.gempukku", ClasspathHelper.contextClassLoader()));
+        urlsToScan.addAll(ClasspathHelper.forPackage("jgd.platformer", ClasspathHelper.contextClassLoader()));
 
-        Reflections reflections = new Reflections(scanBasedOnAnnotations);
-        menuContext = createMenuContext(reflections);
-        gameplayContext = createGameplayContext(reflections);
+        menuContext = createMenuContext(urlsToScan);
+        gameplayContext = createGameplayContext(urlsToScan);
 
         inputEventQueue = new InputEventQueue();
         Gdx.input.setInputProcessor(inputEventQueue);
@@ -54,7 +50,7 @@ public class Platformer extends ApplicationAdapter {
         lastUpdateTime = System.currentTimeMillis();
     }
 
-    private SECSyContext createMenuContext(Reflections reflections) {
+    private SECSyContext createMenuContext(Collection<URL> urlsToScan) {
         Set<String> menuActiveProfiles = new HashSet<>();
         menuActiveProfiles.add("menu");
         menuActiveProfiles.add("gameLoop");
@@ -69,7 +65,7 @@ public class Platformer extends ApplicationAdapter {
         menuActiveProfiles.add("stageUi");
         menuActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, reflections);
+        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, urlsToScan);
         menuContext.startup();
 
         System.out.println("Systems in menu context");
@@ -80,7 +76,7 @@ public class Platformer extends ApplicationAdapter {
         return menuContext;
     }
 
-    private SECSyContext createGameplayContext(Reflections reflections) {
+    private SECSyContext createGameplayContext(Collection<URL> urlsToScan) {
         Set<String> gameplayActiveProfiles = new HashSet<>();
         gameplayActiveProfiles.add("gameplay");
         gameplayActiveProfiles.add("gameLoop");
@@ -100,7 +96,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("eventInputProcessor");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, reflections);
+        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, urlsToScan);
         gameplayContext.startup();
 
         System.out.println("Systems in gameplay context");
