@@ -16,7 +16,7 @@
   },
   "G3DModelComponent": {
     "modelFile": "model/duke/duke.g3dj",
-    "scaleX": 0.1,
+    "scaleX": 0.08,
     "scaleY": 0.115,
     "scaleZ": 0.1
   },
