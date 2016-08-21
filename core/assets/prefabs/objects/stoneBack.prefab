@@ -1,0 +1,22 @@
+{
+  "ModelRenderComponent": {
+  },
+  "RenderedShapeComponent": {
+    "modelPrefab": "modelStoneBack"
+  },
+  "CollisionObstacleComponent": {
+    "width": 1,
+    "height": 1
+  },
+  "RectangleHitboxComponent": {
+    "translateX": 0.3,
+    "translateY": 1,
+    "width": 0.4,
+    "height": 0.1
+  },
+  "HitboxActivateComponent": {},
+  "MoveActivatorComponent": {
+    "distanceZ": 1,
+    "moveTime": 1000
+  }
+}

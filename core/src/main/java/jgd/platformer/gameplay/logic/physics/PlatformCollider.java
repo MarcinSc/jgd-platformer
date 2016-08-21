@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.physics;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -36,11 +37,13 @@ public class PlatformCollider {
                 String[] locationSplit = location.split(",");
                 float x = Float.parseFloat(locationSplit[0]);
                 float y = Float.parseFloat(locationSplit[1]);
+                int zLayer = MathUtils.floor(Float.parseFloat(locationSplit[2]));
                 platformBlocks.add(
                         new BlockObstacle(
                                 new Rectangle2D.Float(
                                         x + collidingObject.getTranslateX(), y + collidingObject.getTranslateY(),
                                         collidingObject.getWidth(), collidingObject.getHeight()),
+                                zLayer,
                                 collidingObject.getCollideSides()));
             }
         }
@@ -55,7 +58,7 @@ public class PlatformCollider {
     public void getCollisionPoint(GetCollisionPoint event, EntityRef entity) {
         for (BlockObstacle platformBlock : platformBlocks) {
             if (platformBlock.sides == null || containsDirection(platformBlock.sides, event.getDirection())) {
-                if (platformBlock.rectangle.intersects(event.getObjectBounds())) {
+                if (event.getZLayer() == platformBlock.zLayer && platformBlock.rectangle.intersects(event.getObjectBounds())) {
                     switch (event.getDirection()) {
                         case LEFT:
                             event.registerCollision((float) platformBlock.rectangle.getMaxX());
@@ -85,10 +88,12 @@ public class PlatformCollider {
 
     private static class BlockObstacle {
         private Rectangle2D rectangle;
+        private int zLayer;
         private List<String> sides;
 
-        public BlockObstacle(Rectangle2D rectangle, List<String> sides) {
+        public BlockObstacle(Rectangle2D rectangle, int zLayer, List<String> sides) {
             this.rectangle = rectangle;
+            this.zLayer = zLayer;
             this.sides = sides;
         }
     }

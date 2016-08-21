@@ -12,14 +12,20 @@ public class GetCollisionPoint extends Event {
     private Rectangle2D objectBounds;
     private Direction direction;
     private Float nearestCollisionPoint;
+    private int zLayer;
 
-    public GetCollisionPoint(Rectangle2D objectBounds, Direction direction) {
+    public GetCollisionPoint(Rectangle2D objectBounds, int zLayer, Direction direction) {
         this.objectBounds = objectBounds;
+        this.zLayer = zLayer;
         this.direction = direction;
     }
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public int getZLayer() {
+        return zLayer;
     }
 
     public Rectangle2D getObjectBounds() {

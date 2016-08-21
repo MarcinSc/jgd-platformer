@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.activate;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
@@ -35,9 +36,11 @@ public class HitboxActivateSystem {
                     rectangleHitbox.getWidth(),
                     rectangleHitbox.getHeight());
 
-            for (EntityRef activateEntity : hitboxOverlapManager.findOverlappedEntities(rectangle,
+            int zLayer = MathUtils.floor(location.getZ());
+
+            for (EntityRef activateEntity : hitboxOverlapManager.findOverlappedEntities(rectangle, zLayer,
                     entity -> entity.hasComponent(HitboxActivateComponent.class))) {
-                activateEntity.send(new ActivateEntity());
+                activateEntity.send(new ActivateEntity(player));
             }
         }
     }

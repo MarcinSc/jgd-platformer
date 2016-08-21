@@ -1,0 +1,9 @@
+{
+  "ModelShapeComponent": {
+    "shape": "cube",
+    "texturesForParts": {
+      "top": "blockTiles/StoneDownArrow.png",
+      "all": "blockTiles/Stone.png"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.hitbox;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
@@ -48,12 +49,13 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
             ShouldEntityHitboxOverlap overlap = new ShouldEntityHitboxOverlap();
             entity.send(overlap);
             if (!overlap.isCancelled()) {
+                int zLayer = MathUtils.floor(entity.getComponent(LocationComponent.class).getZ());
                 for (Map.Entry<EntityRef, Rectangle2D> otherHitboxEntity : hitboxEntities.entrySet()) {
                     EntityRef otherEntity = otherHitboxEntity.getKey();
                     if (!entity.equals(otherEntity)) {
                         Rectangle2D otherShape = otherHitboxEntity.getValue();
-
-                        if (shape.intersects(otherShape)) {
+                        int otherZLayer = MathUtils.floor(otherEntity.getComponent(LocationComponent.class).getZ());
+                        if (zLayer == otherZLayer && shape.intersects(otherShape)) {
                             eventsToFire.add(new OverlapEventToFire(entity, new HitboxOverlapEvent(otherEntity)));
                         }
                     }
@@ -67,13 +69,14 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
     }
 
     @Override
-    public Iterable<EntityRef> findOverlappedEntities(Rectangle2D rectangle, Predicate<EntityRef> filter) {
+    public Iterable<EntityRef> findOverlappedEntities(Rectangle2D rectangle, int zLayer, Predicate<EntityRef> filter) {
         List<EntityRef> result = new LinkedList<>();
         for (Map.Entry<EntityRef, Rectangle2D> hitboxEntity : hitboxEntities.entrySet()) {
             EntityRef entity = hitboxEntity.getKey();
             if (filter.test(entity)) {
                 Rectangle2D shape = hitboxEntity.getValue();
-                if (shape.intersects(rectangle))
+                int entityZLayer = MathUtils.floor(entity.getComponent(LocationComponent.class).getZ());
+                if (zLayer == entityZLayer && shape.intersects(rectangle))
                     result.add(entity);
             }
         }

@@ -1,0 +1,39 @@
+{
+  "LevelComponent": {
+    "blockCoordinates": {
+      "-5,-2,0": "stone",
+      "-4,-2,0": "stone",
+      "-3,-2,-1": "stone",
+      "-2,-2,-1": "stone",
+      "-2,-2,0": "stone",
+      "-2,-1,0": "stone",
+      "-2,0,0": "stone",
+      "-2,1,0": "stone",
+      "-1,-2,0": "stone",
+      "0,-2,0": "stone",
+      "1,-2,0": "stone",
+      "2,-2,0": "stone",
+      "1,-1,0": "exitPortal"
+    },
+    "objectCoordinates": {
+      "-3,-2,0": "stoneFront",
+      "-1,-2,-1": "stoneBack"
+    }
+  },
+  "PlayerSpawnComponent": {
+    "x": -4.5,
+    "y": -1,
+    "z": 0.5
+  },
+  "CameraBoundsComponent": {
+    "minX": 0,
+    "minY": 0,
+    "maxX": 10,
+    "maxY": 10
+  },
+  "PlayerDeathBoundsComponent": {
+    "minX": -10,
+    "maxX": 6,
+    "minY": -7
+  }
+}

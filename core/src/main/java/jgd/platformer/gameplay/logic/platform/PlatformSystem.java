@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.platform;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
@@ -31,7 +32,9 @@ public class PlatformSystem {
                     oldLocation.getY() + platform.getTranslateY(),
                     platform.getWidth(), platform.getHeight());
 
-            for (EntityRef entityToMove : hitboxOverlapManager.findOverlappedEntities(platformRectangle, entity -> entity.hasComponent(PlatformMovableComponent.class))) {
+            int zLayer = MathUtils.floor(location.getZ());
+
+            for (EntityRef entityToMove : hitboxOverlapManager.findOverlappedEntities(platformRectangle, zLayer, entity -> entity.hasComponent(PlatformMovableComponent.class))) {
                 LocationComponent entityLocation = entityToMove.getComponent(LocationComponent.class);
                 entityLocation.setX(entityLocation.getX() + deltaX);
                 entityLocation.setY(entityLocation.getY() + deltaY);

@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.signal.producer.hitbox;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
@@ -43,7 +44,9 @@ public class HitboxOverlapSignalProducerSystem implements LifeCycleSystem {
                     location.getY() + hitboxOverlapProducer.getTranslateY(),
                     hitboxOverlapProducer.getWidth(), hitboxOverlapProducer.getHeight());
 
-            Iterable<EntityRef> overlapping = hitboxOverlapManager.findOverlappedEntities(overlap,
+            int zLayer = MathUtils.floor(location.getZ());
+
+            Iterable<EntityRef> overlapping = hitboxOverlapManager.findOverlappedEntities(overlap, zLayer,
                     entity -> entity.hasComponent(ActivateHitboxOverlapSignalProducerComponent.class));
 
             if (overlapping.iterator().hasNext()) {

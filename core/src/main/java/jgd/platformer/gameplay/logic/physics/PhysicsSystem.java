@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.physics;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -40,42 +41,49 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
             calculateNewVelocityAndAcceleration(seconds);
 
             for (EntityRef kineticEntity : kineticObjectEntities.getEntities()) {
-                KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
-                float velocityX = kineticObject.getVelocityX();
-                float velocityY = kineticObject.getVelocityY();
+                ShouldProcessPhysics shouldProcessPhysics = new ShouldProcessPhysics();
+                kineticEntity.send(shouldProcessPhysics);
 
-                LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
+                if (!shouldProcessPhysics.isCancelled()) {
+                    KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
+                    float velocityX = kineticObject.getVelocityX();
+                    float velocityY = kineticObject.getVelocityY();
 
-                boolean oldGrounded = kineticObject.isGrounded();
-                float oldLocationX = location.getX();
-                float oldLocationY = location.getY();
+                    LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
 
-                // s = v*t
-                float newLocationX = oldLocationX + velocityX * seconds;
-                float newLocationY = oldLocationY + velocityY * seconds;
+                    int zLayer = MathUtils.floor(location.getZ());
 
-                CollidingObjectComponent collidingObject = kineticEntity.getComponent(CollidingObjectComponent.class);
-                if (collidingObject != null) {
-                    newLocationY = resolveVerticalCollisions(kineticEntity, collidingObject, kineticObject, velocityY, newLocationX, newLocationY);
-                    newLocationX = resolveHorizontalCollisions(kineticEntity, collidingObject, kineticObject, velocityX, newLocationX, newLocationY);
-                }
+                    boolean oldGrounded = kineticObject.isGrounded();
+                    float oldLocationX = location.getX();
+                    float oldLocationY = location.getY();
 
-                location.setX(newLocationX);
-                location.setY(newLocationY);
+                    // s = v*t
+                    float newLocationX = oldLocationX + velocityX * seconds;
+                    float newLocationY = oldLocationY + velocityY * seconds;
 
-                ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
-                kineticEntity.send(shouldEntityMove);
+                    CollidingObjectComponent collidingObject = kineticEntity.getComponent(CollidingObjectComponent.class);
+                    if (collidingObject != null) {
+                        newLocationY = resolveVerticalCollisions(kineticEntity, collidingObject, kineticObject, velocityY, newLocationX, newLocationY, zLayer);
+                        newLocationX = resolveHorizontalCollisions(kineticEntity, collidingObject, kineticObject, velocityX, newLocationX, newLocationY, zLayer);
+                    }
 
-                if (!shouldEntityMove.isCancelled()) {
-                    boolean newGrounded = kineticObject.isGrounded();
-                    kineticEntity.saveChanges();
-                    kineticEntity.send(new EntityMovementProcessed(oldGrounded, oldLocationX, oldLocationY, newGrounded, newLocationX, newLocationY));
+                    location.setX(newLocationX);
+                    location.setY(newLocationY);
+
+                    ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
+                    kineticEntity.send(shouldEntityMove);
+
+                    if (!shouldEntityMove.isCancelled()) {
+                        boolean newGrounded = kineticObject.isGrounded();
+                        kineticEntity.saveChanges();
+                        kineticEntity.send(new EntityMovementProcessed(oldGrounded, oldLocationX, oldLocationY, newGrounded, newLocationX, newLocationY));
+                    }
                 }
             }
         }
     }
 
-    private float resolveHorizontalCollisions(EntityRef kineticEntity, CollidingObjectComponent collidingObject, KineticObjectComponent kineticObject, float velocityX, float locationX, float locationY) {
+    private float resolveHorizontalCollisions(EntityRef kineticEntity, CollidingObjectComponent collidingObject, KineticObjectComponent kineticObject, float velocityX, float locationX, float locationY, int zLayer) {
         if (velocityX > 0) {
             // Need to check right bounds
             Rectangle2D.Float collisionBounds = new Rectangle2D.Float(
@@ -84,7 +92,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                     collidingObject.getWidth() * HORIZONTAL_COLLIDER_WIDTH,
                     collidingObject.getHeight() * (1 - 2 * HORIZONTAL_COLLIDER_VERTICAL_SPACE));
 
-            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, GetCollisionPoint.Direction.RIGHT);
+            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, zLayer, GetCollisionPoint.Direction.RIGHT);
             kineticEntity.send(getCollisionPoint);
 
             if (getCollisionPoint.getNearestCollisionPoint() != null) {
@@ -99,7 +107,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                     collidingObject.getWidth() * HORIZONTAL_COLLIDER_WIDTH,
                     collidingObject.getHeight() * (1 - 2 * HORIZONTAL_COLLIDER_VERTICAL_SPACE));
 
-            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, GetCollisionPoint.Direction.LEFT);
+            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, zLayer, GetCollisionPoint.Direction.LEFT);
             kineticEntity.send(getCollisionPoint);
 
             if (getCollisionPoint.getNearestCollisionPoint() != null) {
@@ -111,7 +119,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
         return locationX;
     }
 
-    private float resolveVerticalCollisions(EntityRef kineticEntity, CollidingObjectComponent collidingObject, KineticObjectComponent kineticObject, float velocityY, float locationX, float locationY) {
+    private float resolveVerticalCollisions(EntityRef kineticEntity, CollidingObjectComponent collidingObject, KineticObjectComponent kineticObject, float velocityY, float locationX, float locationY, int zLayer) {
         if (velocityY > 0) {
             // Need to check upper bounds
             Rectangle2D.Float collisionBounds = new Rectangle2D.Float(
@@ -120,7 +128,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                     collidingObject.getWidth() * (1 - 2 * HORIZONTAL_COLLIDER_WIDTH),
                     collidingObject.getHeight() * VERTICAL_COLLIDER_HEIGHT);
 
-            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, GetCollisionPoint.Direction.UP);
+            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, zLayer, GetCollisionPoint.Direction.UP);
             kineticEntity.send(getCollisionPoint);
 
             kineticObject.setGrounded(false);
@@ -136,7 +144,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                     collidingObject.getWidth() * (1 - 2 * HORIZONTAL_COLLIDER_WIDTH),
                     collidingObject.getHeight() * VERTICAL_COLLIDER_HEIGHT);
 
-            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, GetCollisionPoint.Direction.DOWN);
+            GetCollisionPoint getCollisionPoint = new GetCollisionPoint(collisionBounds, zLayer, GetCollisionPoint.Direction.DOWN);
             kineticEntity.send(getCollisionPoint);
 
             if (getCollisionPoint.getNearestCollisionPoint() != null) {
@@ -153,29 +161,34 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
 
     private void calculateNewVelocityAndAcceleration(float seconds) {
         for (EntityRef kineticEntity : kineticObjectEntities.getEntities()) {
-            KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
+            ShouldProcessPhysics shouldProcessPhysics = new ShouldProcessPhysics();
+            kineticEntity.send(shouldProcessPhysics);
 
-            ApplyPhysicsForces applyForces = new ApplyPhysicsForces(kineticObject.getVelocityX(), kineticObject.getVelocityY());
-            kineticEntity.send(applyForces);
+            if (!shouldProcessPhysics.isCancelled()) {
+                KineticObjectComponent kineticObject = kineticEntity.getComponent(KineticObjectComponent.class);
 
-            float oldAccelerationX = kineticObject.getAccelerationX();
-            float oldAccelerationY = kineticObject.getAccelerationY();
-            //   F = ma => a = F/m => [m=1] a = F
-            float newAccelerationX = applyForces.getForceX();
-            float newAccelerationY = applyForces.getForceY();
-            float avgAccelerationX = (oldAccelerationX + newAccelerationX) / 2f;
-            float avgAccelerationY = (oldAccelerationY + newAccelerationY) / 2f;
+                ApplyPhysicsForces applyForces = new ApplyPhysicsForces(kineticObject.getVelocityX(), kineticObject.getVelocityY());
+                kineticEntity.send(applyForces);
 
-            // v = v0 + at
-            float newVelocityX = applyForces.getBaseVelocityX() + avgAccelerationX * seconds;
-            float newVelocityY = applyForces.getBaseVelocityY() + avgAccelerationY * seconds;
+                float oldAccelerationX = kineticObject.getAccelerationX();
+                float oldAccelerationY = kineticObject.getAccelerationY();
+                //   F = ma => a = F/m => [m=1] a = F
+                float newAccelerationX = applyForces.getForceX();
+                float newAccelerationY = applyForces.getForceY();
+                float avgAccelerationX = (oldAccelerationX + newAccelerationX) / 2f;
+                float avgAccelerationY = (oldAccelerationY + newAccelerationY) / 2f;
 
-            kineticObject.setAccelerationX(newAccelerationX);
-            kineticObject.setAccelerationY(newAccelerationY);
-            kineticObject.setVelocityX(newVelocityX);
-            kineticObject.setVelocityY(newVelocityY);
+                // v = v0 + at
+                float newVelocityX = applyForces.getBaseVelocityX() + avgAccelerationX * seconds;
+                float newVelocityY = applyForces.getBaseVelocityY() + avgAccelerationY * seconds;
 
-            kineticEntity.saveChanges();
+                kineticObject.setAccelerationX(newAccelerationX);
+                kineticObject.setAccelerationY(newAccelerationY);
+                kineticObject.setVelocityX(newVelocityX);
+                kineticObject.setVelocityY(newVelocityY);
+
+                kineticEntity.saveChanges();
+            }
         }
     }
 }

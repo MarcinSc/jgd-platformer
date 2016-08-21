@@ -29,7 +29,7 @@ public class ModelTranslateSystem implements LifeCycleSystem {
     @Override
     public void initialize() {
         translateEntities = entityIndexManager.addIndexOnComponents(ConstantModelTranslateComponent.class, LocationComponent.class, BaseLocationComponent.class);
-        translateOverTimeEntities = entityIndexManager.addIndexOnComponents(ModelTranslateOverTimeComponent.class, LocationComponent.class, BaseLocationComponent.class);
+        translateOverTimeEntities = entityIndexManager.addIndexOnComponents(ModelTranslateOverTimeComponent.class, LocationComponent.class);
     }
 
     @ReceiveEvent
@@ -75,7 +75,6 @@ public class ModelTranslateSystem implements LifeCycleSystem {
         for (EntityRef translateOverTimeEntity : translateOverTimeEntities) {
             ModelTranslateOverTimeComponent translate = translateOverTimeEntity.getComponent(ModelTranslateOverTimeComponent.class);
             LocationComponent location = translateOverTimeEntity.getComponent(LocationComponent.class);
-            BaseLocationComponent baseLocation = translateOverTimeEntity.getComponent(BaseLocationComponent.class);
 
             long progress = time - translate.getStartTime();
             long moveTime = translate.getMoveTime();
