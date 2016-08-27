@@ -1,0 +1,27 @@
+{
+  "ModelRenderComponent": {
+  },
+  "RenderedMultiShapeComponent": {
+    "modelPrefab": "modelStonePlatform",
+    "shapeCount": 2,
+    "shapeAdvanceX": 1
+  },
+  "ModelScaleComponent": {
+    "scaleX": 1,
+    "scaleY": 0.5
+  },
+  "CollisionObstacleComponent": {
+    "width": 2,
+    "height": 0.5
+  },
+  "SignalConsumerComponent": {},
+  "ModelTranslateOnSignalComponent": {
+  },
+  "BaseLocationComponent": {},
+  "PlatformComponent": {
+    "translateX": 0,
+    "translateY": 0.5,
+    "width": 2,
+    "height": 0.1
+  }
+}

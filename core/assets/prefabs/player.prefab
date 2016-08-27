@@ -60,5 +60,6 @@
     "factionName": "player"
   },
   "PlatformMovableComponent": {},
-  "ActivateHitboxOverlapSignalProducerComponent": {}
+  "ActivateHitboxOverlapSignalProducerComponent": {},
+  "ActivatorComponent": {}
 }
