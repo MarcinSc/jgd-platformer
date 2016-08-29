@@ -5,7 +5,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.logic.physics.ApplyPhysicsForces;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class GravitySystem {
     private static final float GRAVITY_FORCE = -9.81f;
 

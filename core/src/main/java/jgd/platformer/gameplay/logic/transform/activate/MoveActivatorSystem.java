@@ -13,7 +13,7 @@ import jgd.platformer.gameplay.logic.physics.ShouldProcessPhysics;
 import jgd.platformer.gameplay.logic.transform.ModelTranslateOverTimeComponent;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class MoveActivatorSystem {
     @Inject

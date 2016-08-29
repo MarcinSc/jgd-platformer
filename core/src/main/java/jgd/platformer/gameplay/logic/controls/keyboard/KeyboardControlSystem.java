@@ -13,7 +13,7 @@ import jgd.platformer.gameplay.logic.controls.PlayerControlledComponent;
 import jgd.platformer.gameplay.logic.physics.*;
 
 @RegisterSystem(
-        profiles = {"gameplay", "keyboard"}
+        profiles = {"gameScreen", "gameplay", "keyboard"}
 )
 public class KeyboardControlSystem implements LifeCycleSystem {
     @Inject

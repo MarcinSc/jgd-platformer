@@ -8,7 +8,7 @@ import jgd.platformer.gameplay.logic.physics.ModelWalks;
 import jgd.platformer.gameplay.rendering.model.g3d.PlayAnimation;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class G3DModelMovementSystem {
     @ReceiveEvent

@@ -11,7 +11,7 @@ import jgd.platformer.gameplay.logic.signal.SignalDeactivated;
 import jgd.platformer.gameplay.logic.signal.SignalManager;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class SignalRelaySystem {
     private static final String SIGNAL_ACTIVATED = "SignalRelay:signalActivated";

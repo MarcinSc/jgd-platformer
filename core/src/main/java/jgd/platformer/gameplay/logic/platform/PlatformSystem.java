@@ -12,7 +12,7 @@ import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapManager;
 import java.awt.geom.Rectangle2D;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class PlatformSystem {
     @Inject

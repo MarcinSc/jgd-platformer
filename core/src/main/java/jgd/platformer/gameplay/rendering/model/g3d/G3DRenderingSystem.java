@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class G3DRenderingSystem implements LifeCycleSystem {
     @Inject

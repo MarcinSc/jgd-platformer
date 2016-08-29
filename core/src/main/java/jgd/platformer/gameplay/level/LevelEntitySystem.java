@@ -11,7 +11,7 @@ import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
 
 import java.util.Map;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class LevelEntitySystem {
     @Inject
     private PlatformerEntitySpawner platformerEntitySpawner;

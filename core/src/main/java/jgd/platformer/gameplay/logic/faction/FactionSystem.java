@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @RegisterSystem(
-        profiles = "gameplay", shared = FactionManager.class
+        profiles = {"gameScreen", "gameplay"}, shared = FactionManager.class
 )
 public class FactionSystem implements LifeCycleSystem, FactionManager {
     @Inject

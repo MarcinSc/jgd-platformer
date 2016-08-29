@@ -5,7 +5,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class HealthSystem {
     @ReceiveEvent

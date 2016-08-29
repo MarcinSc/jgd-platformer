@@ -21,7 +21,7 @@ import jgd.platformer.gameplay.component.LocationComponent;
 import java.util.LinkedList;
 import java.util.List;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = "gameScreen")
 public class ModelRenderer implements LifeCycleSystem {
     @Inject
     private ShapeProvider shapeProvider;

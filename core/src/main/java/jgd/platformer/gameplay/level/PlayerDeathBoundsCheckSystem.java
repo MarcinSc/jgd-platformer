@@ -12,7 +12,7 @@ import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
 import jgd.platformer.gameplay.logic.health.PlayerDeath;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;

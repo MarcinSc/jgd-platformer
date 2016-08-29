@@ -12,7 +12,7 @@ import jgd.platformer.gameplay.logic.signal.SignalDeactivated;
 import jgd.platformer.gameplay.logic.transform.ModelTranslateOverTimeComponent;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class ModelTranslateOnSignalSystem {
     @Inject

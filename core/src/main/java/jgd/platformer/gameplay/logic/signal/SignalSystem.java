@@ -8,7 +8,7 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = {"gameScreen", "gameplay"},
         shared = SignalManager.class
 )
 public class SignalSystem implements SignalManager, LifeCycleSystem {

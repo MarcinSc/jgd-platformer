@@ -7,7 +7,7 @@ import jgd.platformer.gameplay.logic.activate.ActivateEntity;
 import jgd.platformer.gameplay.rendering.model.g3d.PlayAnimation;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class G3DModelActivateSystem {
     @ReceiveEvent

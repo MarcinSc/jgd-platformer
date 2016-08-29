@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class ModelShapeRenderingSystem implements LifeCycleSystem {
     private static final String MODELS_ATLAS_ID = "models";

@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class GameplayUiSystem implements LifeCycleSystem {
     @Inject

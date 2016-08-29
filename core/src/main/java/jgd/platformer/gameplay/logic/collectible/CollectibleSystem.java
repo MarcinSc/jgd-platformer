@@ -7,7 +7,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
-@RegisterSystem
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class CollectibleSystem {
     @Inject
     private EntityManager entityManager;

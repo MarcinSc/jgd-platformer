@@ -14,7 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class ModelCollider implements LifeCycleSystem {
     @Inject

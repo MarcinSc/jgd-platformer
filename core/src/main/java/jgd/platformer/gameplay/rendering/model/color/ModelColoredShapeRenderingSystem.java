@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class ModelColoredShapeRenderingSystem implements LifeCycleSystem {
     private static final String MODELS_ATLAS_ID = "models";

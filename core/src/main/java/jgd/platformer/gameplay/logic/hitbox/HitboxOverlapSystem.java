@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-@RegisterSystem(profiles = "gameplay", shared = HitboxOverlapManager.class)
+@RegisterSystem(profiles = {"gameScreen", "gameplay"}, shared = HitboxOverlapManager.class)
 public class HitboxOverlapSystem implements HitboxOverlapManager {
     private Map<EntityRef, Rectangle2D> hitboxEntities = new HashMap<>();
 

@@ -12,10 +12,7 @@ import jgd.platformer.gameplay.GameplayState;
 import jgd.platformer.gameplay.audio.AudioManager;
 import jgd.platformer.gameplay.level.LevelLoader;
 import jgd.platformer.gameplay.player.PlayerManager;
-import jgd.platformer.menu.rendering.FXVolumeSet;
-import jgd.platformer.menu.rendering.MasterVolumeSet;
-import jgd.platformer.menu.rendering.MusicVolumeSet;
-import jgd.platformer.menu.rendering.NewGameRequested;
+import jgd.platformer.menu.rendering.*;
 
 @RegisterSystem(
         profiles = "menu",
@@ -23,12 +20,12 @@ import jgd.platformer.menu.rendering.NewGameRequested;
 )
 public class GameStateSwitcher implements GameState {
     private enum State {
-        SHOWING_MENU(true), START_NEW_GAME(false), PLAYING_GAME(false);
+        SHOWING_MENU(Screen.MAIN_MENU), START_NEW_GAME(Screen.GAMEPLAY), START_LEVEL_EDITOR(Screen.EDITOR), PLAYING_GAME(Screen.GAMEPLAY);
 
-        private boolean showMenu;
+        private GameState.Screen screen;
 
-        State(boolean showMenu) {
-            this.showMenu = showMenu;
+        State(GameState.Screen screen) {
+            this.screen = screen;
         }
     }
 
@@ -50,6 +47,11 @@ public class GameStateSwitcher implements GameState {
     }
 
     @ReceiveEvent
+    public void levelEditorRequested(LevelEditorRequested levelEditorRequested, EntityRef entity) {
+        currentState = State.START_LEVEL_EDITOR;
+    }
+
+    @ReceiveEvent
     public void masterVolumeChanged(MasterVolumeSet event, EntityRef entity) {
         lastMasterVolumeEvent = event;
     }
@@ -65,7 +67,7 @@ public class GameStateSwitcher implements GameState {
     }
 
     @Override
-    public boolean shouldShowMenu(SECSyContext gameplayContext) {
+    public Screen getUsedScreen(SECSyContext gameplayContext) {
         if (lastMasterVolumeEvent != null) {
             gameplayContext.getSystem(AudioManager.class).setMasterVolume(lastMasterVolumeEvent.getVolume());
             lastMasterVolumeEvent = null;
@@ -119,7 +121,7 @@ public class GameStateSwitcher implements GameState {
             }
         }
 
-        return currentState.showMenu;
+        return currentState.screen;
     }
 
     private String getLevelName(int index) {

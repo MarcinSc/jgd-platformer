@@ -11,7 +11,7 @@ import jgd.platformer.gameplay.logic.PlayerComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class SpawnEntitySystem {
     @Inject

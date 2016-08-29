@@ -7,7 +7,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.game.GameLoopEntityProvider;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = "gameScreen",
         shared = GameLoopEntityProvider.class
 )
 public class PlatformerGameLoopEntityProvider implements GameLoopEntityProvider {

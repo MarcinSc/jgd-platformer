@@ -8,7 +8,7 @@ import jgd.platformer.gameplay.logic.collectible.CollectibleCollected;
 import jgd.platformer.gameplay.logic.portal.LevelCompleted;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class ScoringSystem {
     @ReceiveEvent

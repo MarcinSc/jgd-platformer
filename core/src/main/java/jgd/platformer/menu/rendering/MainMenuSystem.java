@@ -83,9 +83,9 @@ public class MainMenuSystem implements LifeCycleSystem {
         style.over = new NinePatchDrawable(buttonOver);
         style.font = buttonFont;
 
-        TextButton textButton = new TextButton("New game", style);
+        TextButton newGameButton = new TextButton("New game", style);
 
-        textButton.addListener(
+        newGameButton.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -95,7 +95,21 @@ public class MainMenuSystem implements LifeCycleSystem {
 
         Table table = new Table();
         table.setFillParent(true);
-        table.add(textButton).colspan(2);
+        table.add(newGameButton).colspan(2);
+
+        table.row();
+
+        TextButton editorButton = new TextButton("Level editor", style);
+
+        editorButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        renderingEntityProvider.getRenderingEntity().send(new LevelEditorRequested());
+                    }
+                });
+
+        table.add(editorButton).colspan(2);
 
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
         sliderStyle.background = new NinePatchDrawable(sliderBackground);

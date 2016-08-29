@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = "gameScreen"
 )
 public class SignalIndocatorRenderingSystem implements LifeCycleSystem {
     private Map<EntityRef, ModelInstance> modelBaseInstances = new HashMap<>();

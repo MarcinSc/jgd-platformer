@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = "gameScreen",
         shared = PlatformerEntitySpawner.class
 )
 public class PlatformerEntitySpawnerSystem implements PlatformerEntitySpawner {

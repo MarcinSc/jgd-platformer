@@ -8,7 +8,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.io.EntityData;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = {"gameScreen", "gameplay"},
         shared = PlayerManager.class
 )
 public class PlayerSystem implements PlayerManager {

@@ -1,4 +1,4 @@
-package jgd.platformer.gameplay;
+package jgd.platformer.editor;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -26,10 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = {"gameScreen", "gameplay"},
+        profiles = {"gameScreen", "editor"},
         shared = RenderingEntityProvider.class
 )
-public class PlatformerRenderingEntityProvider implements RenderingEntityProvider, LifeCycleSystem {
+public class EditorRenderingEntityProvider implements RenderingEntityProvider, LifeCycleSystem {
     private static final int DISTANCE_FROM_TERRAIN = 8;
     private static final float CAMERA_ABOVE_OBJECTS = 2f;
     private static final float CAMERA_LIGHT_Y_DISTANCE = 3f;
@@ -86,30 +86,8 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
 
     @Override
     public void setupRenderingCamera(Camera camera) {
-        float weightSum = 0;
-        float sumX = 0;
-        float sumY = 0;
-
-        for (EntityRef entityRef : cameraFocusedEntities.getEntities()) {
-            CameraFocusComponent cameraFocus = entityRef.getComponent(CameraFocusComponent.class);
-            float weight = cameraFocus.getFocusWeight();
-            if (weight > 0) {
-                LocationComponent location = entityRef.getComponent(LocationComponent.class);
-                sumX += location.getX() * weight;
-                sumY += location.getY() * weight;
-                weightSum += weight;
-            }
-        }
-
-        float resultX = sumX / weightSum;
-        float resultY = sumY / weightSum;
-
-        EntityRef boundsEntity = cameraBoundsEntities.getEntities().iterator().next();
-        CameraBoundsComponent cameraBounds = boundsEntity.getComponent(CameraBoundsComponent.class);
-
-        resultX = Math.max(Math.min(resultX, cameraBounds.getMaxX()), cameraBounds.getMinX());
-        resultY = Math.max(Math.min(resultY, cameraBounds.getMaxY()), cameraBounds.getMinY());
-
+        float resultX = 0;
+        float resultY = 0;
         camera.position.set(resultX, resultY + CAMERA_ABOVE_OBJECTS, DISTANCE_FROM_TERRAIN);
         cameraLight.set(Color.WHITE, resultX, resultY + CAMERA_ABOVE_OBJECTS + CAMERA_LIGHT_Y_DISTANCE, DISTANCE_FROM_TERRAIN, 60f);
 

@@ -21,13 +21,16 @@ import java.util.Set;
 
 public class Platformer extends ApplicationAdapter {
     private FPSLogger fpsLogger;
+
     private SECSyContext gameplayContext;
     private SECSyContext menuContext;
+    private SECSyContext editorContext;
 
     private long lastUpdateTime;
 
     private Collection<String> additionalProfiles;
     private InputEventQueue inputEventQueue;
+    private Set<URL> urlsToScan;
 
     public Platformer(Collection<String> additionalProfiles) {
         this.additionalProfiles = additionalProfiles;
@@ -37,7 +40,7 @@ public class Platformer extends ApplicationAdapter {
     public void create() {
         fpsLogger = new FPSLogger();
 
-        Set<URL> urlsToScan = new HashSet<>();
+        urlsToScan = new HashSet<>();
         urlsToScan.addAll(ClasspathHelper.forPackage("com.gempukku", ClasspathHelper.contextClassLoader()));
         urlsToScan.addAll(ClasspathHelper.forPackage("jgd.platformer", ClasspathHelper.contextClassLoader()));
 
@@ -49,6 +52,12 @@ public class Platformer extends ApplicationAdapter {
 
         lastUpdateTime = System.currentTimeMillis();
     }
+
+    // "New game" will use a gameplay context with profiles: "gameScreen", "gameplay"
+    // "Level editor" will use a editor context with profiles: "gameScreen", "editor"
+    // Systems that want to exist for both will require "gameScreen" profile
+    // Systems that should exist only in editor context use "gameScreen" and "editor" profile
+    // Systems that should exist only in gameplay context use "gameScreen" and "gameplay"
 
     private SECSyContext createMenuContext(Collection<URL> urlsToScan) {
         Set<String> menuActiveProfiles = new HashSet<>();
@@ -78,6 +87,7 @@ public class Platformer extends ApplicationAdapter {
 
     private SECSyContext createGameplayContext(Collection<URL> urlsToScan) {
         Set<String> gameplayActiveProfiles = new HashSet<>();
+        gameplayActiveProfiles.add("gameScreen");
         gameplayActiveProfiles.add("gameplay");
         gameplayActiveProfiles.add("gameLoop");
         gameplayActiveProfiles.add("fivePhaseRenderer");
@@ -107,11 +117,42 @@ public class Platformer extends ApplicationAdapter {
         return gameplayContext;
     }
 
+    private SECSyContext createEditorContext(Collection<URL> urlsToScan) {
+        Set<String> editorActiveProfiles = new HashSet<>();
+        editorActiveProfiles.add("gameScreen");
+        editorActiveProfiles.add("editor");
+        editorActiveProfiles.add("gameLoop");
+        editorActiveProfiles.add("fivePhaseRenderer");
+        editorActiveProfiles.add("simpleEntityManager");
+        editorActiveProfiles.add("nameConventionComponents");
+        editorActiveProfiles.add("textureAtlas");
+        editorActiveProfiles.add("shapeProvider");
+        editorActiveProfiles.add("prefabManager");
+        editorActiveProfiles.add("annotationEventDispatcher");
+        editorActiveProfiles.add("simpleEntityIndexManager");
+        editorActiveProfiles.add("time");
+        editorActiveProfiles.add("stageUi");
+        editorActiveProfiles.add("entitySpawner");
+        editorActiveProfiles.add("eventInputProcessor");
+        editorActiveProfiles.addAll(additionalProfiles);
+
+        SECSyContext editorContext = new SECSyContext(editorActiveProfiles, urlsToScan);
+        editorContext.startup();
+
+        System.out.println("Systems in editor context");
+        for (Object system : editorContext.getSystems()) {
+            System.out.println(system.getClass().getSimpleName());
+        }
+
+        return editorContext;
+    }
+
     @Override
     public void render() {
         fpsLogger.log();
 
-        if (menuContext.getSystem(GameState.class).shouldShowMenu(gameplayContext)) {
+        GameState.Screen usedScreen = menuContext.getSystem(GameState.class).getUsedScreen(gameplayContext);
+        if (usedScreen == GameState.Screen.MAIN_MENU) {
             long currentTime = System.currentTimeMillis();
             long timePassed = Math.min(currentTime - lastUpdateTime, 30);
             lastUpdateTime = currentTime;
@@ -123,7 +164,7 @@ public class Platformer extends ApplicationAdapter {
             menuContext.getSystem(InternalGameLoop.class).processUpdate();
 
             menuContext.getSystem(RenderingEngine.class).render();
-        } else {
+        } else if (usedScreen == GameState.Screen.GAMEPLAY) {
             long currentTime = System.currentTimeMillis();
             long timePassed = Math.min(currentTime - lastUpdateTime, 30);
             lastUpdateTime = currentTime;
@@ -140,6 +181,25 @@ public class Platformer extends ApplicationAdapter {
             gameplayContext.getSystem(InternalGameLoop.class).processUpdate();
 
             gameplayContext.getSystem(RenderingEngine.class).render();
+        } else {
+            if (editorContext == null) {
+                editorContext = createEditorContext(urlsToScan);
+            }
+
+            long currentTime = System.currentTimeMillis();
+            long timePassed = Math.min(currentTime - lastUpdateTime, 30);
+            lastUpdateTime = currentTime;
+
+            editorContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
+
+            inputEventQueue.setProcessor(gameplayContext.getSystem(InputProcessor.class));
+            inputEventQueue.drain();
+
+            editorContext.getSystem(UiProcessor.class).processUi();
+
+            editorContext.getSystem(InternalGameLoop.class).processUpdate();
+
+            editorContext.getSystem(RenderingEngine.class).render();
         }
     }
 

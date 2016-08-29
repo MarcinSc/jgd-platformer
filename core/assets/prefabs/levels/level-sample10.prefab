@@ -5,6 +5,7 @@
       "-4,-2,0": "stone",
       "-3,-2,-1": "stone",
       "-2,-2,-1": "stone",
+      "-1,-2,-1": "stone",
       "-2,-2,0": "stone",
       "-2,-1,0": "stone",
       "-2,0,0": "stone",
@@ -17,7 +18,7 @@
     },
     "objectCoordinates": {
       "-3,-2,0": "stoneFront",
-      "-1,-2,-1": "stoneBack"
+      "0,-2,-1": "stoneBack"
     }
   },
   "PlayerSpawnComponent": {

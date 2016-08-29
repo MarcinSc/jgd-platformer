@@ -19,7 +19,7 @@ import jgd.platformer.gameplay.logic.portal.LevelCompleted;
 import jgd.platformer.gameplay.player.AfterPlayerCreated;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = {"gameScreen", "gameplay"},
         shared = GameplayState.class
 )
 public class GameplayStateSystem implements GameplayState {

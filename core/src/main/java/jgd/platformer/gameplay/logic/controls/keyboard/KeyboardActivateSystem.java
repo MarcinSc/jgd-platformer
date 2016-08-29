@@ -8,7 +8,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.logic.controls.PlayerActivated;
 
 @RegisterSystem(
-        profiles = {"gameplay", "keyboard"}
+        profiles = {"gameScreen", "gameplay", "keyboard"}
 )
 public class KeyboardActivateSystem {
     private int[] activateKeys = {Input.Keys.SHIFT_RIGHT, Input.Keys.E};

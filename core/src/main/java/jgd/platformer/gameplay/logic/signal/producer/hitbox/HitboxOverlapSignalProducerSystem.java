@@ -16,7 +16,7 @@ import jgd.platformer.gameplay.logic.signal.SignalManager;
 import java.awt.geom.Rectangle2D;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class HitboxOverlapSignalProducerSystem implements LifeCycleSystem {
     @Inject

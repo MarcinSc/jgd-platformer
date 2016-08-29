@@ -14,7 +14,7 @@ import jgd.platformer.gameplay.logic.hitbox.RectangleHitboxComponent;
 import java.awt.geom.Rectangle2D;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class HitboxActivateSystem {
     @Inject

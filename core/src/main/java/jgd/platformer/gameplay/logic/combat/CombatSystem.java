@@ -8,7 +8,7 @@ import jgd.platformer.gameplay.logic.faction.EnemyOverlapEvent;
 import jgd.platformer.gameplay.logic.health.PlayerDeath;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class CombatSystem {
     @ReceiveEvent

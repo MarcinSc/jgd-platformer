@@ -10,7 +10,7 @@ import jgd.platformer.gameplay.logic.signal.SignalActivated;
 import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class SpawnEntityOnSignalSystem {
     @Inject

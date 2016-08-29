@@ -7,7 +7,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.logic.activate.ActivateEntity;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class SwitchSignalOnActivateSystem {
     @Inject

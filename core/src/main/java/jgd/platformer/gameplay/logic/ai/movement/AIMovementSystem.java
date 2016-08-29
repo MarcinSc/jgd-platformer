@@ -12,7 +12,7 @@ import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
 import jgd.platformer.gameplay.logic.physics.ShouldEntityMove;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class AIMovementSystem {
     @Inject

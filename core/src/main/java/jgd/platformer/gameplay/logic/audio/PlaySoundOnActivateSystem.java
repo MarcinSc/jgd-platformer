@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class PlaySoundOnActivateSystem {
     @Inject

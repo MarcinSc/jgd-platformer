@@ -3,5 +3,9 @@ package jgd.platformer.menu;
 import com.gempukku.secsy.context.SECSyContext;
 
 public interface GameState {
-    boolean shouldShowMenu(SECSyContext gameplayContext);
+    enum Screen {
+        MAIN_MENU, GAMEPLAY, EDITOR
+    }
+
+    Screen getUsedScreen(SECSyContext gameplayContext);
 }

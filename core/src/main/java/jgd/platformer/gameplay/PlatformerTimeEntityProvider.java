@@ -7,7 +7,7 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 
 @RegisterSystem(
-        profiles = "gameplay",
+        profiles = "gameScreen",
         shared = TimeEntityProvider.class
 )
 public class PlatformerTimeEntityProvider implements TimeEntityProvider {

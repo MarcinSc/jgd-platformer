@@ -15,7 +15,7 @@ import jgd.platformer.gameplay.component.BaseLocationComponent;
 import jgd.platformer.gameplay.component.LocationComponent;
 
 @RegisterSystem(
-        profiles = "gameplay"
+        profiles = {"gameScreen", "gameplay"}
 )
 public class ModelTranslateSystem implements LifeCycleSystem {
     @Inject

@@ -8,7 +8,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.component.LocationComponent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class PlayerSpawnSystem {
     @Inject
     private EntityManager entityManager;

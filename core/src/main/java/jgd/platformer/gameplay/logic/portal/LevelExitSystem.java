@@ -6,7 +6,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.gameplay.logic.PlayerComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
-@RegisterSystem(profiles = "gameplay")
+@RegisterSystem(profiles = {"gameScreen", "gameplay"})
 public class LevelExitSystem {
     @ReceiveEvent
     public void playerEnteredPortal(HitboxOverlapEvent event, EntityRef entity, PlayerComponent player) {
