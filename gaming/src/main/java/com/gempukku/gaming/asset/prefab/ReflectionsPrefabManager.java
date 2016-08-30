@@ -7,7 +7,6 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.serialization.ComponentInformation;
-import com.gempukku.secsy.serialization.EntityInformation;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import org.json.simple.JSONObject;
@@ -35,7 +34,7 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
     @Inject
     private NameComponentManager nameComponentManager;
 
-    private Map<String, EntityData> prefabsByName;
+    private Map<String, NamedEntityData> prefabsByName;
 
     @Override
     public float getPriority() {
@@ -64,7 +63,7 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
             try {
                 InputStream prefabInputStream = ReflectionsPrefabManager.class.getResourceAsStream("/" + paths.iterator().next());
                 try {
-                    EntityData prefabData = readPrefabData(prefabInputStream);
+                    NamedEntityData prefabData = readPrefabData(prefabName, prefabInputStream);
                     prefabsByName.put(prefabName, prefabData);
                 } finally {
                     prefabInputStream.close();
@@ -76,7 +75,20 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
     }
 
     @Override
-    public Iterable<EntityData> findPrefabsWithComponents(Class<? extends Component>... components) {
+    public Iterable<? extends EntityData> findPrefabsWithComponents(Class<? extends Component>... components) {
+        return Iterables.filter(
+                prefabsByName.values(),
+                prefabData -> {
+                    for (Class<? extends Component> component : components) {
+                        if (prefabData.getComponent(component) == null)
+                            return false;
+                    }
+                    return true;
+                });
+    }
+
+    @Override
+    public Iterable<? extends NamedEntityData> findNamedPrefabsWithComponents(Class<? extends Component>... components) {
         return Iterables.filter(
                 prefabsByName.values(),
                 prefabData -> {
@@ -93,11 +105,11 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
         return prefabsByName.get(name);
     }
 
-    private EntityData readPrefabData(InputStream prefabInputStream) throws IOException, ParseException {
+    private NamedEntityData readPrefabData(String prefabName, InputStream prefabInputStream) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         JSONObject entity = (JSONObject) parser.parse(new InputStreamReader(prefabInputStream, Charset.forName("UTF-8")));
 
-        EntityInformation entityInformation = new EntityInformation();
+        NamedEntityInformation entityInformation = new NamedEntityInformation(prefabName);
         for (String componentName : (Iterable<String>) entity.keySet()) {
             Class<? extends Component> componentByName = nameComponentManager.getComponentByName(componentName);
             if (componentByName == null)
