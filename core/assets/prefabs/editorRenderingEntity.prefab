@@ -11,10 +11,6 @@
     "factor": 0,
     "postUi": true
   },
-  "FocusBasedCameraComponent": {
-    "z": 8,
-    "distanceY": 2
-  },
-  "PlatformerEnvironmentComponent": {
+  "NavigableCameraComponent": {
   }
 }

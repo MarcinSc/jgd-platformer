@@ -69,8 +69,10 @@ public class ModelRenderer implements LifeCycleSystem {
             models.addAll(getModelInstance.getInstances());
         }
 
+        event.getRenderPipeline().getCurrentBuffer().begin();
         modelBatch.begin(event.getCamera());
         modelBatch.render(models, event.getEnvironment());
         modelBatch.end();
+        event.getRenderPipeline().getCurrentBuffer().end();
     }
 }

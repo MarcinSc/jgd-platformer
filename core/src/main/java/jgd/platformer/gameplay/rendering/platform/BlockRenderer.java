@@ -31,7 +31,7 @@ import jgd.platformer.gameplay.level.LevelComponent;
 import java.util.Map;
 
 @RegisterSystem(profiles = "gameScreen")
-public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
+public class BlockRenderer implements LifeCycleSystem {
     @Inject
     private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
@@ -46,7 +46,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     private ModelBatch modelBatch;
 
     private Model model;
-    private ModelInstance terrain;
+    private ModelInstance blocks;
 
     @Override
     public void preInitialize() {
@@ -97,7 +97,7 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
 
             model = modelBuilder.end();
 
-            terrain = new ModelInstance(model);
+            blocks = new ModelInstance(model);
         }
     }
 
@@ -111,15 +111,17 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
             model.dispose();
             model = null;
         }
-        terrain = null;
+        blocks = null;
     }
 
     @ReceiveEvent
-    public void renderTerrain(RenderEnvironment event, EntityRef renderingEntity) {
-        if (terrain != null) {
+    public void renderBlocks(RenderEnvironment event, EntityRef renderingEntity) {
+        if (blocks != null) {
+            event.getRenderPipeline().getCurrentBuffer().begin();
             modelBatch.begin(event.getCamera());
-            modelBatch.render(terrain, event.getEnvironment());
+            modelBatch.render(blocks, event.getEnvironment());
             modelBatch.end();
+            event.getRenderPipeline().getCurrentBuffer().end();
         }
     }
 }

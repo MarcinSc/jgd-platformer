@@ -1,6 +1,5 @@
 package jgd.platformer.menu;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -32,12 +31,5 @@ public class PlatformerMenuRenderingEntityProvider implements RenderingEntityPro
     @Override
     public EntityRef getRenderingEntity() {
         return cameraEntity;
-    }
-
-    @Override
-    public void setupRenderingCamera(Camera camera) {
-        camera.position.set(0, 0, DISTANCE_FROM_SCREEN);
-        camera.lookAt(0, 0, 0);
-        camera.up.set(0, 1, 0);
     }
 }
