@@ -46,7 +46,6 @@ public class RenderPipelineImpl implements RenderPipeline {
         buffer = extractFrameBuffer(width, height, depth, stencil, this.newFrameBuffers);
         if (buffer != null) return buffer;
 
-        System.out.println("Creating new frame buffer: " + width + "," + height);
         return new FixedFrameBuffer(Pixmap.Format.RGBA8888, width, height, depth, stencil);
     }
 
