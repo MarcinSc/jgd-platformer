@@ -9,75 +9,67 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RenderPipelineImpl implements RenderPipeline {
-    private int width;
-    private int height;
-
     private FrameBuffer mainBuffer;
 
-    private List<FrameBuffer> freeFrameBuffers = new LinkedList<>();
-    private List<FrameBuffer> borrowedFrameBuffers = new LinkedList<>();
+    private List<FixedFrameBuffer> oldFrameBuffers = new LinkedList<>();
+    private List<FixedFrameBuffer> newFrameBuffers = new LinkedList<>();
 
-    public RenderPipelineImpl(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    public void resetSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        cleanUpFreeFrameBuffers();
-    }
-
-    private void cleanUpFreeFrameBuffers() {
-        for (FrameBuffer freeFrameBuffer : freeFrameBuffers) {
+    public void ageOutBuffers() {
+        for (FrameBuffer freeFrameBuffer : oldFrameBuffers) {
             freeFrameBuffer.dispose();
         }
-        freeFrameBuffers.clear();
+        oldFrameBuffers.clear();
+        oldFrameBuffers.addAll(newFrameBuffers);
+        newFrameBuffers.clear();
     }
 
-    @Override
-    public FrameBuffer borrowFrameBuffer() {
-        if (freeFrameBuffers.isEmpty()) {
-            FrameBuffer newFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, width, height, true);
-            borrowedFrameBuffers.add(newFrameBuffer);
-            return newFrameBuffer;
-        } else {
-            FrameBuffer availableFrameBuffer = freeFrameBuffers.remove(0);
-            borrowedFrameBuffers.add(availableFrameBuffer);
-            return availableFrameBuffer;
+    public void cleanup() {
+        for (FrameBuffer freeFrameBuffer : oldFrameBuffers) {
+            freeFrameBuffer.dispose();
         }
+        for (FrameBuffer freeFrameBuffer : newFrameBuffers) {
+            freeFrameBuffer.dispose();
+        }
+        oldFrameBuffers.clear();
+        newFrameBuffers.clear();
     }
 
     @Override
-    public void finishPostProcess(FrameBuffer resultBuffer) {
-        mainBuffer = resultBuffer;
-        Iterator<FrameBuffer> iterator = borrowedFrameBuffers.iterator();
+    public void setCurrentBuffer(FrameBuffer frameBuffer) {
+        mainBuffer = frameBuffer;
+    }
+
+    @Override
+    public FrameBuffer getNewFrameBuffer(int width, int height, boolean depth, boolean stencil) {
+        FrameBuffer buffer = extractFrameBuffer(width, height, depth, stencil, this.oldFrameBuffers);
+        if (buffer != null) return buffer;
+        buffer = extractFrameBuffer(width, height, depth, stencil, this.newFrameBuffers);
+        if (buffer != null) return buffer;
+
+        System.out.println("Creating new frame buffer: " + width + "," + height);
+        return new FixedFrameBuffer(Pixmap.Format.RGBA8888, width, height, depth, stencil);
+    }
+
+    private FrameBuffer extractFrameBuffer(int width, int height, boolean depth, boolean stencil, List<FixedFrameBuffer> frameBuffers) {
+        Iterator<FixedFrameBuffer> iterator = frameBuffers.iterator();
         while (iterator.hasNext()) {
-            FrameBuffer borrowed = iterator.next();
-            if (borrowed != resultBuffer) {
-                freeFrameBuffers.add(borrowed);
+            FixedFrameBuffer buffer = iterator.next();
+            if (buffer.getWidth() == width && buffer.getHeight() == height
+                    && depth == (buffer.getDepthBufferHandle() != 0 || buffer.getDepthStencilPackedBuffer() != 0)
+                    && stencil == (buffer.getStencilBufferHandle() != 0 || buffer.getDepthStencilPackedBuffer() != 0)) {
                 iterator.remove();
+                return buffer;
             }
         }
+        return null;
+    }
+
+    @Override
+    public void returnFrameBuffer(FrameBuffer frameBuffer) {
+        newFrameBuffers.add((FixedFrameBuffer) frameBuffer);
     }
 
     public FrameBuffer getCurrentBuffer() {
         return mainBuffer;
-    }
-
-    public FrameBuffer startPipeline() {
-        mainBuffer = borrowFrameBuffer();
-        return mainBuffer;
-    }
-
-    public void finishPipeline() {
-        freeFrameBuffers.addAll(borrowedFrameBuffers);
-        borrowedFrameBuffers.clear();
-        mainBuffer = null;
-    }
-
-    public void dispose() {
-
     }
 }

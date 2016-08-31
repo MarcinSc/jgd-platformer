@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 public interface RenderPipeline {
     FrameBuffer getCurrentBuffer();
 
-    FrameBuffer borrowFrameBuffer();
+    void setCurrentBuffer(FrameBuffer frameBuffer);
 
-    void finishPostProcess(FrameBuffer resultBuffer);
+    FrameBuffer getNewFrameBuffer(int width, int height, boolean depth, boolean stencil);
+
+    void returnFrameBuffer(FrameBuffer frameBuffer);
 }

@@ -54,12 +54,13 @@ public class GammaProcessor implements LifeCycleSystem {
 
             RenderPipeline renderPipeline = event.getRenderPipeline();
 
-            int textureHandle = renderPipeline.getCurrentBuffer().getColorBufferTexture().getTextureObjectHandle();
+            FrameBuffer currentBuffer = renderPipeline.getCurrentBuffer();
+            int textureHandle = currentBuffer.getColorBufferTexture().getTextureObjectHandle();
 
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
             Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
-            FrameBuffer frameBuffer = renderPipeline.borrowFrameBuffer();
+            FrameBuffer frameBuffer = renderPipeline.getNewFrameBuffer(currentBuffer.getWidth(), currentBuffer.getHeight(), false, false);
             frameBuffer.begin();
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -70,7 +71,8 @@ public class GammaProcessor implements LifeCycleSystem {
             modelBatch.end();
 
             frameBuffer.end();
-            renderPipeline.finishPostProcess(frameBuffer);
+            renderPipeline.returnFrameBuffer(currentBuffer);
+            renderPipeline.setCurrentBuffer(frameBuffer);
         }
     }
 

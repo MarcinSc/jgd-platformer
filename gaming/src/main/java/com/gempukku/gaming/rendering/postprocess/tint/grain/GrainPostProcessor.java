@@ -82,7 +82,9 @@ public class GrainPostProcessor implements LifeCycleSystem {
 
             setupSourceTexture(renderPipeline);
 
-            FrameBuffer frameBuffer = renderPipeline.borrowFrameBuffer();
+            FrameBuffer currentBuffer = renderPipeline.getCurrentBuffer();
+
+            FrameBuffer frameBuffer = renderPipeline.getNewFrameBuffer(currentBuffer.getWidth(), currentBuffer.getHeight(), false, false);
             frameBuffer.begin();
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -93,7 +95,8 @@ public class GrainPostProcessor implements LifeCycleSystem {
             modelBatch.end();
 
             frameBuffer.end();
-            renderPipeline.finishPostProcess(frameBuffer);
+            renderPipeline.returnFrameBuffer(currentBuffer);
+            renderPipeline.setCurrentBuffer(frameBuffer);
         }
     }
 
