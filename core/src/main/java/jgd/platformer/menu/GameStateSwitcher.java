@@ -20,7 +20,9 @@ import jgd.platformer.menu.rendering.*;
 )
 public class GameStateSwitcher implements GameState {
     private enum State {
-        SHOWING_MENU(Screen.MAIN_MENU), START_NEW_GAME(Screen.GAMEPLAY), START_LEVEL_EDITOR(Screen.EDITOR), PLAYING_GAME(Screen.GAMEPLAY);
+        SHOWING_MENU(Screen.MAIN_MENU),
+        START_NEW_GAME(Screen.GAMEPLAY), PLAYING_GAME(Screen.GAMEPLAY),
+        START_LEVEL_EDITOR(Screen.EDITOR), EDITING_LEVEL(Screen.EDITOR);
 
         private GameState.Screen screen;
 
@@ -67,7 +69,7 @@ public class GameStateSwitcher implements GameState {
     }
 
     @Override
-    public Screen getUsedScreen(SECSyContext gameplayContext) {
+    public Screen getUsedScreen(SECSyContext gameplayContext, SECSyContext editorContext) {
         if (lastMasterVolumeEvent != null) {
             gameplayContext.getSystem(AudioManager.class).setMasterVolume(lastMasterVolumeEvent.getVolume());
             lastMasterVolumeEvent = null;
@@ -90,6 +92,11 @@ public class GameStateSwitcher implements GameState {
             LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
             levelLoader.loadLevel(getLevelName(currentLevelIndex));
             currentState = State.PLAYING_GAME;
+        }
+        if (currentState == State.START_LEVEL_EDITOR) {
+            LevelLoader levelLoader = editorContext.getSystem(LevelLoader.class);
+            levelLoader.createNewLevel();
+            currentState = State.EDITING_LEVEL;
         }
         if (currentState == State.PLAYING_GAME) {
             GameplayState gameplayState = gameplayContext.getSystem(GameplayState.class);

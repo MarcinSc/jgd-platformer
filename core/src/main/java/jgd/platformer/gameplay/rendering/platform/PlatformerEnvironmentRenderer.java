@@ -62,40 +62,43 @@ public class PlatformerEnvironmentRenderer implements LifeCycleSystem {
     public void levelLoader(AfterLevelLoaded event, EntityRef entity, LevelComponent level) {
         ArrayVertexOutput vertices = new ArrayVertexOutput();
 
-        for (Map.Entry<String, String> locationToBlock : level.getBlockCoordinates().entrySet()) {
-            String locationAsString = locationToBlock.getKey();
-            String[] locationSplit = locationAsString.split(",");
-            float x = Float.parseFloat(locationSplit[0]);
-            float y = Float.parseFloat(locationSplit[1]);
-            float z = Float.parseFloat(locationSplit[2]);
+        Map<String, String> blockCoordinates = level.getBlockCoordinates();
+        if (!blockCoordinates.isEmpty()) {
+            for (Map.Entry<String, String> locationToBlock : blockCoordinates.entrySet()) {
+                String locationAsString = locationToBlock.getKey();
+                String[] locationSplit = locationAsString.split(",");
+                float x = Float.parseFloat(locationSplit[0]);
+                float y = Float.parseFloat(locationSplit[1]);
+                float z = Float.parseFloat(locationSplit[2]);
 
-            String blockPrefabName = locationToBlock.getValue();
-            EntityData blockData = prefabManager.getPrefabByName(blockPrefabName);
-            EntityRef blockEntity = entityManager.wrapEntityData(blockData);
-            BlockComponent blockDef = blockEntity.getComponent(BlockComponent.class);
+                String blockPrefabName = locationToBlock.getValue();
+                EntityData blockData = prefabManager.getPrefabByName(blockPrefabName);
+                EntityRef blockEntity = entityManager.wrapEntityData(blockData);
+                BlockComponent blockDef = blockEntity.getComponent(BlockComponent.class);
 
-            ShapeOutput.outputShapeToVertexOutput(vertices, shapeProvider.getShapeById(blockDef.getShape()), new TextureRegionMapper() {
-                @Override
-                public TextureRegion getTextureRegion(String textureId) {
-                    String textureName = blockDef.getTexturesForParts().get(textureId);
-                    if (textureName == null)
-                        return null;
-                    return textureAtlasProvider.getTexture("platforms", textureName);
-                }
-            }, x + blockDef.getTranslateX(), y + blockDef.getTranslateY(), z + blockDef.getTranslateZ());
+                ShapeOutput.outputShapeToVertexOutput(vertices, shapeProvider.getShapeById(blockDef.getShape()), new TextureRegionMapper() {
+                    @Override
+                    public TextureRegion getTextureRegion(String textureId) {
+                        String textureName = blockDef.getTexturesForParts().get(textureId);
+                        if (textureName == null)
+                            return null;
+                        return textureAtlasProvider.getTexture("platforms", textureName);
+                    }
+                }, x + blockDef.getTranslateX(), y + blockDef.getTranslateY(), z + blockDef.getTranslateZ());
+            }
+
+            MeshPart platform = vertices.generateMeshPart("platform");
+
+            Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures("platforms").get(0)));
+
+            ModelBuilder modelBuilder = new ModelBuilder();
+            modelBuilder.begin();
+            modelBuilder.part(platform, material);
+
+            model = modelBuilder.end();
+
+            terrain = new ModelInstance(model);
         }
-
-        MeshPart platform = vertices.generateMeshPart("platform");
-
-        Material material = new Material(TextureAttribute.createDiffuse(textureAtlasProvider.getTextures("platforms").get(0)));
-
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        modelBuilder.part(platform, material);
-
-        model = modelBuilder.end();
-
-        terrain = new ModelInstance(model);
     }
 
     @ReceiveEvent

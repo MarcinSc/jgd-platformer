@@ -11,5 +11,8 @@
     "width": 1,
     "height": 1
   },
-  "LevelExitPortalComponent": {}
+  "LevelExitPortalComponent": {},
+  "BlockInEditorComponent": {
+    "displayName": "Exit portal"
+  }
 }

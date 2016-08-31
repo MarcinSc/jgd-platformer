@@ -15,5 +15,8 @@
     "collideSides": [
       "DOWN"
     ]
+  },
+  "BlockInEditorComponent": {
+    "displayName": "Grass"
   }
 }

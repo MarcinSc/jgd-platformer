@@ -46,6 +46,7 @@ public class Platformer extends ApplicationAdapter {
 
         menuContext = createMenuContext(urlsToScan);
         gameplayContext = createGameplayContext(urlsToScan);
+        editorContext = createEditorContext(urlsToScan);
 
         inputEventQueue = new InputEventQueue();
         Gdx.input.setInputProcessor(inputEventQueue);
@@ -151,7 +152,7 @@ public class Platformer extends ApplicationAdapter {
     public void render() {
         fpsLogger.log();
 
-        GameState.Screen usedScreen = menuContext.getSystem(GameState.class).getUsedScreen(gameplayContext);
+        GameState.Screen usedScreen = menuContext.getSystem(GameState.class).getUsedScreen(gameplayContext, editorContext);
         if (usedScreen == GameState.Screen.MAIN_MENU) {
             long currentTime = System.currentTimeMillis();
             long timePassed = Math.min(currentTime - lastUpdateTime, 30);
@@ -182,17 +183,13 @@ public class Platformer extends ApplicationAdapter {
 
             gameplayContext.getSystem(RenderingEngine.class).render();
         } else {
-            if (editorContext == null) {
-                editorContext = createEditorContext(urlsToScan);
-            }
-
             long currentTime = System.currentTimeMillis();
             long timePassed = Math.min(currentTime - lastUpdateTime, 30);
             lastUpdateTime = currentTime;
 
             editorContext.getSystem(InternalTimeManager.class).updateTime(timePassed);
 
-            inputEventQueue.setProcessor(gameplayContext.getSystem(InputProcessor.class));
+            inputEventQueue.setProcessor(editorContext.getSystem(InputProcessor.class));
             inputEventQueue.drain();
 
             editorContext.getSystem(UiProcessor.class).processUi();

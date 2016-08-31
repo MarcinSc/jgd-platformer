@@ -7,5 +7,5 @@ public interface GameState {
         MAIN_MENU, GAMEPLAY, EDITOR
     }
 
-    Screen getUsedScreen(SECSyContext gameplayContext);
+    Screen getUsedScreen(SECSyContext gameplayContext, SECSyContext editorContext);
 }

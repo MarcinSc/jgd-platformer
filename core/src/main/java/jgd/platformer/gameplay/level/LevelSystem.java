@@ -8,7 +8,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.io.EntityData;
 
 @RegisterSystem(
-        profiles = {"gameScreen", "gameplay"},
+        profiles = {"gameScreen"},
         shared = LevelLoader.class
 )
 public class LevelSystem implements LevelLoader {
@@ -36,5 +36,12 @@ public class LevelSystem implements LevelLoader {
             if (!entityRef.hasComponent(KeepWithoutLevelComponent.class))
                 entityManager.destroyEntity(entityRef);
         }
+    }
+
+    @Override
+    public void createNewLevel() {
+        EntityData levelData = prefabManager.getPrefabByName("emptyLevel");
+        levelEntity = entityManager.createEntity(levelData);
+        levelEntity.send(new AfterLevelLoaded());
     }
 }

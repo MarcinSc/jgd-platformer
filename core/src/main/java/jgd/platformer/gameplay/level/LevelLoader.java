@@ -4,4 +4,6 @@ public interface LevelLoader {
     void loadLevel(String levelPrefabName);
 
     void unloadLevel();
+
+    void createNewLevel();
 }
