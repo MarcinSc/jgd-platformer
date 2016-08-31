@@ -121,9 +121,11 @@ public class BackgroundImageRenderer implements LifeCycleSystem {
                 backgroundImage.getBackgroundGreen() / 255f,
                 backgroundImage.getBackgroundBlue() / 255f));
 
+        event.getRenderPipeline().getCurrentBuffer().begin();
         modelBatch.begin(event.getCamera());
         modelBatch.render(modelInstance);
         modelBatch.end();
+        event.getRenderPipeline().getCurrentBuffer().end();
     }
 
     @Override

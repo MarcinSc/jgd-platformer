@@ -1,17 +1,16 @@
 package com.gempukku.gaming.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.gempukku.gaming.rendering.event.*;
+import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
@@ -83,13 +82,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
             try {
                 renderPipeline.setCurrentBuffer(drawFrameBuffer);
 
-                renderCameraView(renderingEntity, drawFrameBuffer);
-
-                postProcess(renderingEntity);
-
-                renderUi(renderingEntity);
-
-                postUiProcess(renderingEntity);
+                renderEntity(renderPipeline, renderingEntity, camera, renderingEntityProvider.getEnvironment());
 
                 renderToScreen();
 
@@ -100,6 +93,25 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         } else {
             cleanBuffer();
         }
+    }
+
+    @Override
+    public void renderEntity(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera, Environment environment) {
+        renderPipeline.getCurrentBuffer().begin();
+        cleanBuffer();
+        renderPipeline.getCurrentBuffer().end();
+
+        renderBackdrop(renderPipeline, renderingEntity, camera);
+
+        renderEnvironment(renderPipeline, renderingEntity, camera, environment);
+
+        renderPostEnvironment(renderPipeline, renderingEntity, camera);
+
+        postProcess(renderPipeline, renderingEntity, camera);
+
+        renderUi(renderPipeline, renderingEntity, camera);
+
+        postUiProcess(renderPipeline, renderingEntity, camera);
     }
 
     private void renderToScreen() {
@@ -115,7 +127,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         copyModelBatch.end();
     }
 
-    private void renderUi(EntityRef renderingEntity) {
+    private void renderUi(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera) {
         renderingEntity.send(new UiRendering(renderPipeline, camera));
     }
 
@@ -124,21 +136,12 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         camera.update();
     }
 
-    private void postProcess(EntityRef renderingEntity) {
+    private void postProcess(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera) {
         renderingEntity.send(new PostProcessRendering(renderPipeline, camera));
     }
 
-    private void postUiProcess(EntityRef renderingEntity) {
+    private void postUiProcess(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera) {
         renderingEntity.send(new PostUiProcessRendering(renderPipeline, camera));
-    }
-
-    private void renderCameraView(EntityRef renderingEntity, FrameBuffer drawFrameBuffer) {
-        drawFrameBuffer.begin();
-        cleanBuffer();
-        renderBackdrop(renderingEntity);
-        normalRenderPass(renderingEntity);
-        renderPostEnvironment(renderingEntity);
-        drawFrameBuffer.end();
     }
 
     private void cleanBuffer() {
@@ -146,15 +149,15 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 
-    private void renderBackdrop(EntityRef renderingEntity) {
+    private void renderBackdrop(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera) {
         renderingEntity.send(new RenderBackdrop(renderPipeline, camera));
     }
 
-    private void normalRenderPass(EntityRef renderingEntity) {
-        renderingEntity.send(new RenderEnvironment(renderPipeline, renderingEntityProvider.getEnvironment(), camera));
+    private void renderEnvironment(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera, Environment environment) {
+        renderingEntity.send(new RenderEnvironment(renderPipeline, environment, camera));
     }
 
-    private void renderPostEnvironment(EntityRef renderingEntity) {
+    private void renderPostEnvironment(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera) {
         renderingEntity.send(new PostRenderEnvironment(renderPipeline, camera));
     }
 }

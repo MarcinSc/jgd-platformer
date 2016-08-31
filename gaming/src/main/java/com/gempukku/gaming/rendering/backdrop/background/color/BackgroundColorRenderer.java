@@ -52,9 +52,11 @@ public class BackgroundColorRenderer implements LifeCycleSystem {
                 backgroundColor.getBlue() / 255f);
         backgroundShaderProvider.setBackgroundColor(color);
 
+        event.getRenderPipeline().getCurrentBuffer().begin();
         modelBatch.begin(event.getCamera());
         modelBatch.render(modelInstance);
         modelBatch.end();
+        event.getRenderPipeline().getCurrentBuffer().end();
     }
 
     @Override
