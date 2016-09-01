@@ -4,11 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.gempukku.gaming.rendering.event.*;
+import com.gempukku.gaming.rendering.event.PostProcessRendering;
+import com.gempukku.gaming.rendering.event.PostRenderEnvironment;
+import com.gempukku.gaming.rendering.event.PostUiProcessRendering;
+import com.gempukku.gaming.rendering.event.RenderBackdrop;
+import com.gempukku.gaming.rendering.event.RenderEnvironment;
+import com.gempukku.gaming.rendering.event.UiRendering;
 import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -39,9 +48,9 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         modelBuilder.begin();
         MeshPartBuilder backgroundBuilder = modelBuilder.part("screen", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position, new Material());
         backgroundBuilder.rect(
-                -1, 1, 1,
-                -1, -1, 1,
-                1, -1, 1,
+                0, 1, 1,
+                0, 0, 1,
+                1, 0, 1,
                 1, 1, 1,
                 0, 0, 1);
         copyModel = modelBuilder.end();

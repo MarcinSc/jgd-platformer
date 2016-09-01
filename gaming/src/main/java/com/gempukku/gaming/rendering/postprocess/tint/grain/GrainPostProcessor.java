@@ -51,9 +51,9 @@ public class GrainPostProcessor implements LifeCycleSystem {
         modelBuilder.begin();
         MeshPartBuilder backgroundBuilder = modelBuilder.part("screen", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position, new Material());
         backgroundBuilder.rect(
-                -1, 1, 1,
-                -1, -1, 1,
-                1, -1, 1,
+                0, 1, 1,
+                0, 0, 1,
+                1, 0, 1,
                 1, 1, 1,
                 0, 0, 1);
         model = modelBuilder.end();
