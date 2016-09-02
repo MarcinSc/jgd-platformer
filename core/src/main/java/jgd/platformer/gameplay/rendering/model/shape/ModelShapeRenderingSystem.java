@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
 import com.gempukku.gaming.rendering.shape.ShapeDef;
 import com.gempukku.gaming.rendering.shape.ShapeOutput;
@@ -24,13 +23,10 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
-import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.gameplay.rendering.model.GetModelInstance;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @RegisterSystem(
         profiles = "gameScreen"
@@ -45,26 +41,10 @@ public class ModelShapeRenderingSystem implements LifeCycleSystem {
     @Inject
     private ShapeProvider shapeProvider;
     @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
-    @Inject
     private TextureAtlasProvider textureAtlasProvider;
 
     private Map<EntityRef, ModelInstance> modelInstances = new HashMap<>();
     private Map<String, Model> models = new HashMap<>();
-
-    @Override
-    public void initialize() {
-        Set<String> textureNames = new HashSet<>();
-
-        for (EntityData entityData : prefabManager.findPrefabsWithComponents(ModelShapeComponent.class)) {
-            EntityRef entityRef = entityManager.wrapEntityData(entityData);
-            for (String textureName : entityRef.getComponent(ModelShapeComponent.class).getTexturesForParts().values()) {
-                textureNames.add(textureName);
-            }
-        }
-
-        textureAtlasRegistry.registerTextures(MODELS_ATLAS_ID, textureNames);
-    }
 
     @Override
     public void destroy() {

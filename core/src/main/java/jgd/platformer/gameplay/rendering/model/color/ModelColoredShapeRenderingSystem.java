@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.shape.ShapeProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -32,8 +31,6 @@ public class ModelColoredShapeRenderingSystem implements LifeCycleSystem {
     private EntityManager entityManager;
     @Inject
     private ShapeProvider shapeProvider;
-    @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
     private TextureAtlasProvider textureAtlasProvider;
 

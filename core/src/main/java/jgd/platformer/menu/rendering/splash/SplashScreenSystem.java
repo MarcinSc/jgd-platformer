@@ -1,7 +1,6 @@
 package jgd.platformer.menu.rendering.splash;
 
 import com.gempukku.gaming.asset.prefab.PrefabManager;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.gaming.rendering.backdrop.background.image.BackgroundImageComponent;
 import com.gempukku.gaming.time.TimeManager;
@@ -14,9 +13,6 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.io.EntityData;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @RegisterSystem(
         profiles = "menu"
 )
@@ -25,8 +21,6 @@ public class SplashScreenSystem implements LifeCycleSystem {
     private PrefabManager prefabManager;
     @Inject
     private EntityManager entityManager;
-    @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
     private RenderingEntityProvider renderingEntityProvider;
     @Inject
@@ -40,15 +34,7 @@ public class SplashScreenSystem implements LifeCycleSystem {
         EntityData splashSeriesPrefab = prefabManager.getPrefabByName("splashSeries");
         EntityRef splashSeries = entityManager.wrapEntityData(splashSeriesPrefab);
 
-        Set<String> imagePaths = new HashSet<>();
         splashSeriesComponent = splashSeries.getComponent(SplashSeriesComponent.class);
-
-        for (String splashDescription : splashSeriesComponent.getSplashDescriptions()) {
-            String imagePath = splashDescription.split("\\|")[0];
-            imagePaths.add(imagePath);
-        }
-
-        textureAtlasRegistry.registerTextures(splashSeriesComponent.getTextureAtlasId(), imagePaths);
     }
 
     @ReceiveEvent

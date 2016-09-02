@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.event.PostProcessRendering;
 import com.gempukku.gaming.rendering.postprocess.RenderPipeline;
 import com.gempukku.gaming.rendering.postprocess.tint.texture.TextureTintShaderProvider;
@@ -24,7 +23,6 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-import java.util.Collections;
 import java.util.Random;
 
 @RegisterSystem(
@@ -33,8 +31,6 @@ import java.util.Random;
 public class GrainPostProcessor implements LifeCycleSystem {
     @Inject
     private TextureAtlasProvider textureAtlasProvider;
-    @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
 
     private ModelBatch modelBatch;
 
@@ -59,11 +55,6 @@ public class GrainPostProcessor implements LifeCycleSystem {
         model = modelBuilder.end();
 
         modelInstance = new ModelInstance(model);
-    }
-
-    @Override
-    public void initialize() {
-        textureAtlasRegistry.registerTextures("grainPostProcessor", Collections.singleton("image/grain.png"));
     }
 
     @ReceiveEvent(priorityName = "gaming.renderer.tint.grain")

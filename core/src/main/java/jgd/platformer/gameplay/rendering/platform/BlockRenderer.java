@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
 import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.gaming.rendering.shape.ShapeOutput;
@@ -32,8 +31,6 @@ import java.util.Map;
 
 @RegisterSystem(profiles = "gameScreen")
 public class BlockRenderer implements LifeCycleSystem {
-    @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
     private TextureAtlasProvider textureAtlasProvider;
     @Inject

@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.gaming.rendering.ui.StageProvider;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -26,15 +25,10 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import jgd.platformer.menu.rendering.splash.SplashScreenEnded;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @RegisterSystem(
         profiles = "menu"
 )
 public class MainMenuSystem implements LifeCycleSystem {
-    @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
     @Inject
     private TextureAtlasProvider textureAtlasProvider;
     @Inject
@@ -46,13 +40,6 @@ public class MainMenuSystem implements LifeCycleSystem {
 
     @Override
     public void initialize() {
-        Set<String> uiImages = new HashSet<>();
-        uiImages.add("ui/Button.png");
-        uiImages.add("ui/ButtonOver.png");
-        uiImages.add("ui/sliderBackground.png");
-
-        textureAtlasRegistry.registerTextures("ui", uiImages);
-
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Life is goofy.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = 40;

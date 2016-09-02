@@ -10,22 +10,17 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(
-        profiles = "textureAtlas", shared = {TextureAtlasProvider.class, TextureAtlasRegistry.class})
-public class DynamicTextureAtlasProvider implements TextureAtlasProvider, TextureAtlasRegistry {
+        profiles = "textureAtlas", shared = TextureAtlasProvider.class)
+public class DynamicTextureAtlasProvider implements TextureAtlasProvider {
     private Map<String, PixmapPacker> packers = new HashMap<>();
     private Map<String, TextureAtlas> textureAtlases = new HashMap<>();
     private Map<String, Map<String, TextureRegion>> textures = new HashMap<>();
-
-    @Override
-    public void registerTextures(String textureAtlasId, Collection<String> textures) {
-    }
 
     @Override
     public List<Texture> getTextures(String textureAtlasId) {

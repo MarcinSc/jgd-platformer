@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
-import com.gempukku.gaming.asset.texture.TextureAtlasRegistry;
 import com.gempukku.gaming.rendering.ui.StageProvider;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -26,7 +25,6 @@ import jgd.platformer.gameplay.logic.score.ScoreComponent;
 import jgd.platformer.gameplay.player.AfterPlayerCreated;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RegisterSystem(
@@ -38,8 +36,6 @@ public class GameplayUiSystem implements LifeCycleSystem {
     @Inject
     private TimeManager timeManager;
     @Inject
-    private TextureAtlasRegistry textureAtlasRegistry;
-    @Inject
     private TextureAtlasProvider textureAtlasProvider;
 
     private BitmapFont labelFont;
@@ -50,8 +46,6 @@ public class GameplayUiSystem implements LifeCycleSystem {
 
     @Override
     public void initialize() {
-        textureAtlasRegistry.registerTextures("gameplayUi", Arrays.asList("ui/Heart.png", "ui/Heart-empty.png"));
-
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Life is goofy.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = 20;
