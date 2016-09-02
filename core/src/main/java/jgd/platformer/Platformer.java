@@ -9,6 +9,7 @@ import com.gempukku.gaming.rendering.RenderingEngine;
 import com.gempukku.gaming.rendering.ui.UiProcessor;
 import com.gempukku.gaming.time.InternalTimeManager;
 import com.gempukku.secsy.context.SECSyContext;
+import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.entity.game.InternalGameLoop;
 import jgd.platformer.gameplay.logic.physics.PhysicsEngine;
 import jgd.platformer.menu.GameState;
@@ -22,9 +23,9 @@ import java.util.Set;
 public class Platformer extends ApplicationAdapter {
     private FPSLogger fpsLogger;
 
-    private SECSyContext gameplayContext;
-    private SECSyContext menuContext;
-    private SECSyContext editorContext;
+    private SystemContext gameplayContext;
+    private SystemContext menuContext;
+    private SystemContext editorContext;
 
     private long lastUpdateTime;
 
@@ -60,7 +61,7 @@ public class Platformer extends ApplicationAdapter {
     // Systems that should exist only in editor context use "gameScreen" and "editor" profile
     // Systems that should exist only in gameplay context use "gameScreen" and "gameplay"
 
-    private SECSyContext createMenuContext(Collection<URL> urlsToScan) {
+    private SystemContext createMenuContext(Collection<URL> urlsToScan) {
         Set<String> menuActiveProfiles = new HashSet<>();
         menuActiveProfiles.add("menu");
         menuActiveProfiles.add("gameLoop");
@@ -86,7 +87,7 @@ public class Platformer extends ApplicationAdapter {
         return menuContext;
     }
 
-    private SECSyContext createGameplayContext(Collection<URL> urlsToScan) {
+    private SystemContext createGameplayContext(Collection<URL> urlsToScan) {
         Set<String> gameplayActiveProfiles = new HashSet<>();
         gameplayActiveProfiles.add("gameScreen");
         gameplayActiveProfiles.add("gameplay");
@@ -118,7 +119,7 @@ public class Platformer extends ApplicationAdapter {
         return gameplayContext;
     }
 
-    private SECSyContext createEditorContext(Collection<URL> urlsToScan) {
+    private SystemContext createEditorContext(Collection<URL> urlsToScan) {
         Set<String> editorActiveProfiles = new HashSet<>();
         editorActiveProfiles.add("gameScreen");
         editorActiveProfiles.add("editor");

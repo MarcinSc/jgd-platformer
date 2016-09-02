@@ -1,7 +1,7 @@
 package jgd.platformer.menu;
 
 import com.gempukku.gaming.asset.prefab.PrefabManager;
-import com.gempukku.secsy.context.SECSyContext;
+import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
@@ -12,7 +12,11 @@ import jgd.platformer.gameplay.GameplayState;
 import jgd.platformer.gameplay.audio.AudioManager;
 import jgd.platformer.gameplay.level.LevelLoader;
 import jgd.platformer.gameplay.player.PlayerManager;
-import jgd.platformer.menu.rendering.*;
+import jgd.platformer.menu.rendering.FXVolumeSet;
+import jgd.platformer.menu.rendering.LevelEditorRequested;
+import jgd.platformer.menu.rendering.MasterVolumeSet;
+import jgd.platformer.menu.rendering.MusicVolumeSet;
+import jgd.platformer.menu.rendering.NewGameRequested;
 
 @RegisterSystem(
         profiles = "menu",
@@ -69,7 +73,7 @@ public class GameStateSwitcher implements GameState {
     }
 
     @Override
-    public Screen getUsedScreen(SECSyContext gameplayContext, SECSyContext editorContext) {
+    public Screen getUsedScreen(SystemContext gameplayContext, SystemContext editorContext) {
         if (lastMasterVolumeEvent != null) {
             gameplayContext.getSystem(AudioManager.class).setMasterVolume(lastMasterVolumeEvent.getVolume());
             lastMasterVolumeEvent = null;
