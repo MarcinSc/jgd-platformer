@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem(
+        profiles = "nameComponentManager",
         shared = NameComponentManager.class)
 public class ReflectionsNameComponentManager implements LifeCycleSystem, NameComponentManager {
     @Inject

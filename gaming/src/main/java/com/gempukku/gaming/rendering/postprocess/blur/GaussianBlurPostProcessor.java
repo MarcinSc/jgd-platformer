@@ -17,7 +17,8 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "gaussianBlur")
 public class GaussianBlurPostProcessor implements LifeCycleSystem {
     private ModelBatch modelBatch;
 

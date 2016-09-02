@@ -21,7 +21,8 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "textureTint")
 public class TextureTintPostProcessor implements LifeCycleSystem {
     @Inject(optional = true)
     private TextureAtlasProvider textureAtlasProvider;

@@ -20,7 +20,9 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "backgroundImage"
+)
 public class BackgroundImageRenderer implements LifeCycleSystem {
     @Inject
     private TextureAtlasProvider textureAtlasProvider;

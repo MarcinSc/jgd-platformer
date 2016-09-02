@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem(
+        profiles = "componentFieldConverter",
         shared = ComponentFieldConverter.class)
 public class ReflectionsComponentFieldConverter implements ComponentFieldConverter, LifeCycleSystem {
     @Inject

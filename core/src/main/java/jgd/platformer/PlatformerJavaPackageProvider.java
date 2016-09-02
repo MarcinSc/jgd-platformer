@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RegisterSystem(
+        profiles = "parent",
         shared = JavaPackageProvider.class
 )
 public class PlatformerJavaPackageProvider implements JavaPackageProvider {

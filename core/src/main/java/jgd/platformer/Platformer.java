@@ -23,6 +23,7 @@ import java.util.Set;
 public class Platformer extends ApplicationAdapter {
     private FPSLogger fpsLogger;
 
+    private SystemContext parentContext;
     private SystemContext gameplayContext;
     private SystemContext menuContext;
     private SystemContext editorContext;
@@ -45,6 +46,7 @@ public class Platformer extends ApplicationAdapter {
         urlsToScan.addAll(ClasspathHelper.forPackage("com.gempukku", ClasspathHelper.contextClassLoader()));
         urlsToScan.addAll(ClasspathHelper.forPackage("jgd.platformer", ClasspathHelper.contextClassLoader()));
 
+        parentContext = createParentContext(urlsToScan);
         menuContext = createMenuContext(urlsToScan);
         gameplayContext = createGameplayContext(urlsToScan);
         editorContext = createEditorContext(urlsToScan);
@@ -61,22 +63,40 @@ public class Platformer extends ApplicationAdapter {
     // Systems that should exist only in editor context use "gameScreen" and "editor" profile
     // Systems that should exist only in gameplay context use "gameScreen" and "gameplay"
 
+    private SystemContext createParentContext(Collection<URL> urlsToScan) {
+        Set<String> parentActiveProfiles = new HashSet<>();
+        parentActiveProfiles.add("parent");
+        parentActiveProfiles.add("nameComponentManager");
+        parentActiveProfiles.add("nameConventionComponents");
+        parentActiveProfiles.add("componentFieldConverter");
+        parentActiveProfiles.add("prefabManager");
+        parentActiveProfiles.add("textureAtlas");
+
+        SECSyContext parentContext = new SECSyContext(parentActiveProfiles, urlsToScan);
+        parentContext.startup();
+
+        System.out.println("Systems in parent context");
+        for (Object system : parentContext.getSystems()) {
+            System.out.println(system.getClass().getSimpleName());
+        }
+
+        return parentContext;
+    }
+
     private SystemContext createMenuContext(Collection<URL> urlsToScan) {
         Set<String> menuActiveProfiles = new HashSet<>();
         menuActiveProfiles.add("menu");
         menuActiveProfiles.add("gameLoop");
         menuActiveProfiles.add("fivePhaseRenderer");
         menuActiveProfiles.add("simpleEntityManager");
-        menuActiveProfiles.add("nameConventionComponents");
-        menuActiveProfiles.add("textureAtlas");
-        menuActiveProfiles.add("prefabManager");
         menuActiveProfiles.add("annotationEventDispatcher");
         menuActiveProfiles.add("simpleEntityIndexManager");
         menuActiveProfiles.add("time");
         menuActiveProfiles.add("stageUi");
+        menuActiveProfiles.add("backgroundImage");
         menuActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext menuContext = new SECSyContext(menuActiveProfiles, urlsToScan);
+        SECSyContext menuContext = new SECSyContext(parentContext, menuActiveProfiles, urlsToScan);
         menuContext.startup();
 
         System.out.println("Systems in menu context");
@@ -93,11 +113,10 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("gameplay");
         gameplayActiveProfiles.add("gameLoop");
         gameplayActiveProfiles.add("fivePhaseRenderer");
+        gameplayActiveProfiles.add("backgroundColor");
+        gameplayActiveProfiles.add("colorTint");
         gameplayActiveProfiles.add("simpleEntityManager");
-        gameplayActiveProfiles.add("nameConventionComponents");
-        gameplayActiveProfiles.add("textureAtlas");
         gameplayActiveProfiles.add("shapeProvider");
-        gameplayActiveProfiles.add("prefabManager");
         gameplayActiveProfiles.add("annotationEventDispatcher");
         gameplayActiveProfiles.add("simpleEntityIndexManager");
         gameplayActiveProfiles.add("time");
@@ -108,7 +127,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("eventInputProcessor");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext gameplayContext = new SECSyContext(gameplayActiveProfiles, urlsToScan);
+        SECSyContext gameplayContext = new SECSyContext(parentContext, gameplayActiveProfiles, urlsToScan);
         gameplayContext.startup();
 
         System.out.println("Systems in gameplay context");
@@ -125,11 +144,9 @@ public class Platformer extends ApplicationAdapter {
         editorActiveProfiles.add("editor");
         editorActiveProfiles.add("gameLoop");
         editorActiveProfiles.add("fivePhaseRenderer");
+        editorActiveProfiles.add("backgroundColor");
         editorActiveProfiles.add("simpleEntityManager");
-        editorActiveProfiles.add("nameConventionComponents");
-        editorActiveProfiles.add("textureAtlas");
         editorActiveProfiles.add("shapeProvider");
-        editorActiveProfiles.add("prefabManager");
         editorActiveProfiles.add("annotationEventDispatcher");
         editorActiveProfiles.add("simpleEntityIndexManager");
         editorActiveProfiles.add("time");
@@ -138,7 +155,7 @@ public class Platformer extends ApplicationAdapter {
         editorActiveProfiles.add("eventInputProcessor");
         editorActiveProfiles.addAll(additionalProfiles);
 
-        SECSyContext editorContext = new SECSyContext(editorActiveProfiles, urlsToScan);
+        SECSyContext editorContext = new SECSyContext(parentContext, editorActiveProfiles, urlsToScan);
         editorContext.startup();
 
         System.out.println("Systems in editor context");

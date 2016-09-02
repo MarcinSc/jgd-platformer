@@ -11,7 +11,8 @@ import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 import jgd.platformer.gameplay.logic.physics.KineticObjectComponent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "gameScreen")
 public class ModelRotationSystem implements LifeCycleSystem {
     @Inject
     private TimeManager timeManager;

@@ -25,7 +25,8 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "pictureInPicture")
 public class PictureInPicturePostProcessor implements LifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;

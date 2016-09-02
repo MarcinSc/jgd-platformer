@@ -11,7 +11,9 @@ import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "gameScreen"
+)
 public class ColorTintTransitionSystem implements LifeCycleSystem {
     @Inject
     private TimeManager timeManager;

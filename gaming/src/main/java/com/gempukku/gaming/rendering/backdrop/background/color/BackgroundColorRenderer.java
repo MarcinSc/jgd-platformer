@@ -7,7 +7,8 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 
-@RegisterSystem
+@RegisterSystem(
+        profiles = "backgroundColor")
 public class BackgroundColorRenderer {
     @ReceiveEvent(priorityName = "gaming.renderer.backgroundColor")
     public void renderBackground(RenderBackdrop event, EntityRef renderingEntity, BackgroundColorComponent backgroundColor) {
