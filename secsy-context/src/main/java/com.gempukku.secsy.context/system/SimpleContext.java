@@ -2,6 +2,7 @@ package com.gempukku.secsy.context.system;
 
 import com.gempukku.secsy.context.SystemContext;
 import com.gempukku.secsy.context.util.PriorityCollection;
+import com.google.common.collect.Iterables;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,8 +17,19 @@ public class SimpleContext implements SystemContext {
 
     private PriorityCollection<LifeCycleSystem> lifeCycleSystems = new PriorityCollection<>();
 
-    private Iterable<Object> systems;
+    private Iterable<Object> ownSystems;
+    private Iterable<Object> availableSystems;
     private Map<Class<?>, Object> systemMap;
+
+    private SystemContext parentContext;
+
+    public SimpleContext() {
+        this(null);
+    }
+
+    public SimpleContext(SystemContext parentContext) {
+        this.parentContext = parentContext;
+    }
 
     public void setSystemProducer(SystemProducer systemProducer) {
         this.systemProducer = systemProducer;
@@ -32,8 +44,8 @@ public class SimpleContext implements SystemContext {
     }
 
     public void startup() {
-        systems = systemProducer.createSystems();
-        for (Object system : systems) {
+        ownSystems = systemProducer.createSystems();
+        for (Object system : ownSystems) {
             if (system instanceof LifeCycleSystem) {
                 lifeCycleSystems.add((LifeCycleSystem) system);
             }
@@ -42,10 +54,14 @@ public class SimpleContext implements SystemContext {
         for (LifeCycleSystem lifeCycleSystem : lifeCycleSystems) {
             lifeCycleSystem.preInitialize();
         }
+        availableSystems = ownSystems;
 
-        systemMap = new HashMap<>(systemExtractor.extractSystems(systems));
+        if (parentContext != null)
+            availableSystems = Iterables.concat(ownSystems, parentContext.getSystems());
+
+        systemMap = new HashMap<>(systemExtractor.extractSystems(availableSystems));
         systemMap.put(SystemContext.class, this);
-        objectInitializer.initializeObjects(systems, systemMap);
+        objectInitializer.initializeObjects(ownSystems, systemMap);
 
         for (LifeCycleSystem lifeCycleSystem : lifeCycleSystems) {
             long start = System.currentTimeMillis();
@@ -80,7 +96,7 @@ public class SimpleContext implements SystemContext {
 
     @Override
     public Iterable<Object> getSystems() {
-        return systems;
+        return availableSystems;
     }
 
     public void shutdown() {
@@ -95,7 +111,7 @@ public class SimpleContext implements SystemContext {
             lifeCycleSystem.postDestroy();
         }
 
-        systems = null;
+        ownSystems = null;
         systemMap = null;
     }
 }

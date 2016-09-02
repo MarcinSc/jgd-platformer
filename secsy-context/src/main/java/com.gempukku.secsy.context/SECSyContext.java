@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class SECSyContext extends SimpleContext {
-    public SECSyContext(Set<String> profilesActive, Collection<URL> urlsToScan) {
+    public SECSyContext(SystemContext parentContext, Set<String> profilesActive, Collection<URL> urlsToScan) {
+        super(parentContext);
         ReflectionsAnnotatedTypesSystemProducer producer = new ReflectionsAnnotatedTypesSystemProducer(RegisterSystem.class,
                 new ProfilesActivePredicate(profilesActive));
 
@@ -21,6 +22,10 @@ public class SECSyContext extends SimpleContext {
         ShareSystemInitializer initializer = new ShareSystemInitializer();
         setObjectInitializer(initializer);
         setSystemExtractor(initializer);
+    }
+
+    public SECSyContext(Set<String> profilesActive, Collection<URL> urlsToScan) {
+        this(null, profilesActive, urlsToScan);
     }
 
     private static class ProfilesActivePredicate implements Predicate<Class<?>> {
