@@ -71,6 +71,7 @@ public class Platformer extends ApplicationAdapter {
         parentActiveProfiles.add("componentFieldConverter");
         parentActiveProfiles.add("prefabManager");
         parentActiveProfiles.add("textureAtlas");
+        parentActiveProfiles.add("shapeProvider");
 
         SECSyContext parentContext = new SECSyContext(parentActiveProfiles, urlsToScan);
         parentContext.startup();
@@ -116,7 +117,6 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("backgroundColor");
         gameplayActiveProfiles.add("colorTint");
         gameplayActiveProfiles.add("simpleEntityManager");
-        gameplayActiveProfiles.add("shapeProvider");
         gameplayActiveProfiles.add("annotationEventDispatcher");
         gameplayActiveProfiles.add("simpleEntityIndexManager");
         gameplayActiveProfiles.add("time");
@@ -146,7 +146,6 @@ public class Platformer extends ApplicationAdapter {
         editorActiveProfiles.add("fivePhaseRenderer");
         editorActiveProfiles.add("backgroundColor");
         editorActiveProfiles.add("simpleEntityManager");
-        editorActiveProfiles.add("shapeProvider");
         editorActiveProfiles.add("annotationEventDispatcher");
         editorActiveProfiles.add("simpleEntityIndexManager");
         editorActiveProfiles.add("time");

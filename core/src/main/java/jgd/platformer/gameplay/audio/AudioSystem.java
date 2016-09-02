@@ -7,7 +7,7 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 
 @RegisterSystem(
-        profiles = {"gameScreen", "gameplay"}, shared = AudioManager.class
+        profiles = {"parent"}, shared = AudioManager.class
 )
 public class AudioSystem implements AudioManager, LifeCycleSystem {
     private float masterVolume;

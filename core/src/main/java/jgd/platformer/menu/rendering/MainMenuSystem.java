@@ -23,6 +23,7 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import jgd.platformer.gameplay.audio.AudioManager;
 import jgd.platformer.menu.rendering.splash.SplashScreenEnded;
 
 @RegisterSystem(
@@ -35,6 +36,8 @@ public class MainMenuSystem implements LifeCycleSystem {
     private StageProvider stageProvider;
     @Inject
     private RenderingEntityProvider renderingEntityProvider;
+    @Inject
+    private AudioManager audioManager;
 
     private BitmapFont buttonFont;
 
@@ -108,7 +111,7 @@ public class MainMenuSystem implements LifeCycleSystem {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        renderingEntityProvider.getRenderingEntity().send(new MasterVolumeSet(masterSlider.getValue()));
+                        audioManager.setMasterVolume(masterSlider.getValue());
                     }
                 });
         masterSlider.setValue(0.5f);
@@ -118,7 +121,7 @@ public class MainMenuSystem implements LifeCycleSystem {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        renderingEntityProvider.getRenderingEntity().send(new MusicVolumeSet(musicSlider.getValue()));
+                        audioManager.setMusicVolume(musicSlider.getValue());
                     }
                 });
         musicSlider.setValue(0.01f);
@@ -128,7 +131,7 @@ public class MainMenuSystem implements LifeCycleSystem {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        renderingEntityProvider.getRenderingEntity().send(new FXVolumeSet(fxSlider.getValue()));
+                        audioManager.setFXVolume(fxSlider.getValue());
                     }
                 });
         fxSlider.setValue(1f);
