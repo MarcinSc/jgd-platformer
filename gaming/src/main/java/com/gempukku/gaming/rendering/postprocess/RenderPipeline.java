@@ -7,7 +7,7 @@ public interface RenderPipeline {
 
     void setCurrentBuffer(FrameBuffer frameBuffer);
 
-    FrameBuffer getNewFrameBuffer(int width, int height, boolean depth, boolean stencil);
+    FrameBuffer getNewFrameBuffer(int width, int height, boolean withAttachments);
 
     void returnFrameBuffer(FrameBuffer frameBuffer);
 }

@@ -23,14 +23,19 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
 
     @Override
     public <T extends Component> T createComponent(EntityRef entity, Class<T> clazz) {
+        ComponentDef componentDef = getComponentDef(clazz);
+        //noinspection unchecked
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz},
+                new ComponentView(entity, clazz, new HashMap<>(), false, componentDef.handlerMap));
+    }
+
+    private <T extends Component> ComponentDef getComponentDef(Class<T> clazz) {
         ComponentDef componentDef = componentDefinitions.get(clazz);
         if (componentDef == null) {
             componentDef = new ComponentDef(clazz);
             componentDefinitions.put(clazz, componentDef);
         }
-        //noinspection unchecked
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz},
-                new ComponentView(entity, clazz, new HashMap<>(), false, componentDef.handlerMap));
+        return componentDef;
     }
 
     @Override
@@ -101,7 +106,12 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
     @Override
     public Map<String, Class<?>> getComponentFieldTypes(Component component) {
         Class<Component> clazz = getComponentClass(component);
-        return Collections.unmodifiableMap(componentDefinitions.get(clazz).getFieldTypes());
+        return Collections.unmodifiableMap(getComponentDef(clazz).getFieldTypes());
+    }
+
+    @Override
+    public Map<String, Class<?>> getComponentFieldTypes(Class<? extends Component> component) {
+        return Collections.unmodifiableMap(getComponentDef(component).getFieldTypes());
     }
 
     @Override

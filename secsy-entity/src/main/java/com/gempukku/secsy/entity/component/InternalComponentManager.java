@@ -59,6 +59,14 @@ public interface InternalComponentManager {
     Map<String, Class<?>> getComponentFieldTypes(Component component);
 
     /**
+     * Returns all the fields in the component an their types.
+     *
+     * @param component
+     * @return
+     */
+    Map<String, Class<?>> getComponentFieldTypes(Class<? extends Component> component);
+
+    /**
      * Returns the value of the field of this component.
      *
      * @param component

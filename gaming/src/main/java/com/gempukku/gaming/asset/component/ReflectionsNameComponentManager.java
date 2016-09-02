@@ -7,7 +7,6 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
-import org.reflections.scanners.AbstractScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -15,7 +14,6 @@ import org.reflections.util.ConfigurationBuilder;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,16 +59,5 @@ public class ReflectionsNameComponentManager implements LifeCycleSystem, NameCom
     @Override
     public String getNameByComponent(Class<? extends Component> componentClass) {
         return namesByComponent.get(componentClass);
-    }
-
-    private static class ComponentScanner extends AbstractScanner {
-        private String componentClassName = Component.class.getName();
-
-        @Override
-        public void scan(Object o) {
-            List<String> interfacesNames = getMetadataAdapter().getInterfacesNames(o);
-            if (interfacesNames.contains(componentClassName))
-                getStore().put(componentClassName, getMetadataAdapter().getClassName(o));
-        }
     }
 }

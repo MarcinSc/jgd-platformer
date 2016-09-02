@@ -61,7 +61,7 @@ public class BloomPostProcessor implements LifeCycleSystem {
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 0);
             Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, textureHandle);
 
-            FrameBuffer frameBuffer = renderPipeline.getNewFrameBuffer(currentBuffer.getWidth(), currentBuffer.getHeight(), false, false);
+            FrameBuffer frameBuffer = renderPipeline.getNewFrameBuffer(currentBuffer.getWidth(), currentBuffer.getHeight(), false);
             frameBuffer.begin();
 
             Gdx.gl.glClearColor(0, 0, 0, 1);

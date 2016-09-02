@@ -1,10 +1,12 @@
 package com.gempukku.gaming.asset.prefab;
 
+import com.gempukku.gaming.asset.component.ComponentFieldConverter;
 import com.gempukku.gaming.asset.component.NameComponentManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.Component;
+import com.gempukku.secsy.entity.component.InternalComponentManager;
 import com.gempukku.secsy.entity.io.EntityData;
 import com.gempukku.secsy.serialization.ComponentInformation;
 import com.google.common.collect.Iterables;
@@ -33,6 +35,10 @@ import java.util.Map;
 public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager {
     @Inject
     private NameComponentManager nameComponentManager;
+    @Inject
+    private ComponentFieldConverter componentFieldConverter;
+    @Inject
+    private InternalComponentManager internalComponentManager;
 
     private Map<String, NamedEntityData> prefabsByName;
 
@@ -115,9 +121,15 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
             if (componentByName == null)
                 throw new IllegalStateException("Unable to find component with name (found in prefab): " + componentName);
             ComponentInformation componentInformation = new ComponentInformation(componentByName);
+            Map<String, Class<?>> componentFieldTypes = internalComponentManager.getComponentFieldTypes(componentByName);
             JSONObject componentObject = (JSONObject) entity.get(componentName);
             for (String fieldName : (Iterable<String>) componentObject.keySet()) {
                 Object fieldValue = componentObject.get(fieldName);
+                if (!componentFieldTypes.containsKey(fieldName))
+                    throw new IllegalStateException("Component " + componentName + " does not contain field " + fieldName + " found in prefab " + prefabName);
+                Class<?> fieldType = componentFieldTypes.get(fieldName);
+                if (fieldValue instanceof String && fieldType != String.class)
+                    fieldValue = componentFieldConverter.convertTo((String) fieldValue, fieldType);
                 componentInformation.addField(fieldName, fieldValue);
             }
             entityInformation.addComponent(componentInformation);

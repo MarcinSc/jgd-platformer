@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -46,7 +47,8 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         copyModelBatch = new ModelBatch(copyShaderProvider);
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
-        MeshPartBuilder backgroundBuilder = modelBuilder.part("screen", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position, new Material());
+        MeshPartBuilder backgroundBuilder = modelBuilder.part("screen", GL20.GL_TRIANGLES, VertexAttributes.Usage.Position,
+                new Material(new DepthTestAttribute(0, false)));
         backgroundBuilder.rect(
                 0, 1, 1,
                 0, 0, 1,
@@ -79,23 +81,18 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
             int width = Display.getWidth();
             int height = Display.getHeight();
 
-            GetCamera getCamera = new GetCamera(width, height);
-            renderingEntity.send(getCamera);
 
-            Camera camera = getCamera.getCamera();
-
-            GetEnvironment getEnvironment = new GetEnvironment(camera);
-            renderingEntity.send(getEnvironment);
-
-            Environment environment = getEnvironment.getEnvironment();
-
-            FrameBuffer drawFrameBuffer = renderPipeline.getNewFrameBuffer(width, height, true, true);
+            FrameBuffer drawFrameBuffer = renderPipeline.getNewFrameBuffer(width, height, true);
             try {
                 renderPipeline.setCurrentBuffer(drawFrameBuffer);
 
-                renderEntity(renderPipeline, renderingEntity, camera, environment);
+                renderPipeline.getCurrentBuffer().begin();
+                cleanBuffer();
+                renderPipeline.getCurrentBuffer().end();
 
-                renderToScreen(camera);
+                renderEntity(renderPipeline, renderingEntity, width, height);
+
+                renderToScreen();
 
                 renderPipeline.returnFrameBuffer(renderPipeline.getCurrentBuffer());
             } finally {
@@ -107,10 +104,16 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
     }
 
     @Override
-    public void renderEntity(RenderPipeline renderPipeline, EntityRef renderingEntity, Camera camera, Environment environment) {
-        renderPipeline.getCurrentBuffer().begin();
-        cleanBuffer();
-        renderPipeline.getCurrentBuffer().end();
+    public void renderEntity(RenderPipeline renderPipeline, EntityRef renderingEntity, int width, int height) {
+        GetCamera getCamera = new GetCamera(width, height);
+        renderingEntity.send(getCamera);
+
+        Camera camera = getCamera.getCamera();
+
+        GetEnvironment getEnvironment = new GetEnvironment(camera);
+        renderingEntity.send(getEnvironment);
+
+        Environment environment = getEnvironment.getEnvironment();
 
         renderBackdrop(renderPipeline, renderingEntity, camera);
 
@@ -125,7 +128,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
         postUiProcess(renderPipeline, renderingEntity, camera);
     }
 
-    private void renderToScreen(Camera camera) {
+    private void renderToScreen() {
         copyShaderProvider.setSourceTextureIndex(0);
 
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
@@ -133,7 +136,7 @@ public class FivePhaseMasterRenderer implements RenderingEngine, LifeCycleSystem
 
         cleanBuffer();
 
-        copyModelBatch.begin(camera);
+        copyModelBatch.begin(null);
         copyModelBatch.render(copyModelInstance);
         copyModelBatch.end();
     }

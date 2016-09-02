@@ -100,6 +100,11 @@ public class MapAnnotationDrivenProxyComponentManager implements ComponentManage
     }
 
     @Override
+    public Map<String, Class<?>> getComponentFieldTypes(Class<? extends Component> component) {
+        return Collections.unmodifiableMap(componentDefinitions.get(component).getFieldTypes());
+    }
+
+    @Override
     public <T> T getComponentFieldValue(Component component, String fieldName, Class<T> clazz) {
         //noinspection unchecked
         return (T) extractComponentView(component).storedValues.get(fieldName);

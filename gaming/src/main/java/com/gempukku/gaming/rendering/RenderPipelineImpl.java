@@ -40,22 +40,21 @@ public class RenderPipelineImpl implements RenderPipeline {
     }
 
     @Override
-    public FrameBuffer getNewFrameBuffer(int width, int height, boolean depth, boolean stencil) {
-        FrameBuffer buffer = extractFrameBuffer(width, height, depth, stencil, this.oldFrameBuffers);
+    public FrameBuffer getNewFrameBuffer(int width, int height, boolean withAttachments) {
+        FrameBuffer buffer = extractFrameBuffer(width, height, withAttachments, this.newFrameBuffers);
         if (buffer != null) return buffer;
-        buffer = extractFrameBuffer(width, height, depth, stencil, this.newFrameBuffers);
+        buffer = extractFrameBuffer(width, height, withAttachments, this.oldFrameBuffers);
         if (buffer != null) return buffer;
 
-        return new FixedFrameBuffer(Pixmap.Format.RGBA8888, width, height, depth, stencil);
+        return new FixedFrameBuffer(Pixmap.Format.RGBA8888, width, height, withAttachments, withAttachments);
     }
 
-    private FrameBuffer extractFrameBuffer(int width, int height, boolean depth, boolean stencil, List<FixedFrameBuffer> frameBuffers) {
+    private FrameBuffer extractFrameBuffer(int width, int height, boolean withAttachments, List<FixedFrameBuffer> frameBuffers) {
         Iterator<FixedFrameBuffer> iterator = frameBuffers.iterator();
         while (iterator.hasNext()) {
             FixedFrameBuffer buffer = iterator.next();
             if (buffer.getWidth() == width && buffer.getHeight() == height
-                    && depth == (buffer.getDepthBufferHandle() != 0 || buffer.getDepthStencilPackedBuffer() != 0)
-                    && stencil == (buffer.getStencilBufferHandle() != 0 || buffer.getDepthStencilPackedBuffer() != 0)) {
+                    && withAttachments == (buffer.getDepthBufferHandle() != 0 || buffer.getDepthStencilPackedBuffer() != 0)) {
                 iterator.remove();
                 return buffer;
             }
