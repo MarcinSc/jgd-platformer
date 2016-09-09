@@ -8,6 +8,8 @@ import java.util.Map;
 public interface LevelComponent extends Component {
     Map<String, String> getBlockCoordinates();
 
+    void setBlockCoordinates(Map<String, String> blockCoordinates);
+
     Map<String, Object> getObjectCoordinates();
 
     List<Object> getAdditionalObjects();

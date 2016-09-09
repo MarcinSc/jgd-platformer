@@ -11,6 +11,6 @@ public class NamedEntityInformation extends EntityInformation implements NamedEn
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 }
