@@ -9,5 +9,10 @@
     "signalOnGreen": 127,
     "signalOnBlue": 0
   },
-  "SignalConsumerComponent": {}
+  "SignalConsumerComponent": {},
+  "ObjectInEditorComponent": {
+    "displayName": "Signal indicator",
+    "renderSize": "0.2,0.2,0.2",
+    "renderTranslate": "0.4,0.4,0"
+  }
 }

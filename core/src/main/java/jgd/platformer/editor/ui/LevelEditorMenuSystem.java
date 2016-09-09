@@ -1,6 +1,7 @@
 package jgd.platformer.editor.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -28,7 +29,7 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
     @Inject
     private StageProvider stageProvider;
 
-    private TextButton selectedBlockButton;
+    private TextButton selectedButton;
 
     private EntityRef levelEntity;
 
@@ -36,6 +37,60 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
     public void initialize() {
         Skin uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 
+        Window blocksWindow = createBlocksWindow(uiSkin);
+        stageProvider.getStage().addActor(blocksWindow);
+
+        Window objectsWindow = createObjectsWindow(uiSkin);
+        stageProvider.getStage().addActor(objectsWindow);
+    }
+
+    private Window createObjectsWindow(Skin uiSkin) {
+        Window objectsWindow = new Window("Objects", uiSkin);
+        objectsWindow.setResizable(true);
+        objectsWindow.setMovable(true);
+
+        Table objectTable = new Table(uiSkin);
+        objectTable.top();
+        objectTable.defaults().height(20).align(Align.left);
+
+        ScrollPane scrollPane = new ScrollPane(objectTable, uiSkin);
+        scrollPane.setFadeScrollBars(false);
+
+        for (NamedEntityData namedEntityData : prefabManager.findNamedPrefabsWithComponents(ObjectInEditorComponent.class)) {
+            String prefabName = namedEntityData.getName();
+
+            ObjectInEditorComponent objectInEditor = entityManager.wrapEntityData(namedEntityData).getComponent(ObjectInEditorComponent.class);
+            String displayName = objectInEditor.getDisplayName();
+            Vector3 renderSize = objectInEditor.getRenderSize();
+            Vector3 renderTranslate = objectInEditor.getRenderTranslate();
+            Vector3 placementTranslate = objectInEditor.getPlacementTranslate();
+
+            TextButton objectButton = new TextButton(displayName, uiSkin, "toggle");
+            objectButton.addListener(
+                    new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            if (objectButton.isChecked()) {
+                                if (selectedButton != null) {
+                                    selectedButton.setChecked(false);
+                                }
+                                selectedButton = objectButton;
+                                levelEntity.send(new ObjectTypeSelected(prefabName, renderSize, renderTranslate, placementTranslate));
+                            } else {
+                                selectedButton = null;
+                                levelEntity.send(new ObjectTypeSelected(null, null, null, null));
+                            }
+                        }
+                    });
+
+            objectTable.add(objectButton).fillX().expandX().row();
+        }
+
+        objectsWindow.add(scrollPane).fill().expand();
+        return objectsWindow;
+    }
+
+    private Window createBlocksWindow(Skin uiSkin) {
         Window blocksWindow = new Window("Blocks", uiSkin);
         blocksWindow.setResizable(true);
         blocksWindow.setMovable(true);
@@ -58,13 +113,13 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             if (blockButton.isChecked()) {
-                                if (selectedBlockButton != null) {
-                                    selectedBlockButton.setChecked(false);
+                                if (selectedButton != null) {
+                                    selectedButton.setChecked(false);
                                 }
-                                selectedBlockButton = blockButton;
+                                selectedButton = blockButton;
                                 levelEntity.send(new BlockTypeSelected(prefabName));
                             } else {
-                                selectedBlockButton = null;
+                                selectedButton = null;
                                 levelEntity.send(new BlockTypeSelected(null));
                             }
                         }
@@ -74,8 +129,7 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
         }
 
         blocksWindow.add(scrollPane).fill().expand();
-
-        stageProvider.getStage().addActor(blocksWindow);
+        return blocksWindow;
     }
 
     @ReceiveEvent

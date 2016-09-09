@@ -18,5 +18,10 @@
     "translateY": 1,
     "width": 1,
     "height": 0.1
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Pressure plate",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0"
   }
 }

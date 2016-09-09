@@ -26,5 +26,10 @@
     "moveTime": 1500,
     "interpolation": "linear"
   },
-  "BaseLocationComponent": {}
+  "BaseLocationComponent": {},
+  "ObjectInEditorComponent": {
+    "displayName": "Signal door",
+    "renderSize": "0.2,2,1",
+    "renderTranslate": "0.4,0,0"
+  }
 }

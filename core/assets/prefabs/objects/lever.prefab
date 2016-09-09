@@ -31,5 +31,10 @@
   "G3DModelActivateComponent": {
     "activateAnimation": "Armature|TurnOff",
     "deactivateAnimation": "Armature|TurnOn"
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Lever",
+    "renderSize": "0.6,0.6,0.2",
+    "renderTranslate": "0.2,0,0.8"
   }
 }

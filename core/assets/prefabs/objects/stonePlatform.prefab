@@ -24,5 +24,10 @@
     "translateY": 0.5,
     "width": 2,
     "height": 0.1
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Stone platform",
+    "renderSize": "2,0.5,1",
+    "renderTranslate": "0,0,0"
   }
 }

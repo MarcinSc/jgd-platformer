@@ -11,5 +11,10 @@
     "prefabName": "ghost",
     "distanceZ": 0.5,
     "distanceX": 0.5
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Tombstone",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0"
   }
 }

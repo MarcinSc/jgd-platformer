@@ -41,5 +41,11 @@
   "FactionMemberComponent": {
     "factionName": "bug"
   },
-  "PlatformMovableComponent": {}
+  "PlatformMovableComponent": {},
+  "ObjectInEditorComponent": {
+    "displayName": "Bug",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0",
+    "placementTranslate": "0.5,0,0.5"
+  }
 }

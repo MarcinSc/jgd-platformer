@@ -221,6 +221,7 @@ public class Platformer extends ApplicationAdapter {
     public void resize(int width, int height) {
         menuContext.getSystem(RenderingEngine.class).screenResized(width, height);
         gameplayContext.getSystem(RenderingEngine.class).screenResized(width, height);
+        editorContext.getSystem(RenderingEngine.class).screenResized(width, height);
     }
 
     @Override

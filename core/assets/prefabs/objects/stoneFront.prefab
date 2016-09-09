@@ -18,5 +18,10 @@
   "MoveActivatorComponent": {
     "distanceZ": -1,
     "moveTime": 1000
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Stone to back",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0"
   }
 }

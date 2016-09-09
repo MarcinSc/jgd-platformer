@@ -52,5 +52,11 @@
     "projectileShootFrequency": 3000,
     "projectileSpeed": 6
   },
-  "PlatformMovableComponent": {}
+  "PlatformMovableComponent": {},
+  "ObjectInEditorComponent": {
+    "displayName": "Bug with gun",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0",
+    "placementTranslate": "0.5,0,0.5"
+  }
 }

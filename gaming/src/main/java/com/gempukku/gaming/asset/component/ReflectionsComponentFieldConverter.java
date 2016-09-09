@@ -64,7 +64,6 @@ public class ReflectionsComponentFieldConverter implements ComponentFieldConvert
 
     @Override
     public <T> String convertFrom(T value, Class<T> clazz) {
-        System.out.println("Converter called");
         init();
         ComponentFieldTypeConverter converter = converterMap.get(clazz);
         if (converter == null)
@@ -74,7 +73,6 @@ public class ReflectionsComponentFieldConverter implements ComponentFieldConvert
 
     @Override
     public <T> T convertTo(String value, Class<T> clazz) {
-        System.out.println("Converter called");
         init();
         ComponentFieldTypeConverter converter = converterMap.get(clazz);
         if (converter == null)
