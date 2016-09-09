@@ -52,11 +52,15 @@ public class BlockRenderer implements LifeCycleSystem {
 
     @Override
     public void postDestroy() {
-        destroyTerrain();
+        destroyMesh();
     }
 
     @ReceiveEvent
     public void levelLoader(AfterLevelLoaded event, EntityRef entity, LevelComponent level) {
+        createMesh(level);
+    }
+
+    private void createMesh(LevelComponent level) {
         ArrayVertexOutput vertices = new ArrayVertexOutput();
 
         Map<String, String> blockCoordinates = level.getBlockCoordinates();
@@ -100,10 +104,16 @@ public class BlockRenderer implements LifeCycleSystem {
 
     @ReceiveEvent
     public void levelUnloaded(BeforeLevelUnloaded event, EntityRef entity, LevelComponent level) {
-        destroyTerrain();
+        destroyMesh();
     }
 
-    private void destroyTerrain() {
+    @ReceiveEvent
+    public void rebuildBlockMesh(RebuildBlockMesh event, EntityRef entity, LevelComponent level) {
+        destroyMesh();
+        createMesh(level);
+    }
+
+    private void destroyMesh() {
         if (model != null) {
             model.dispose();
             model = null;
