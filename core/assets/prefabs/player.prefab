@@ -24,7 +24,7 @@
   },
   "G3DModelMovementComponent": {
     "idleAnimation": "Armature|Idle",
-    "walkAnimation": "Armature|Walk",
+    "walkAnimation": "Armature|walk",
     "walkAnimationSpeed": 2
   },
   "KineticObjectComponent": {},
