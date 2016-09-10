@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.gempukku.gaming.rendering.GetCamera;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.gaming.rendering.input.MouseMoved;
+import com.gempukku.gaming.rendering.input.MouseScrolled;
 import com.gempukku.gaming.rendering.input.TouchDown;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -19,13 +20,14 @@ import jgd.platformer.gameplay.level.AfterLevelLoaded;
 import org.lwjgl.opengl.Display;
 
 @RegisterSystem(
-        profiles = {"gameScreen", "editor"})
+        profiles = {"gameScreen", "editor", "mouse"})
 public class MouseEditorControl {
     @Inject
     private RenderingEntityProvider renderingEntityProvider;
 
     private EntityRef levelEntity;
     private Vector3 planeNormal = new Vector3(0, 0, 1);
+    private float zCoordinate = 0f;
 
     @ReceiveEvent
     public void mouseMoved(MouseMoved mouseMoved, EntityRef entityRef) {
@@ -39,7 +41,6 @@ public class MouseEditorControl {
         Camera camera = getCamera.getCamera();
 
         Ray pickRay = camera.getPickRay(screenX, screenY);
-        float zCoordinate = 0f;
         Vector3 result = new Vector3();
 
         boolean intersects = Intersector.intersectRayPlane(pickRay, new Plane(planeNormal, zCoordinate), result);
@@ -49,6 +50,14 @@ public class MouseEditorControl {
         if (intersects) {
             levelEntity.send(new MouseTracked(result, !noSnap));
         }
+    }
+
+    @ReceiveEvent
+    public void mouseScrolled(MouseScrolled mouseScrolled, EntityRef entityRef) {
+        EntityRef renderingEntity = renderingEntityProvider.getRenderingEntity();
+        int amount = mouseScrolled.getAmount();
+        zCoordinate -= amount;
+        renderingEntity.send(new MoveDepth(amount));
     }
 
     @ReceiveEvent

@@ -4,6 +4,9 @@
     "green": 186,
     "blue": 220
   },
-  "NavigableCameraComponent": {
+  "DefinedCameraComponent": {
+    "location": "0,0,8",
+    "lookAt": "0,0,0",
+    "up": "0,1,0"
   }
 }
