@@ -58,6 +58,8 @@ public class PictureInPicturePostProcessor implements LifeCycleSystem {
         Camera camera = event.getCamera();
         float screenWidth = camera.viewportWidth;
         float screenHeight = camera.viewportHeight;
+        shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, screenWidth, screenHeight);
+        shapeRenderer.updateMatrices();
 
         for (EntityRef pictureInPictureSource : pictureInPictureSources) {
             PictureInPictureSourceComponent pipSource = pictureInPictureSource.getComponent(PictureInPictureSourceComponent.class);
@@ -65,8 +67,8 @@ public class PictureInPicturePostProcessor implements LifeCycleSystem {
             Vector2 size = pipSource.getSize();
             Color frameColor = pipSource.getFrameColor();
 
-            int width = MathUtils.round(camera.viewportWidth * size.x);
-            int height = MathUtils.round(camera.viewportHeight * size.y);
+            int width = MathUtils.round(screenWidth * size.x);
+            int height = MathUtils.round(screenHeight * size.y);
 
             FrameBuffer pipBuffer = renderPipeline.getNewFrameBuffer(width, height, true);
             renderPipeline.setCurrentBuffer(pipBuffer);

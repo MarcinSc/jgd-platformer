@@ -125,6 +125,7 @@ public class Platformer extends ApplicationAdapter {
         gameplayActiveProfiles.add("delayActions");
         gameplayActiveProfiles.add("entitySpawner");
         gameplayActiveProfiles.add("eventInputProcessor");
+        gameplayActiveProfiles.add("pictureInPicture");
         gameplayActiveProfiles.addAll(additionalProfiles);
 
         SECSyContext gameplayContext = new SECSyContext(parentContext, gameplayActiveProfiles, urlsToScan);

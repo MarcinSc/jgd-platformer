@@ -35,9 +35,6 @@
     "width": 0.6,
     "height": 1
   },
-  "CameraFocusComponent": {
-    "focusWeight": 0
-  },
   "ModelRotateComponent": {},
   "RotateModelOnMovementComponent": {
     "angleLeft": 270,
@@ -48,5 +45,21 @@
   },
   "PlatformMovableComponent": {},
   "ActivateHitboxOverlapSignalProducerComponent": {},
-  "ActivatorComponent": {}
+  "ActivatorComponent": {},
+  "PictureInPictureSourceComponent": {
+    "location": "0.7,0.05",
+    "size": "0.25,0.25",
+    "frameColor": "255,255,255"
+  },
+  "TrackEntityCameraComponent": {
+    "z": 8,
+    "distanceY": 2
+  },
+  "PlatformerEnvironmentComponent": {
+  },
+  "BackgroundColorComponent": {
+    "red": 145,
+    "green": 186,
+    "blue": 220
+  }
 }

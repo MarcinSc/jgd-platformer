@@ -16,5 +16,7 @@
     "distanceY": 2
   },
   "PlatformerEnvironmentComponent": {
-  }
+  },
+  "PictureInPictureRenderingComponent": {},
+  "RendersUIComponent": {}
 }

@@ -22,7 +22,7 @@ public class StageUiSystem implements UiProcessor, StageProvider {
     private Stage stage = new Stage(new ScreenViewport());
 
     @ReceiveEvent(priorityName = "gaming.renderer.stage")
-    public void renderUi(UiRendering event, EntityRef renderingEntity) {
+    public void renderUi(UiRendering event, EntityRef renderingEntity, RendersUIComponent rendersUIComponent) {
         event.getRenderPipeline().getCurrentBuffer().begin();
         stage.draw();
         event.getRenderPipeline().getCurrentBuffer().end();
