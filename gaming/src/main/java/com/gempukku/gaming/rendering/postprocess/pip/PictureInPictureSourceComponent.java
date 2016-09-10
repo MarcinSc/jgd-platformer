@@ -1,13 +1,13 @@
 package com.gempukku.gaming.rendering.postprocess.pip;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.secsy.entity.Component;
 
 public interface PictureInPictureSourceComponent extends Component {
-    float getStartX();
+    Vector2 getLocation();
 
-    float getStartY();
+    Vector2 getSize();
 
-    float getWidth();
-
-    float getHeight();
+    Color getFrameColor();
 }
