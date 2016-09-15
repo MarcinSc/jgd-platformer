@@ -15,7 +15,14 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
+import com.gempukku.secsy.entity.event.AfterComponentAdded;
+import com.gempukku.secsy.entity.event.AfterComponentUpdated;
+import com.gempukku.secsy.entity.io.EntityData;
 import jgd.platformer.gameplay.level.AfterLevelLoaded;
+import jgd.platformer.gameplay.level.LevelComponent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RegisterSystem(
         profiles = {"gameScreen", "editor"}
@@ -33,15 +40,103 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
 
     private EntityRef levelEntity;
 
+    private Tree.Node blocksNode;
+    private Tree.Node entitiesNode;
+
+    private Map<EntityRef, Tree.Node> entitiesInLevel = new HashMap<>();
+    private Skin uiSkin;
+
     @Override
     public void initialize() {
-        Skin uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        uiSkin = new Skin(Gdx.files.internal("uiskin.json"));
 
         Window blocksWindow = createBlocksWindow(uiSkin);
         stageProvider.getStage().addActor(blocksWindow);
 
         Window objectsWindow = createObjectsWindow(uiSkin);
         stageProvider.getStage().addActor(objectsWindow);
+
+        Window selectWindow = createSelectWindow(uiSkin);
+        stageProvider.getStage().addActor(selectWindow);
+    }
+
+    @ReceiveEvent
+    public void entityAdded(AfterComponentAdded event, EntityRef entityRef, ObjectInEditorComponent objectInEditor) {
+        String displayName = objectInEditor.getDisplayName();
+        Label nodeActor = new Label(displayName, uiSkin);
+        Tree.Node entityNode = new Tree.Node(nodeActor);
+        entityNode.setObject(entityRef);
+        entitiesInLevel.put(entityRef, entityNode);
+        entitiesNode.add(entityNode);
+    }
+
+    @ReceiveEvent
+    public void levelModified(AfterComponentUpdated event, EntityRef entityRef, LevelComponent level) {
+        blocksNode.removeAll();
+        Map<String, Tree.Node> blockTypes = new HashMap<>();
+
+        for (Map.Entry<String, String> block : level.getBlockCoordinates().entrySet()) {
+            String location = block.getKey();
+            String blockPrefabName = block.getValue();
+
+            EntityData prefabByName = prefabManager.getPrefabByName(blockPrefabName);
+            EntityRef prefabEntity = entityManager.wrapEntityData(prefabByName);
+            String displayName = prefabEntity.getComponent(BlockInEditorComponent.class).getDisplayName();
+
+            Tree.Node blockTypeNode = blockTypes.get(displayName);
+            if (blockTypeNode == null) {
+                Label blockTypeActor = new Label(displayName, uiSkin);
+                blockTypeNode = new Tree.Node(blockTypeActor);
+                blocksNode.add(blockTypeNode);
+                blockTypes.put(displayName, blockTypeNode);
+            }
+
+            Label blockActor = new Label(location, uiSkin);
+            Tree.Node blockNode = new Tree.Node(blockActor);
+            blockNode.setObject(location);
+
+            blockTypeNode.add(blockNode);
+        }
+    }
+
+    private Window createSelectWindow(Skin uiSkin) {
+        Window objectsWindow = new Window("Edit level", uiSkin);
+        objectsWindow.setResizable(true);
+        objectsWindow.setMovable(true);
+
+        Tree tree = new Tree(uiSkin);
+        tree.getSelection().setMultiple(false);
+        tree.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        Tree.Node lastSelected = tree.getSelection().getLastSelected();
+                        if (lastSelected != null) {
+                            Object selectedObject = lastSelected.getObject();
+                            if (selectedObject instanceof EntityRef) {
+                                ((EntityRef) selectedObject).send(new EntitySelected());
+                            } else if (selectedObject instanceof String) {
+                                levelEntity.send(new BlockSelected((String) selectedObject));
+                            }
+                        } else {
+                            levelEntity.send(new SelectionCleared());
+                        }
+                    }
+                });
+        Label blocksLabel = new Label("Blocks", uiSkin);
+        Label entitiesLabel = new Label("Entities", uiSkin);
+
+        blocksNode = new Tree.Node(blocksLabel);
+        entitiesNode = new Tree.Node(entitiesLabel);
+
+        tree.add(blocksNode);
+        tree.add(entitiesNode);
+
+        ScrollPane selectObject = new ScrollPane(tree, uiSkin);
+        selectObject.setFadeScrollBars(false);
+
+        objectsWindow.add(selectObject).fill().expand();
+        return objectsWindow;
     }
 
     private Window createObjectsWindow(Skin uiSkin) {

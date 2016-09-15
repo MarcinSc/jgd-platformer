@@ -8,5 +8,6 @@
     "location": "0,0,8",
     "lookAt": "0,0,0",
     "up": "0,1,0"
-  }
+  },
+  "RendersUIComponent": {}
 }
