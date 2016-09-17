@@ -17,7 +17,10 @@
       "0.5,3.5,0.5": "star",
       "1.5,3,0.5": "star",
       "5,2,0": "torch"
-    }
+    },
+    "minX": -10,
+    "maxX": 14,
+    "minY": -5
   },
   "PlayerSpawnComponent": {
     "x": -4.5,
@@ -29,10 +32,5 @@
     "minY": 0,
     "maxX": 10,
     "maxY": 10
-  },
-  "PlayerDeathBoundsComponent": {
-    "minX": -10,
-    "maxX": 14,
-    "minY": -5
   }
 }

@@ -14,4 +14,16 @@ public interface LevelComponent extends Component {
     void setObjectCoordinates(Map<String, Object> objectCoordinates);
 
     List<Object> getAdditionalObjects();
+
+    float getMinX();
+
+    void setMinX(float minX);
+
+    float getMaxX();
+
+    void setMaxX(float maxX);
+
+    float getMinY();
+
+    void setMinY(float minY);
 }

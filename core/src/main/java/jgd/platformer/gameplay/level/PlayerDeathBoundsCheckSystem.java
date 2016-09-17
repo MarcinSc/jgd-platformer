@@ -17,12 +17,12 @@ public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
     @Inject
     private EntityIndexManager entityIndexManager;
 
-    private EntityIndex deathBoundsEntities;
+    private EntityIndex levelEntities;
     private EntityIndex playerEntities;
 
     @Override
     public void initialize() {
-        deathBoundsEntities = entityIndexManager.addIndexOnComponents(PlayerDeathBoundsComponent.class);
+        levelEntities = entityIndexManager.addIndexOnComponents(LevelComponent.class);
         playerEntities = entityIndexManager.addIndexOnComponents(PlayerComponent.class, LocationComponent.class);
     }
 
@@ -32,15 +32,15 @@ public class PlayerDeathBoundsCheckSystem implements LifeCycleSystem {
             ShouldDeathBoundsCheck check = new ShouldDeathBoundsCheck();
             playerEntity.send(check);
             if (!check.isCancelled()) {
-                for (EntityRef deathBounds : deathBoundsEntities.getEntities()) {
+                for (EntityRef levelEntity : levelEntities.getEntities()) {
                     LocationComponent location = playerEntity.getComponent(LocationComponent.class);
                     float playerX = location.getX();
                     float playerY = location.getY();
 
-                    PlayerDeathBoundsComponent deathBound = deathBounds.getComponent(PlayerDeathBoundsComponent.class);
-                    if (deathBound.getMaxX() < playerX
-                            || deathBound.getMinX() > playerX
-                            || deathBound.getMinY() > playerY) {
+                    LevelComponent level = levelEntity.getComponent(LevelComponent.class);
+                    if (level.getMaxX() < playerX
+                            || level.getMinX() > playerX
+                            || level.getMinY() > playerY) {
                         playerEntity.send(new PlayerDeath());
                     }
                 }

@@ -92,7 +92,10 @@
           }
         }
       }
-    }
+    },
+    "minX": -5,
+    "maxX": 14,
+    "minY": -5
   },
   "PlayerSpawnComponent": {
     "x": 0.5,
@@ -104,10 +107,5 @@
     "minY": 0,
     "maxX": 10,
     "maxY": 10
-  },
-  "PlayerDeathBoundsComponent": {
-    "minX": -5,
-    "maxX": 14,
-    "minY": -5
   }
 }

@@ -19,7 +19,10 @@
     "objectCoordinates": {
       "-3,-2,0": "stoneFront",
       "0,-2,-1": "stoneBack"
-    }
+    },
+    "minX": -10,
+    "maxX": 6,
+    "minY": -7
   },
   "PlayerSpawnComponent": {
     "x": -4.5,
@@ -31,10 +34,5 @@
     "minY": 0,
     "maxX": 10,
     "maxY": 10
-  },
-  "PlayerDeathBoundsComponent": {
-    "minX": -10,
-    "maxX": 6,
-    "minY": -7
   }
 }
