@@ -19,7 +19,7 @@ import jgd.platformer.editor.ui.BlockSelected;
 import jgd.platformer.editor.ui.EntitySelected;
 import jgd.platformer.editor.ui.ObjectInEditorComponent;
 import jgd.platformer.editor.ui.SelectionCleared;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 
 @RegisterSystem(
         profiles = {"gameScreen", "editor"}
@@ -97,16 +97,16 @@ public class SelectedRenderer implements LifeCycleSystem {
     public void renderCube(RenderEnvironment event, EntityRef entityRef) {
         if (selectedEntity != null) {
             ObjectInEditorComponent objectInEditor = selectedEntity.getComponent(ObjectInEditorComponent.class);
-            LocationComponent location = selectedEntity.getComponent(LocationComponent.class);
+            Vector3 location = selectedEntity.getComponent(Location3DComponent.class).getLocation();
 
             Vector3 placementTranslate = objectInEditor.getPlacementTranslate();
             Vector3 renderTranslate = objectInEditor.getRenderTranslate();
             Vector3 renderSize = objectInEditor.getRenderSize();
 
             modelInstance.transform.idt().translate(
-                    location.getX() - placementTranslate.x + renderTranslate.x,
-                    location.getY() - placementTranslate.y + renderTranslate.y,
-                    location.getZ() - placementTranslate.z + renderTranslate.z
+                    location.x - placementTranslate.x + renderTranslate.x,
+                    location.y - placementTranslate.y + renderTranslate.y,
+                    location.z - placementTranslate.z + renderTranslate.z
             ).scl(renderSize);
 
             event.getRenderPipeline().getCurrentBuffer().begin();

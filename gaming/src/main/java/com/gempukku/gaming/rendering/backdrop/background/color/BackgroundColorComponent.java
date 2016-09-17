@@ -1,17 +1,10 @@
 package com.gempukku.gaming.rendering.backdrop.background.color;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gempukku.secsy.entity.Component;
 
 public interface BackgroundColorComponent extends Component {
-    int getRed();
+    Color getColor();
 
-    void setRed(int red);
-
-    int getGreen();
-
-    void setGreen(int green);
-
-    int getBlue();
-
-    void setBlue(int blue);
+    void setColor(Color color);
 }

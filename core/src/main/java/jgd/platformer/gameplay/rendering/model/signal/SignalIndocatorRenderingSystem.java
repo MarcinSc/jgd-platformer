@@ -62,11 +62,7 @@ public class SignalIndocatorRenderingSystem implements LifeCycleSystem {
         ModelInstance baseResult = modelBaseInstances.get(entityRef);
 
         for (Material material : baseResult.materials) {
-            material.set(ColorAttribute.createDiffuse(
-                    signalIndicator.getBaseRed() / 255f,
-                    signalIndicator.getBaseGreen() / 255f,
-                    signalIndicator.getBaseBlue() / 255f,
-                    1f));
+            material.set(ColorAttribute.createDiffuse(signalIndicator.getBaseColor()));
         }
 
         baseResult.transform.idt().translate(event.getLocation());
@@ -90,23 +86,11 @@ public class SignalIndocatorRenderingSystem implements LifeCycleSystem {
 
         for (Material material : lightResult.materials) {
             if (signalConsumer.isReceivingSignal()) {
-                material.set(ColorAttribute.createDiffuse(
-                        signalIndicator.getSignalOnRed() / 255f,
-                        signalIndicator.getSignalOnGreen() / 255f,
-                        signalIndicator.getSignalOnBlue() / 255f,
-                        1f));
-                material.set(new ColorAttribute(ColorAttribute.Emissive,
-                        signalIndicator.getSignalOnRed() / 255f,
-                        signalIndicator.getSignalOnGreen() / 255f,
-                        signalIndicator.getSignalOnBlue() / 255f,
-                        1f));
+                material.set(ColorAttribute.createDiffuse(signalIndicator.getSignalOnColor()));
+                material.set(new ColorAttribute(ColorAttribute.Emissive, signalIndicator.getSignalOnColor()));
             } else {
                 material.remove(ColorAttribute.Emissive);
-                material.set(ColorAttribute.createDiffuse(
-                        signalIndicator.getSignalOffRed() / 255f,
-                        signalIndicator.getSignalOffGreen() / 255f,
-                        signalIndicator.getSignalOffBlue() / 255f,
-                        1f));
+                material.set(ColorAttribute.createDiffuse(signalIndicator.getSignalOffColor()));
             }
         }
 

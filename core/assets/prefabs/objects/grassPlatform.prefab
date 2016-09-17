@@ -21,7 +21,7 @@
     "interpolationAway": "linear",
     "interpolationBack": "linear"
   },
-  "BaseLocationComponent": {},
+  "BaseLocation3DComponent": {},
   "PlatformComponent": {
     "translateX": 0,
     "translateY": 0.5,

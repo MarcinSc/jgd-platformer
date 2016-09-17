@@ -7,10 +7,8 @@
   "ScoreComponent": {
     "score": 0
   },
-  "LocationComponent": {
-    "x": 0,
-    "y": 0,
-    "z": 0.5
+  "Location3DComponent": {
+    "location": "0,0,0.5"
   },
   "ModelRenderComponent": {
   },

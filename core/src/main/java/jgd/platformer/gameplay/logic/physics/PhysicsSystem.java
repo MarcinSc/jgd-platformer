@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.physics;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -8,7 +9,7 @@ import com.gempukku.secsy.context.system.LifeCycleSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 
 import java.awt.geom.Rectangle2D;
 
@@ -30,7 +31,7 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
 
     @Override
     public void initialize() {
-        kineticObjectEntities = entityIndexManager.addIndexOnComponents(KineticObjectComponent.class, LocationComponent.class);
+        kineticObjectEntities = entityIndexManager.addIndexOnComponents(KineticObjectComponent.class, Location3DComponent.class);
     }
 
     @Override
@@ -49,13 +50,14 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                     float velocityX = kineticObject.getVelocityX();
                     float velocityY = kineticObject.getVelocityY();
 
-                    LocationComponent location = kineticEntity.getComponent(LocationComponent.class);
+                    Location3DComponent locationComponent = kineticEntity.getComponent(Location3DComponent.class);
+                    Vector3 location = locationComponent.getLocation();
 
-                    int zLayer = MathUtils.floor(location.getZ());
+                    int zLayer = MathUtils.floor(location.z);
 
                     boolean oldGrounded = kineticObject.isGrounded();
-                    float oldLocationX = location.getX();
-                    float oldLocationY = location.getY();
+                    float oldLocationX = location.x;
+                    float oldLocationY = location.y;
 
                     // s = v*t
                     float newLocationX = oldLocationX + velocityX * seconds;
@@ -67,8 +69,9 @@ public class PhysicsSystem implements PhysicsEngine, LifeCycleSystem {
                         newLocationX = resolveHorizontalCollisions(kineticEntity, collidingObject, kineticObject, velocityX, newLocationX, newLocationY, zLayer);
                     }
 
-                    location.setX(newLocationX);
-                    location.setY(newLocationY);
+                    location.x = newLocationX;
+                    location.y = newLocationY;
+                    locationComponent.setLocation(location);
 
                     ShouldEntityMove shouldEntityMove = new ShouldEntityMove(oldGrounded, oldLocationX, oldLocationY, kineticObject.isGrounded(), newLocationX, newLocationY);
                     kineticEntity.send(shouldEntityMove);

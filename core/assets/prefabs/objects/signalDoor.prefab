@@ -22,11 +22,11 @@
   },
   "SignalConsumerComponent": {},
   "ModelTranslateOnSignalComponent": {
-    "distanceY": 2,
+    "distance": "0,2,0",
     "moveTime": 1500,
     "interpolation": "linear"
   },
-  "BaseLocationComponent": {},
+  "BaseLocation3DComponent": {},
   "ObjectInEditorComponent": {
     "displayName": "Signal door",
     "renderSize": "0.2,2,1",

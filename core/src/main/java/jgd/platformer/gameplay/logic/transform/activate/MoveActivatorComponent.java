@@ -1,13 +1,10 @@
 package jgd.platformer.gameplay.logic.transform.activate;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface MoveActivatorComponent extends Component {
-    float getDistanceX();
-
-    float getDistanceY();
-
-    float getDistanceZ();
+    Vector3 getDistance();
 
     long getMoveTime();
 }

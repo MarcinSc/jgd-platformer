@@ -11,8 +11,8 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.BaseLocationComponent;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.BaseLocation3DComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 
 @RegisterSystem(
         profiles = {"gameScreen", "gameplay"}
@@ -28,8 +28,8 @@ public class ModelTranslateSystem implements LifeCycleSystem {
 
     @Override
     public void initialize() {
-        translateEntities = entityIndexManager.addIndexOnComponents(ConstantModelTranslateComponent.class, LocationComponent.class, BaseLocationComponent.class);
-        translateOverTimeEntities = entityIndexManager.addIndexOnComponents(ModelTranslateOverTimeComponent.class, LocationComponent.class);
+        translateEntities = entityIndexManager.addIndexOnComponents(ConstantModelTranslateComponent.class, Location3DComponent.class, BaseLocation3DComponent.class);
+        translateOverTimeEntities = entityIndexManager.addIndexOnComponents(ModelTranslateOverTimeComponent.class, Location3DComponent.class);
     }
 
     @ReceiveEvent
@@ -38,8 +38,8 @@ public class ModelTranslateSystem implements LifeCycleSystem {
 
         for (EntityRef translateEntity : translateEntities) {
             ConstantModelTranslateComponent translate = translateEntity.getComponent(ConstantModelTranslateComponent.class);
-            LocationComponent location = translateEntity.getComponent(LocationComponent.class);
-            BaseLocationComponent baseLocation = translateEntity.getComponent(BaseLocationComponent.class);
+            Location3DComponent location = translateEntity.getComponent(Location3DComponent.class);
+            BaseLocation3DComponent baseLocation = translateEntity.getComponent(BaseLocation3DComponent.class);
 
             long baseTime = time - translate.getPhaseShift();
 
@@ -66,15 +66,13 @@ public class ModelTranslateSystem implements LifeCycleSystem {
                 a = 1f - interpolation.apply(1f * (timeInCycle - (beforeTime + moveAwayTime + awayTime)) / moveBackTime);
             }
 
-            location.setX(baseLocation.getX() + a * translate.getDistanceX());
-            location.setY(baseLocation.getY() + a * translate.getDistanceY());
-            location.setZ(baseLocation.getZ() + a * translate.getDistanceZ());
+            location.setLocation(baseLocation.getLocation().add(translate.getDistance().scl(a)));
             translateEntity.saveChanges();
         }
 
         for (EntityRef translateOverTimeEntity : translateOverTimeEntities) {
             ModelTranslateOverTimeComponent translate = translateOverTimeEntity.getComponent(ModelTranslateOverTimeComponent.class);
-            LocationComponent location = translateOverTimeEntity.getComponent(LocationComponent.class);
+            Location3DComponent location = translateOverTimeEntity.getComponent(Location3DComponent.class);
 
             long progress = time - translate.getStartTime();
             long moveTime = translate.getMoveTime();
@@ -89,9 +87,7 @@ public class ModelTranslateSystem implements LifeCycleSystem {
                 translateOverTimeEntity.removeComponents(ModelTranslateOverTimeComponent.class);
                 a = 1;
             }
-            location.setX(translate.getSourceX() + a * (translate.getDestinationX() - translate.getSourceX()));
-            location.setY(translate.getSourceY() + a * (translate.getDestinationY() - translate.getSourceY()));
-            location.setZ(translate.getSourceZ() + a * (translate.getDestinationZ() - translate.getSourceZ()));
+            location.setLocation(translate.getSource().add(translate.getDestination().sub(translate.getSource()).scl(a)));
             translateOverTimeEntity.saveChanges();
         }
 

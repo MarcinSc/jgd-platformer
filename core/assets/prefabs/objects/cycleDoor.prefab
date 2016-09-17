@@ -25,11 +25,11 @@
     "moveAwayTime": 3000,
     "awayTime": 2000,
     "moveBackTime": 1000,
-    "distanceY": 2,
+    "distance": "0,2,0",
     "interpolationAway": "linear",
     "interpolationBack": "bounceOut"
   },
-  "BaseLocationComponent": {},
+  "BaseLocation3DComponent": {},
   "ObjectInEditorComponent": {
     "displayName": "Cycle door",
     "renderSize": "0.2,2,1",

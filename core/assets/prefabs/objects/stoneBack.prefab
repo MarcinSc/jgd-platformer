@@ -16,7 +16,7 @@
   },
   "HitboxActivateComponent": {},
   "MoveActivatorComponent": {
-    "distanceZ": 1,
+    "distance": "0,0,1"
     "moveTime": 1000
   },
   "ObjectInEditorComponent": {

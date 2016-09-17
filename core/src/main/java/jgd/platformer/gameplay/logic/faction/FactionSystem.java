@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.faction;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
@@ -7,7 +8,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapEvent;
 
 import java.util.List;
@@ -62,9 +63,9 @@ public class FactionSystem implements LifeCycleSystem, FactionManager {
 
     @Override
     public EntityRef findClosestEnemy(EntityRef entityRef, Predicate<EntityRef> entityPredicate) {
-        LocationComponent location = entityRef.getComponent(LocationComponent.class);
-        float x = location.getX();
-        float y = location.getY();
+        Vector3 location = entityRef.getComponent(Location3DComponent.class).getLocation();
+        float x = location.x;
+        float y = location.y;
         String faction = getFaction(entityRef);
         List<String> enemies = getEnemies(faction);
 
@@ -73,9 +74,9 @@ public class FactionSystem implements LifeCycleSystem, FactionManager {
         for (EntityRef otherEntity : factionMemberEntities) {
             String otherFaction = getFaction(otherEntity);
             if (enemies.contains(otherFaction) && entityPredicate.test(otherEntity)) {
-                LocationComponent otherLocation = otherEntity.getComponent(LocationComponent.class);
-                float otherX = otherLocation.getX();
-                float otherY = otherLocation.getY();
+                Vector3 otherLocation = otherEntity.getComponent(Location3DComponent.class).getLocation();
+                float otherX = otherLocation.x;
+                float otherY = otherLocation.y;
 
                 float xSquare = (otherX - x) * (otherX - x);
                 float ySquare = (otherY - y) * (otherY - y);

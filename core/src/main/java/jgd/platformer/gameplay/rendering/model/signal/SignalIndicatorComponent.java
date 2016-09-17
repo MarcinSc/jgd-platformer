@@ -1,23 +1,12 @@
 package jgd.platformer.gameplay.rendering.model.signal;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gempukku.secsy.entity.Component;
 
 public interface SignalIndicatorComponent extends Component {
-    int getBaseRed();
+    Color getBaseColor();
 
-    int getBaseGreen();
+    Color getSignalOffColor();
 
-    int getBaseBlue();
-
-    int getSignalOffRed();
-
-    int getSignalOffGreen();
-
-    int getSignalOffBlue();
-
-    int getSignalOnRed();
-
-    int getSignalOnGreen();
-
-    int getSignalOnBlue();
+    Color getSignalOnColor();
 }

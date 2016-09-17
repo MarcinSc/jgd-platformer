@@ -23,9 +23,7 @@
             "channel": "openDoor"
           },
           "G3DModelColorComponent": {
-            "red": 0,
-            "green": 0,
-            "blue": 255
+            "color": "0,0,255"
           }
         }
       },
@@ -44,9 +42,7 @@
             "channel": "openDoor"
           },
           "SignalIndicatorComponent": {
-            "baseRed": 0,
-            "baseGreen": 0,
-            "baseBlue": 255
+            "baseColor": "0,0,255"
           }
         }
       }
@@ -56,9 +52,7 @@
     "minY": -5
   },
   "PlayerSpawnComponent": {
-    "x": 0.5,
-    "y": 1,
-    "z": 0.5
+    "location": "0.5,1,0.5"
   },
   "CameraBoundsComponent": {
     "minX": 0,

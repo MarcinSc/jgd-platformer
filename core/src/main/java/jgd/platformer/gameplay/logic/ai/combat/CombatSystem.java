@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.ai.combat;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.gaming.time.delay.DelayManager;
@@ -9,7 +10,7 @@ import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.logic.ai.FacingDirectionComponent;
 import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
 
@@ -32,7 +33,7 @@ public class CombatSystem {
     private TimeManager timeManager;
 
     @ReceiveEvent
-    public void performProjectileAttack(PerformAttack event, EntityRef entityRef, AttackProjectileComponent attackProjectile, LocationComponent location) {
+    public void performProjectileAttack(PerformAttack event, EntityRef entityRef, AttackProjectileComponent attackProjectile, Location3DComponent location) {
         long time = timeManager.getTime();
         long lastProjectileShot = attackProjectile.getLastProjectileShot();
         if (lastProjectileShot + attackProjectile.getProjectileShootFrequency() < time) {
@@ -45,7 +46,8 @@ public class CombatSystem {
         }
     }
 
-    private void shootProjectile(EntityRef entityRef, AttackProjectileComponent attackProjectile, LocationComponent location) {
+    private void shootProjectile(EntityRef entityRef, AttackProjectileComponent attackProjectile, Location3DComponent locationComp) {
+        Vector3 location = locationComp.getLocation();
         Map<String, Object> projectileRecipe = attackProjectile.getProjectileRecipe();
         String prefabName = (String) projectileRecipe.get("prefabName");
         Map<String, Object> changes = (Map<String, Object>) projectileRecipe.get("changes");
@@ -68,9 +70,9 @@ public class CombatSystem {
             changes.put("?KineticObjectComponent", kineticValues);
         }
 
-        float x = distanceX + location.getX();
-        float y = attackProjectile.getDistanceY() + location.getY();
-        float z = location.getZ();
+        float x = distanceX + location.x;
+        float y = attackProjectile.getDistanceY() + location.y;
+        float z = location.z;
 
         EntityRef projectile = platformerEntitySpawner.createEntityAt(x, y, z, prefabName, changes);
 

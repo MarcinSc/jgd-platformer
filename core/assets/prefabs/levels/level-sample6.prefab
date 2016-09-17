@@ -33,7 +33,7 @@
             "moveAwayTime": 3000,
             "awayTime": 2000,
             "moveBackTime": 3000,
-            "distanceX": 4
+            "distance": "4,0,0"
           }
         }
       }
@@ -43,9 +43,7 @@
     "minY": -7
   },
   "PlayerSpawnComponent": {
-    "x": -4.5,
-    "y": -1,
-    "z": 0.5
+    "location": "-4.5,-1,0.5"
   },
   "CameraBoundsComponent": {
     "minX": 0,

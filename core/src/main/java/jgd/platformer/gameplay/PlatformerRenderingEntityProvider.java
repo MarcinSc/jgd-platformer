@@ -1,6 +1,5 @@
 package jgd.platformer.gameplay;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
@@ -14,7 +13,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.io.EntityData;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.rendering.light.PointLightComponent;
 
 import java.util.HashMap;
@@ -51,12 +50,10 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
     }
 
     @ReceiveEvent
-    public void pointLightAdded(AfterComponentAdded event, EntityRef entityRef, PointLightComponent pointLight, LocationComponent location) {
+    public void pointLightAdded(AfterComponentAdded event, EntityRef entityRef, PointLightComponent pointLight, Location3DComponent location) {
         PointLight light = new PointLight();
-        light.set(new Color(pointLight.getRed() / 255f, pointLight.getGreen() / 255f, pointLight.getBlue() / 255f, 1f),
-                location.getX() + pointLight.getTranslateX(),
-                location.getY() + pointLight.getTranslateY(),
-                location.getZ() + pointLight.getTranslateZ(),
+        light.set(pointLight.getColor(),
+                location.getLocation().add(pointLight.getTranslate()),
                 pointLight.getIntensity());
 
         pointLights.put(entityRef, light);
@@ -64,7 +61,7 @@ public class PlatformerRenderingEntityProvider implements RenderingEntityProvide
     }
 
     @ReceiveEvent
-    public void pointLightRemoved(BeforeComponentRemoved event, EntityRef entityRef, PointLightComponent pointLight, LocationComponent location) {
+    public void pointLightRemoved(BeforeComponentRemoved event, EntityRef entityRef, PointLightComponent pointLight, Location3DComponent location) {
         PointLight light = pointLights.remove(entityRef);
         environment.remove(light);
     }

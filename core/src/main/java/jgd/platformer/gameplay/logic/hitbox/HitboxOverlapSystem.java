@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.hitbox;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
@@ -8,7 +9,7 @@ import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.AfterComponentUpdated;
 import com.gempukku.secsy.entity.event.BeforeComponentRemoved;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -22,19 +23,19 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
     private Map<EntityRef, Rectangle2D> hitboxEntities = new HashMap<>();
 
     @ReceiveEvent
-    public void entityWithHitboxAdded(AfterComponentAdded event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, LocationComponent location) {
-        Rectangle2D shape = createShape(rectangleHitbox, location);
+    public void entityWithHitboxAdded(AfterComponentAdded event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, Location3DComponent location) {
+        Rectangle2D shape = createShape(rectangleHitbox, location.getLocation());
         hitboxEntities.put(entity, shape);
     }
 
     @ReceiveEvent
-    public void entityWithHitboxModified(AfterComponentUpdated event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, LocationComponent location) {
-        Rectangle2D shape = createShape(rectangleHitbox, location);
+    public void entityWithHitboxModified(AfterComponentUpdated event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, Location3DComponent location) {
+        Rectangle2D shape = createShape(rectangleHitbox, location.getLocation());
         hitboxEntities.put(entity, shape);
     }
 
     @ReceiveEvent
-    public void entityWithHitboxRemoved(BeforeComponentRemoved event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, LocationComponent location) {
+    public void entityWithHitboxRemoved(BeforeComponentRemoved event, EntityRef entity, RectangleHitboxComponent rectangleHitbox, Location3DComponent location) {
         hitboxEntities.remove(entity);
     }
 
@@ -49,12 +50,16 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
             ShouldEntityHitboxOverlap overlap = new ShouldEntityHitboxOverlap();
             entity.send(overlap);
             if (!overlap.isCancelled()) {
-                int zLayer = MathUtils.floor(entity.getComponent(LocationComponent.class).getZ());
+                Location3DComponent locationComp = entity.getComponent(Location3DComponent.class);
+                Vector3 location = locationComp.getLocation();
+                int zLayer = MathUtils.floor(location.z);
                 for (Map.Entry<EntityRef, Rectangle2D> otherHitboxEntity : hitboxEntities.entrySet()) {
                     EntityRef otherEntity = otherHitboxEntity.getKey();
                     if (!entity.equals(otherEntity)) {
                         Rectangle2D otherShape = otherHitboxEntity.getValue();
-                        int otherZLayer = MathUtils.floor(otherEntity.getComponent(LocationComponent.class).getZ());
+                        Location3DComponent otherLocationComp = otherEntity.getComponent(Location3DComponent.class);
+                        Vector3 otherLocation = otherLocationComp.getLocation();
+                        int otherZLayer = MathUtils.floor(otherLocation.z);
                         if (zLayer == otherZLayer && shape.intersects(otherShape)) {
                             eventsToFire.add(new OverlapEventToFire(entity, new HitboxOverlapEvent(otherEntity)));
                         }
@@ -75,7 +80,7 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
             EntityRef entity = hitboxEntity.getKey();
             if (filter.test(entity)) {
                 Rectangle2D shape = hitboxEntity.getValue();
-                int entityZLayer = MathUtils.floor(entity.getComponent(LocationComponent.class).getZ());
+                int entityZLayer = MathUtils.floor(entity.getComponent(Location3DComponent.class).getLocation().z);
                 if (zLayer == entityZLayer && shape.intersects(rectangle))
                     result.add(entity);
             }
@@ -84,8 +89,8 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
         return result;
     }
 
-    private Rectangle2D createShape(RectangleHitboxComponent rectangleHitbox, LocationComponent location) {
-        return new Rectangle2D.Float(location.getX() + rectangleHitbox.getTranslateX(), location.getY() + rectangleHitbox.getTranslateY(),
+    private Rectangle2D createShape(RectangleHitboxComponent rectangleHitbox, Vector3 location) {
+        return new Rectangle2D.Float(location.x + rectangleHitbox.getTranslateX(), location.y + rectangleHitbox.getTranslateY(),
                 rectangleHitbox.getWidth(), rectangleHitbox.getHeight());
     }
 

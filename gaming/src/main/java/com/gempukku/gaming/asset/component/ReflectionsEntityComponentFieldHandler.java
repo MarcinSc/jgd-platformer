@@ -3,8 +3,7 @@ package com.gempukku.gaming.asset.component;
 import com.gempukku.gaming.asset.JavaPackageProvider;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
-import com.gempukku.secsy.context.system.LifeCycleSystem;
-import com.gempukku.secsy.entity.component.ComponentFieldConverter;
+import com.gempukku.secsy.entity.component.EntityComponentFieldHandler;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -20,17 +19,17 @@ import java.util.Map;
 import java.util.Set;
 
 @RegisterSystem(
-        profiles = "componentFieldConverter",
-        shared = ComponentFieldConverter.class)
-public class ReflectionsComponentFieldConverter implements ComponentFieldConverter, LifeCycleSystem {
+        profiles = "entityComponentFieldHandler",
+        shared = EntityComponentFieldHandler.class)
+public class ReflectionsEntityComponentFieldHandler implements EntityComponentFieldHandler {
     @Inject
     private JavaPackageProvider javaPackageProvider;
 
-    private Map<Class<?>, ComponentFieldTypeConverter> converterMap;
+    private Map<Class<?>, EntityComponentFieldTypeHandler> handlerMap;
 
     public void init() {
-        if (converterMap == null) {
-            converterMap = new HashMap<>();
+        if (handlerMap == null) {
+            handlerMap = new HashMap<>();
             Set<URL> contextLocations = new HashSet<>();
             for (String javaPackage : javaPackageProvider.getJavaPackages()) {
                 contextLocations.addAll(ClasspathHelper.forPackage(javaPackage, ClasspathHelper.contextClassLoader()));
@@ -41,19 +40,19 @@ public class ReflectionsComponentFieldConverter implements ComponentFieldConvert
                     .setUrls(contextLocations);
 
             Reflections reflections = new Reflections(scanConfiguration);
-            Set<Class<? extends ComponentFieldTypeConverter>> fieldConverters = reflections.getSubTypesOf(ComponentFieldTypeConverter.class);
-            for (Class<? extends ComponentFieldTypeConverter> fieldConverter : fieldConverters) {
-                for (Type type : fieldConverter.getGenericInterfaces()) {
+            Set<Class<? extends EntityComponentFieldTypeHandler>> fieldHandlers = reflections.getSubTypesOf(EntityComponentFieldTypeHandler.class);
+            for (Class<? extends EntityComponentFieldTypeHandler> fieldHandler : fieldHandlers) {
+                for (Type type : fieldHandler.getGenericInterfaces()) {
                     if (type instanceof ParameterizedType) {
                         ParameterizedType parameterizedType = (ParameterizedType) type;
                         Type rawType = parameterizedType.getRawType();
-                        if (rawType == ComponentFieldTypeConverter.class) {
+                        if (rawType == EntityComponentFieldTypeHandler.class) {
                             Type paramType = parameterizedType.getActualTypeArguments()[0];
                             if (paramType instanceof Class) {
                                 try {
-                                    converterMap.put((Class) paramType, fieldConverter.newInstance());
+                                    handlerMap.put((Class) paramType, fieldHandler.newInstance());
                                 } catch (InstantiationException | IllegalAccessException e) {
-                                    throw new IllegalStateException("Unable to create converter of type " + fieldConverter.getSimpleName(), e);
+                                    throw new IllegalStateException("Unable to create handler of type " + fieldHandler.getSimpleName(), e);
                                 }
                             }
                         }
@@ -64,20 +63,20 @@ public class ReflectionsComponentFieldConverter implements ComponentFieldConvert
     }
 
     @Override
-    public <T> String convertFrom(T value, Class<T> clazz) {
+    public <T> T copyFromEntity(T value, Class<T> clazz) {
         init();
-        ComponentFieldTypeConverter converter = converterMap.get(clazz);
-        if (converter == null)
-            throw new IllegalStateException("Unable to find converter for type " + clazz.getSimpleName());
-        return converter.convertFrom(value);
+        EntityComponentFieldTypeHandler handler = handlerMap.get(clazz);
+        if (handler == null)
+            return value;
+        return (T) handler.copyFromEntity(value);
     }
 
     @Override
-    public <T> T convertTo(String value, Class<T> clazz) {
+    public <T> T storeIntoEntity(T oldValue, T newValue, Class<T> clazz) {
         init();
-        ComponentFieldTypeConverter converter = converterMap.get(clazz);
-        if (converter == null)
-            throw new IllegalStateException("Unable to find converter for type " + clazz.getSimpleName());
-        return (T) converter.convertTo(value);
+        EntityComponentFieldTypeHandler handler = handlerMap.get(clazz);
+        if (handler == null)
+            return newValue;
+        return (T) handler.storeIntoEntity(oldValue, newValue);
     }
 }

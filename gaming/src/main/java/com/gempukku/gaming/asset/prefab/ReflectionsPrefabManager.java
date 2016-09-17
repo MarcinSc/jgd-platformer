@@ -1,6 +1,5 @@
 package com.gempukku.gaming.asset.prefab;
 
-import com.gempukku.gaming.asset.component.ComponentFieldConverter;
 import com.gempukku.gaming.asset.component.NameComponentManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -35,8 +34,6 @@ import java.util.Map;
 public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager {
     @Inject
     private NameComponentManager nameComponentManager;
-    @Inject
-    private ComponentFieldConverter componentFieldConverter;
     @Inject
     private InternalComponentManager internalComponentManager;
 
@@ -127,9 +124,6 @@ public class ReflectionsPrefabManager implements LifeCycleSystem, PrefabManager 
                 Object fieldValue = componentObject.get(fieldName);
                 if (!componentFieldTypes.containsKey(fieldName))
                     throw new IllegalStateException("Component " + componentName + " does not contain field " + fieldName + " found in prefab " + prefabName);
-                Class<?> fieldType = componentFieldTypes.get(fieldName);
-                if (fieldValue instanceof String && fieldType != String.class)
-                    fieldValue = componentFieldConverter.convertTo((String) fieldValue, fieldType);
                 componentInformation.addField(fieldName, fieldValue);
             }
             entityInformation.addComponent(componentInformation);

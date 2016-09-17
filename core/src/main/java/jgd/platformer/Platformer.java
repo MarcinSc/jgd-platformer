@@ -69,6 +69,7 @@ public class Platformer extends ApplicationAdapter {
         parentActiveProfiles.add("nameComponentManager");
         parentActiveProfiles.add("nameConventionComponents");
         parentActiveProfiles.add("componentFieldConverter");
+        parentActiveProfiles.add("entityComponentFieldHandler");
         parentActiveProfiles.add("prefabManager");
         parentActiveProfiles.add("textureAtlas");
         parentActiveProfiles.add("shapeProvider");

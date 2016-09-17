@@ -1,4 +1,4 @@
-package com.gempukku.gaming.asset.component;
+package com.gempukku.secsy.entity.component;
 
 public interface ComponentFieldConverter {
     <T> T convertTo(String value, Class<T> clazz);

@@ -99,11 +99,7 @@ public class G3DRenderingSystem implements LifeCycleSystem {
         G3DModelColorComponent color = entityRef.getComponent(G3DModelColorComponent.class);
         if (color != null) {
             Material material = result.getMaterial(color.getMaterialId());
-            material.set(ColorAttribute.createDiffuse(
-                    color.getRed() / 255f,
-                    color.getGreen() / 255f,
-                    color.getBlue() / 255f,
-                    1f));
+            material.set(ColorAttribute.createDiffuse(color.getColor()));
         }
 
         result.transform.idt();

@@ -65,11 +65,7 @@ public class ModelColoredShapeRenderingSystem implements LifeCycleSystem {
         ModelInstance result = modelInstances.get(entityRef);
 
         for (Material material : result.materials) {
-            material.set(ColorAttribute.createDiffuse(
-                    modelColoredCuboid.getRed() / 255f,
-                    modelColoredCuboid.getGreen() / 255f,
-                    modelColoredCuboid.getBlue() / 255f,
-                    1f));
+            material.set(ColorAttribute.createDiffuse(modelColoredCuboid.getColor()));
         }
 
         result.transform.idt().translate(event.getLocation());

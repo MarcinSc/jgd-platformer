@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.signal.producer.hitbox;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.LifeCycleSystem;
@@ -9,7 +10,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.game.GameLoopUpdate;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.logic.hitbox.HitboxOverlapManager;
 import jgd.platformer.gameplay.logic.signal.SignalManager;
 
@@ -30,21 +31,22 @@ public class HitboxOverlapSignalProducerSystem implements LifeCycleSystem {
 
     @Override
     public void initialize() {
-        signalProducers = entityIndexManager.addIndexOnComponents(HitboxOverlapSignalProducerComponent.class, LocationComponent.class);
+        signalProducers = entityIndexManager.addIndexOnComponents(HitboxOverlapSignalProducerComponent.class, Location3DComponent.class);
     }
 
     @ReceiveEvent
     public void checkHitboxOverlap(GameLoopUpdate event, EntityRef entityRef) {
         for (EntityRef signalProducer : signalProducers) {
-            LocationComponent location = signalProducer.getComponent(LocationComponent.class);
+            Location3DComponent locationComp = signalProducer.getComponent(Location3DComponent.class);
+            Vector3 location = locationComp.getLocation();
             HitboxOverlapSignalProducerComponent hitboxOverlapProducer = signalProducer.getComponent(HitboxOverlapSignalProducerComponent.class);
 
             Rectangle2D.Float overlap = new Rectangle2D.Float(
-                    location.getX() + hitboxOverlapProducer.getTranslateX(),
-                    location.getY() + hitboxOverlapProducer.getTranslateY(),
+                    location.x + hitboxOverlapProducer.getTranslateX(),
+                    location.y + hitboxOverlapProducer.getTranslateY(),
                     hitboxOverlapProducer.getWidth(), hitboxOverlapProducer.getHeight());
 
-            int zLayer = MathUtils.floor(location.getZ());
+            int zLayer = MathUtils.floor(location.z);
 
             Iterable<EntityRef> overlapping = hitboxOverlapManager.findOverlappedEntities(overlap, zLayer,
                     entity -> entity.hasComponent(ActivateHitboxOverlapSignalProducerComponent.class));

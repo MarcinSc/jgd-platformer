@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.transform;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface ConstantModelTranslateComponent extends Component {
@@ -13,9 +14,7 @@ public interface ConstantModelTranslateComponent extends Component {
 
     int getMoveBackTime();
 
-    float getDistanceX();
-    float getDistanceY();
-    float getDistanceZ();
+    Vector3 getDistance();
 
     String getInterpolationAway();
 

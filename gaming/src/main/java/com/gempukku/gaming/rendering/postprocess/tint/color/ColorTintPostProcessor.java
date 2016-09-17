@@ -2,7 +2,6 @@ package com.gempukku.gaming.rendering.postprocess.tint.color;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -66,7 +65,7 @@ public class ColorTintPostProcessor implements LifeCycleSystem {
         if (factor > 0) {
             tintShaderProvider.setSourceTextureIndex(0);
             tintShaderProvider.setFactor(factor);
-            tintShaderProvider.setColor(new Color(tint.getRed() / 255f, tint.getGreen() / 255f, tint.getBlue() / 255f, 1f));
+            tintShaderProvider.setColor(tint.getColor());
 
             FrameBuffer currentBuffer = renderPipeline.getCurrentBuffer();
             int textureHandle = currentBuffer.getColorBufferTexture().getTextureObjectHandle();

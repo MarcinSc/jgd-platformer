@@ -1,31 +1,16 @@
 package jgd.platformer.gameplay.logic.transform;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface ModelTranslateOverTimeComponent extends Component {
-    float getSourceX();
+    Vector3 getSource();
 
-    void setSourceX(float sourceX);
+    void setSource(Vector3 source);
 
-    float getSourceY();
+    Vector3 getDestination();
 
-    void setSourceY(float sourceY);
-
-    float getSourceZ();
-
-    void setSourceZ(float sourceZ);
-
-    float getDestinationX();
-
-    void setDestinationX(float destinationX);
-
-    float getDestinationY();
-
-    void setDestinationY(float destinationY);
-
-    float getDestinationZ();
-
-    void setDestinationZ(float destinationZ);
+    void setDestination(Vector3 destination);
 
     long getStartTime();
     void setStartTime(long startTime);

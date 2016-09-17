@@ -8,11 +8,8 @@
     "scaleZ": 0.01
   },
   "PointLightComponent": {
-    "translateX": 0.3,
-    "translateZ": 0.1,
-    "red": 255,
-    "green": 255,
-    "blue": 127,
+    "translate": "0.3,0.1,0",
+    "color": "255,255,127",
     "intensity": 5
   },
   "ObjectInEditorComponent": {

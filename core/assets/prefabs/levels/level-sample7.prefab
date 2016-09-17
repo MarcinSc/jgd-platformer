@@ -22,9 +22,7 @@
             "channel": "openDoor"
           },
           "ModelColoredCuboidComponent": {
-            "red": 0,
-            "green": 63,
-            "blue": 0
+            "color": "0,63,0"
           }
         }
       },
@@ -46,9 +44,7 @@
             "channel": "openDoorDelayed"
           },
           "SignalIndicatorComponent": {
-            "baseRed": 0,
-            "baseGreen": 63,
-            "baseBlue": 0
+            "baseColor": "0,63,0"
           }
         }
       }
@@ -75,9 +71,7 @@
     "minY": -7
   },
   "PlayerSpawnComponent": {
-    "x": -8.5,
-    "y": -1,
-    "z": 0.5
+    "location": "-8.5,-1,0.5"
   },
   "CameraBoundsComponent": {
     "minX": -10,

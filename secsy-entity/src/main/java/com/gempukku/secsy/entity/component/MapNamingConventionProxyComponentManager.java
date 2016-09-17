@@ -1,10 +1,9 @@
-package com.gempukku.secsy.entity.component.map;
+package com.gempukku.secsy.entity.component;
 
+import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.Component;
 import com.gempukku.secsy.entity.EntityRef;
-import com.gempukku.secsy.entity.component.ComponentManager;
-import com.gempukku.secsy.entity.component.InternalComponentManager;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
@@ -18,6 +17,11 @@ import java.util.Map;
 
 @RegisterSystem(profiles = {"nameConventionComponents"}, shared = {ComponentManager.class, InternalComponentManager.class})
 public class MapNamingConventionProxyComponentManager implements ComponentManager, InternalComponentManager {
+    @Inject
+    private EntityComponentFieldHandler entityComponentFieldHandler;
+    @Inject
+    private ComponentFieldConverter componentFieldConverter;
+
     private static final Object NULL_VALUE = new Object();
     private Map<Class<? extends Component>, ComponentDef> componentDefinitions = new HashMap<>();
 
@@ -26,7 +30,7 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         ComponentDef componentDef = getComponentDef(clazz);
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz},
-                new ComponentView(entity, clazz, new HashMap<>(), false, componentDef.handlerMap));
+                new ComponentView(entity, clazz, new HashMap<>(), false, componentDef));
     }
 
     private <T extends Component> ComponentDef getComponentDef(Class<T> clazz) {
@@ -53,12 +57,20 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         final ComponentView componentView = extractComponentView(originalComponent);
 
         Map<String, Object> values = componentView.storedValues;
-        if (!useOriginalReference)
-            values = new HashMap<>(values);
+        if (!useOriginalReference) {
+            Map<String, Object> result = new HashMap<>();
+            Map<String, Class<?>> fieldTypes = componentView.componentDef.fieldTypes;
+            for (Map.Entry<String, Object> field : values.entrySet()) {
+                String fieldName = field.getKey();
+                result.put(fieldName, entityComponentFieldHandler.<Object>copyFromEntity(field.getValue(), (Class<Object>) fieldTypes.get(fieldName)));
+            }
+
+            values = result;
+        }
 
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(componentView.clazz.getClassLoader(), new Class[]{componentView.clazz},
-                new ComponentView(entity, componentView.clazz, values, readOnly, componentView.handlers));
+                new ComponentView(entity, componentView.clazz, values, readOnly, componentView.componentDef));
     }
 
     @Override
@@ -69,10 +81,13 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
             String fieldName = changeEntry.getKey();
             Object fieldValue = changeEntry.getValue();
 
+            Object oldValue = destination.storedValues.get(fieldName);
+            Class<?> fieldClass = destination.componentDef.getFieldTypes().get(fieldName);
+
             if (fieldValue == NULL_VALUE)
                 destination.storedValues.remove(fieldName);
             else
-                destination.storedValues.put(fieldName, fieldValue);
+                destination.storedValues.put(fieldName, entityComponentFieldHandler.<Object>storeIntoEntity(oldValue, fieldValue, (Class<Object>) fieldClass));
         }
 
         source.changes.clear();
@@ -122,7 +137,11 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
 
     @Override
     public void setComponentFieldValue(Component component, String fieldName, Object fieldValue) {
-        extractComponentView(component).storedValues.put(fieldName, fieldValue);
+        ComponentView componentView = extractComponentView(component);
+        Class<?> fieldType = componentView.componentDef.fieldTypes.get(fieldName);
+        if (fieldType != String.class && fieldValue instanceof String)
+            fieldValue = componentFieldConverter.convertTo((String) fieldValue, fieldType);
+        componentView.storedValues.put(fieldName, fieldValue);
     }
 
     private Map<String, Object> createConsolidatedFieldMap(ComponentView componentView) {
@@ -205,15 +224,17 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         private Map<String, Object> changes = new HashMap<>();
         private Map<String, MethodHandler> handlers = new HashMap<>();
         private boolean readOnly;
+        private ComponentDef componentDef;
         private boolean invalid;
 
         private ComponentView(EntityRef entity, Class<? extends Component> clazz, Map<String, Object> storedValues,
-                              boolean readOnly, Map<String, MethodHandler> handlers) {
+                              boolean readOnly, ComponentDef componentDef) {
             this.entity = entity;
             this.clazz = clazz;
             this.storedValues = storedValues;
             this.readOnly = readOnly;
-            this.handlers = handlers;
+            this.componentDef = componentDef;
+            this.handlers = componentDef.handlerMap;
         }
 
         public void invalidate() {
@@ -232,7 +253,7 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
         }
     }
 
-    private static class GetMethodHandler implements MethodHandler {
+    private class GetMethodHandler implements MethodHandler {
         private String fieldName;
         private Class<?> resultClass;
 
@@ -251,7 +272,10 @@ public class MapNamingConventionProxyComponentManager implements ComponentManage
                     return convertToResult(proxy, method, changedValue, resultClass);
                 }
             } else {
-                return convertToResult(proxy, method, storedValues.get(fieldName), resultClass);
+                Object value = storedValues.get(fieldName);
+                if (value != null)
+                    value = entityComponentFieldHandler.copyFromEntity(value, (Class<Object>) resultClass);
+                return convertToResult(proxy, method, value, resultClass);
             }
         }
 

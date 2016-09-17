@@ -1,25 +1,16 @@
 package com.gempukku.gaming.rendering.postprocess.tint.color;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gempukku.secsy.entity.Component;
 
 public interface ColorTintComponent extends Component {
-    int getRed();
+    Color getColor();
 
-    void setRed(int red);
-
-    int getGreen();
-
-    void setGreen(int green);
-
-    int getBlue();
-
-    void setBlue(int blue);
+    void setColor(Color color);
 
     float getFactor();
-
     void setFactor(float factor);
 
     boolean isPostUi();
-
     void setPostUi(boolean postUi);
 }

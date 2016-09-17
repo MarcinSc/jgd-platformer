@@ -1,8 +1,6 @@
 {
   "BackgroundColorComponent": {
-    "red": 145,
-    "green": 186,
-    "blue": 220
+    "color": "145,186,220"
   },
   "DefinedCameraComponent": {
     "location": "0,0,8",

@@ -2,7 +2,7 @@ package com.gempukku.secsy.entity;
 
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.context.system.ShareSystemInitializer;
-import com.gempukku.secsy.entity.component.map.MapAnnotationDrivenProxyComponentManager;
+import com.gempukku.secsy.entity.component.MapNamingConventionProxyComponentManager;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.AfterComponentRemoved;
 import com.gempukku.secsy.entity.event.AfterComponentUpdated;
@@ -33,7 +33,7 @@ public class SimpleEntityManagerTest {
 
     @Before
     public void setup() {
-        MapAnnotationDrivenProxyComponentManager componentManager = new MapAnnotationDrivenProxyComponentManager();
+        MapNamingConventionProxyComponentManager componentManager = new MapNamingConventionProxyComponentManager();
         simpleEntityManager = new SimpleEntityManager();
         ShareSystemInitializer shareSystemInitializer = new ShareSystemInitializer();
         Collection<Object> systems = Arrays.asList(componentManager, simpleEntityManager, new MockInternalGameLoop());

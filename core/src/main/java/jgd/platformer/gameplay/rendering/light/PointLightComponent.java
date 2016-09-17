@@ -1,19 +1,13 @@
 package jgd.platformer.gameplay.rendering.light;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface PointLightComponent extends Component {
-    float getTranslateX();
+    Vector3 getTranslate();
 
-    float getTranslateY();
-
-    float getTranslateZ();
-
-    int getRed();
-
-    int getGreen();
-
-    int getBlue();
+    Color getColor();
 
     float getIntensity();
 }

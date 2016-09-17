@@ -7,7 +7,7 @@ import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.logic.activate.ActivateEntity;
 import jgd.platformer.gameplay.logic.physics.ShouldProcessPhysics;
 import jgd.platformer.gameplay.logic.transform.ModelTranslateOverTimeComponent;
@@ -24,15 +24,11 @@ public class MoveActivatorSystem {
     @ReceiveEvent
     public void moveActivator(ActivateEntity event, EntityRef entityRef, MoveActivatorComponent moveActivator) {
         EntityRef activator = event.getActivator();
-        LocationComponent activatorLocation = activator.getComponent(LocationComponent.class);
+        Location3DComponent activatorLocation = activator.getComponent(Location3DComponent.class);
 
         ModelTranslateOverTimeComponent modelTranslateOverTime = activator.createComponent(ModelTranslateOverTimeComponent.class);
-        modelTranslateOverTime.setSourceX(activatorLocation.getX());
-        modelTranslateOverTime.setDestinationX(activatorLocation.getX() + moveActivator.getDistanceX());
-        modelTranslateOverTime.setSourceY(activatorLocation.getY());
-        modelTranslateOverTime.setDestinationY(activatorLocation.getY() + moveActivator.getDistanceY());
-        modelTranslateOverTime.setSourceZ(activatorLocation.getZ());
-        modelTranslateOverTime.setDestinationZ(activatorLocation.getZ() + moveActivator.getDistanceZ());
+        modelTranslateOverTime.setSource(activatorLocation.getLocation());
+        modelTranslateOverTime.setDestination(activatorLocation.getLocation().add(moveActivator.getDistance()));
 
         modelTranslateOverTime.setStartTime(timeManager.getTime());
         long moveTime = moveActivator.getMoveTime();

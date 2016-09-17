@@ -1,11 +1,8 @@
 package jgd.platformer.gameplay.level;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface PlayerSpawnComponent extends Component {
-    float getX();
-
-    float getY();
-
-    float getZ();
+    Vector3 getLocation();
 }

@@ -2,12 +2,8 @@
   "ModelRenderComponent": {
   },
   "SignalIndicatorComponent": {
-    "signalOffRed": 63,
-    "signalOffGreen": 0,
-    "signalOffBlue": 0,
-    "signalOnRed": 255,
-    "signalOnGreen": 127,
-    "signalOnBlue": 0
+    "signalOffColor": "63,0,0",
+    "signalOnColor": "255,127,0"
   },
   "SignalConsumerComponent": {},
   "ObjectInEditorComponent": {

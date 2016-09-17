@@ -15,7 +15,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,16 +39,14 @@ public class ModelRenderer implements LifeCycleSystem {
 
     @Override
     public void initialize() {
-        modelsIndex = entityIndexManager.addIndexOnComponents(ModelRenderComponent.class, LocationComponent.class);
+        modelsIndex = entityIndexManager.addIndexOnComponents(ModelRenderComponent.class, Location3DComponent.class);
     }
 
     @ReceiveEvent(priority = -1)
     public void renderModels(RenderEnvironment event, EntityRef renderingEntity) {
         List<ModelInstance> models = new LinkedList<>();
         for (EntityRef entityRef : modelsIndex.getEntities()) {
-            LocationComponent location = entityRef.getComponent(LocationComponent.class);
-
-            Vector3 locationVec = new Vector3(location.getX(), location.getY(), location.getZ());
+            Vector3 locationVec = entityRef.getComponent(Location3DComponent.class).getLocation();
             float rotationY = 0;
             ModelRotateComponent rotation = entityRef.getComponent(ModelRotateComponent.class);
             if (rotation != null) {

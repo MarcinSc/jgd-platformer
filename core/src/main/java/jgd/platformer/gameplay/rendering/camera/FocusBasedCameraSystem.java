@@ -2,6 +2,7 @@ package jgd.platformer.gameplay.rendering.camera;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.rendering.GetCamera;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -10,7 +11,7 @@ import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.index.EntityIndex;
 import com.gempukku.secsy.entity.index.EntityIndexManager;
-import jgd.platformer.gameplay.component.LocationComponent;
+import jgd.platformer.gameplay.component.Location3DComponent;
 import jgd.platformer.gameplay.rendering.CameraBoundsComponent;
 import jgd.platformer.gameplay.rendering.CameraFocusComponent;
 
@@ -30,7 +31,7 @@ public class FocusBasedCameraSystem implements LifeCycleSystem {
     public void initialize() {
         camera = new PerspectiveCamera(75, 0, 0);
 
-        cameraFocusedEntities = entityIndexManager.addIndexOnComponents(CameraFocusComponent.class, LocationComponent.class);
+        cameraFocusedEntities = entityIndexManager.addIndexOnComponents(CameraFocusComponent.class, Location3DComponent.class);
         cameraBoundsEntities = entityIndexManager.addIndexOnComponents(CameraBoundsComponent.class);
     }
 
@@ -42,6 +43,7 @@ public class FocusBasedCameraSystem implements LifeCycleSystem {
         float weightSum = 0;
         float sumX = 0;
         float sumY = 0;
+        float sumZ = 0;
 
         float cameraDistanceY = focusBasedCamera.getDistanceY();
         int z = focusBasedCamera.getZ();
@@ -50,15 +52,17 @@ public class FocusBasedCameraSystem implements LifeCycleSystem {
             CameraFocusComponent cameraFocus = focusedEntity.getComponent(CameraFocusComponent.class);
             float weight = cameraFocus.getFocusWeight();
             if (weight > 0) {
-                LocationComponent location = focusedEntity.getComponent(LocationComponent.class);
-                sumX += location.getX() * weight;
-                sumY += location.getY() * weight;
+                Vector3 location = focusedEntity.getComponent(Location3DComponent.class).getLocation();
+                sumX += location.x * weight;
+                sumY += location.y * weight;
+                sumZ += location.z * weight;
                 weightSum += weight;
             }
         }
 
         float resultX = sumX / weightSum;
         float resultY = sumY / weightSum;
+        float resultZ = sumZ / weightSum;
 
         EntityRef boundsEntity = cameraBoundsEntities.getEntities().iterator().next();
         CameraBoundsComponent cameraBounds = boundsEntity.getComponent(CameraBoundsComponent.class);
@@ -66,9 +70,9 @@ public class FocusBasedCameraSystem implements LifeCycleSystem {
         resultX = Math.max(Math.min(resultX, cameraBounds.getMaxX()), cameraBounds.getMinX());
         resultY = Math.max(Math.min(resultY, cameraBounds.getMaxY()), cameraBounds.getMinY());
 
-        camera.position.set(resultX, resultY + cameraDistanceY, z);
+        camera.position.set(resultX, resultY + cameraDistanceY, resultZ + z);
 
-        camera.lookAt(resultX, resultY + cameraDistanceY, 0);
+        camera.lookAt(resultX, resultY + cameraDistanceY, resultZ);
         camera.up.set(0, 1, 0);
         camera.update();
 
