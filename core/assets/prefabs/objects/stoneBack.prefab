@@ -13,7 +13,7 @@
   "HitboxActivateComponent": {},
   "MoveActivatorComponent": {
     "distance": "0,0,1",
-    "moveTime": 1000
+    "moveTime": 500
   },
   "ObjectInEditorComponent": {
     "displayName": "Stone to front",

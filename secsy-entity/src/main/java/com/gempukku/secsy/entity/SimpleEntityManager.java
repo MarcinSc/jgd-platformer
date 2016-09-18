@@ -298,6 +298,11 @@ public class SimpleEntityManager implements EntityManager, InternalEntityManager
                 entity -> createSimpleEntityRef(entity, false));
     }
 
+    @Override
+    public EntityData exposeEntityData(EntityRef entityRef) {
+        return ((SimpleEntityRef) entityRef).getEntity();
+    }
+
     private SimpleEntityRef createSimpleEntityRef(SimpleEntity entity, boolean readOnly) {
         return new SimpleEntityRef(internalComponentManager, dispatchEntityListener, dispatchEntityEventListener,
                 entity, readOnly);

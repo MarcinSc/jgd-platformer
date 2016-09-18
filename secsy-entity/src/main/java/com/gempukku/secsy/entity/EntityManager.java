@@ -23,4 +23,6 @@ public interface EntityManager {
     String getEntityUniqueIdentifier(EntityRef entityRef);
 
     EntityRef wrapEntityData(EntityData entityData);
+
+    EntityData exposeEntityData(EntityRef entityRef);
 }
