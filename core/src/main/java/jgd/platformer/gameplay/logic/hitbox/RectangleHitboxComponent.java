@@ -1,10 +1,6 @@
 package jgd.platformer.gameplay.logic.hitbox;
 
-import com.badlogic.gdx.math.Vector2;
-import com.gempukku.secsy.entity.Component;
+import jgd.platformer.common.component.Rectangle2DComponent;
 
-public interface RectangleHitboxComponent extends Component {
-    Vector2 getTranslate();
-
-    Vector2 getSize();
+public interface RectangleHitboxComponent extends Rectangle2DComponent {
 }

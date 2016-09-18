@@ -10,7 +10,6 @@
     "scale": "1,0.1,1"
   },
   "CollisionObstacleComponent": {
-    "size": "1,1"
   },
   "SignalProducerComponent": {},
   "HitboxOverlapSignalProducerComponent": {

@@ -1,10 +1,7 @@
 package jgd.platformer.gameplay.logic.physics;
 
-import com.badlogic.gdx.math.Vector2;
-import com.gempukku.secsy.entity.Component;
+import jgd.platformer.common.component.Rectangle2DComponent;
 
-public interface CollidingObjectComponent extends Component {
-    Vector2 getTranslate();
+public interface CollidingObjectComponent extends Rectangle2DComponent {
 
-    Vector2 getSize();
 }

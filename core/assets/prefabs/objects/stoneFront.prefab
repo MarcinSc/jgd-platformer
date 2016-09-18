@@ -5,7 +5,6 @@
     "modelPrefab": "modelStoneFront"
   },
   "CollisionObstacleComponent": {
-    "size": "1,1"
   },
   "RectangleHitboxComponent": {
     "translate": "0.3,1",

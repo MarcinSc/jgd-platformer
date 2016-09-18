@@ -8,8 +8,6 @@
   },
   "BlockEntityComponent": {},
   "RectangleHitboxComponent": {
-    "translate": "0,0",
-    "size": "1,1"
   },
   "LevelExitPortalComponent": {},
   "BlockInEditorComponent": {

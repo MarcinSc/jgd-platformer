@@ -13,12 +13,10 @@
     "gravityMultiplier": 1
   },
   "CollidingObjectComponent": {
-    "translate": "-0.5,0",
-    "size": "1,1"
+    "translate": "-0.5,0"
   },
   "RectangleHitboxComponent": {
-    "translate": "-0.5,0",
-    "size": "1,1"
+    "translate": "-0.5,0"
   },
   "ModelRotateComponent": {},
   "RotateModelOnMovementComponent": {
