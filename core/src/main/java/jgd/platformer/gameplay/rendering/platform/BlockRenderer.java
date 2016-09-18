@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
@@ -76,6 +77,7 @@ public class BlockRenderer implements LifeCycleSystem {
                 EntityData blockData = prefabManager.getPrefabByName(blockPrefabName);
                 EntityRef blockEntity = entityManager.wrapEntityData(blockData);
                 BlockComponent blockDef = blockEntity.getComponent(BlockComponent.class);
+                Vector3 translate = blockDef.getTranslate();
 
                 ShapeOutput.outputShapeToVertexOutput(vertices, shapeProvider.getShapeById(blockDef.getShape()), new TextureRegionMapper() {
                     @Override
@@ -85,7 +87,7 @@ public class BlockRenderer implements LifeCycleSystem {
                             return null;
                         return textureAtlasProvider.getTexture("platforms", textureName);
                     }
-                }, x + blockDef.getTranslateX(), y + blockDef.getTranslateY(), z + blockDef.getTranslateZ());
+                }, x + translate.x, y + translate.y, z + translate.z);
             }
 
             MeshPart platform = vertices.generateMeshPart("platform");

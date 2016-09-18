@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.signal.producer.hitbox;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -40,11 +41,13 @@ public class HitboxOverlapSignalProducerSystem implements LifeCycleSystem {
             Location3DComponent locationComp = signalProducer.getComponent(Location3DComponent.class);
             Vector3 location = locationComp.getLocation();
             HitboxOverlapSignalProducerComponent hitboxOverlapProducer = signalProducer.getComponent(HitboxOverlapSignalProducerComponent.class);
+            Vector2 translate = hitboxOverlapProducer.getTranslate();
+            Vector2 size = hitboxOverlapProducer.getSize();
 
             Rectangle2D.Float overlap = new Rectangle2D.Float(
-                    location.x + hitboxOverlapProducer.getTranslateX(),
-                    location.y + hitboxOverlapProducer.getTranslateY(),
-                    hitboxOverlapProducer.getWidth(), hitboxOverlapProducer.getHeight());
+                    location.x + translate.x,
+                    location.y + translate.y,
+                    size.x, size.y);
 
             int zLayer = MathUtils.floor(location.z);
 

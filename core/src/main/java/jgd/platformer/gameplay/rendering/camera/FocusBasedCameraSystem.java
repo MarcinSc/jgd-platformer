@@ -2,6 +2,7 @@ package jgd.platformer.gameplay.rendering.camera;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.rendering.GetCamera;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -66,9 +67,11 @@ public class FocusBasedCameraSystem implements LifeCycleSystem {
 
         EntityRef boundsEntity = cameraBoundsEntities.getEntities().iterator().next();
         CameraBoundsComponent cameraBounds = boundsEntity.getComponent(CameraBoundsComponent.class);
+        Vector2 min = cameraBounds.getMin();
+        Vector2 max = cameraBounds.getMax();
 
-        resultX = Math.max(Math.min(resultX, cameraBounds.getMaxX()), cameraBounds.getMinX());
-        resultY = Math.max(Math.min(resultY, cameraBounds.getMaxY()), cameraBounds.getMinY());
+        resultX = Math.max(Math.min(resultX, max.x), min.x);
+        resultY = Math.max(Math.min(resultY, max.y), min.y);
 
         camera.position.set(resultX, resultY + cameraDistanceY, resultZ + z);
 

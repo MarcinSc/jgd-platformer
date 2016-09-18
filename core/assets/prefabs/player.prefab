@@ -14,9 +14,7 @@
   },
   "G3DModelComponent": {
     "modelFile": "model/duke/duke.g3dj",
-    "scaleX": 0.08,
-    "scaleY": 0.115,
-    "scaleZ": 0.1
+    "scale": "0.08,0.115,0.1"
   },
   "G3DModelAnimationComponent": {
   },
@@ -34,16 +32,12 @@
     "gravityMultiplier": 1
   },
   "CollidingObjectComponent": {
-    "translateX": -0.3,
-    "translateY": 0,
-    "width": 0.6,
-    "height": 1
+    "translate": "-0.3,0",
+    "size": "0.6,1"
   },
   "RectangleHitboxComponent": {
-    "translateX": -0.3,
-    "translateY": 0,
-    "width": 0.6,
-    "height": 1
+    "translate": "-0.3,0",
+    "size": "0.6,1"
   },
   "CameraFocusComponent": {
     "focusWeight": 1

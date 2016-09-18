@@ -3,21 +3,19 @@
   },
   "RenderedShapeComponent": {
     "modelPrefab": "modelPressurePlate",
-    "scaleY": 0.9
+    "scale": "1,0.9,1"
   },
   "ModelColoredCuboidComponent": {
-    "translateY": 0.9,
-    "scaleY": 0.1
+    "translate": "0,0.9,0",
+    "scale": "1,0.1,1"
   },
   "CollisionObstacleComponent": {
-    "width": 1,
-    "height": 1
+    "size": "1,1"
   },
   "SignalProducerComponent": {},
   "HitboxOverlapSignalProducerComponent": {
-    "translateY": 1,
-    "width": 1,
-    "height": 0.1
+    "translate": "0,1",
+    "size": "1,0.1"
   },
   "ObjectInEditorComponent": {
     "displayName": "Pressure plate",

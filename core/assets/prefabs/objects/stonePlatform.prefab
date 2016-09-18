@@ -4,15 +4,13 @@
   "RenderedMultiShapeComponent": {
     "modelPrefab": "modelStonePlatform",
     "shapeCount": 2,
-    "shapeAdvanceX": 1
+    "shapeAdvance": "1,0,0"
   },
   "ModelScaleComponent": {
-    "scaleX": 1,
-    "scaleY": 0.5
+    "scale": "1,0.5,1"
   },
   "CollisionObstacleComponent": {
-    "width": 2,
-    "height": 0.5
+    "size": "2,0.5"
   },
   "ConstantModelTranslateComponent": {
     "interpolationAway": "linear",
@@ -20,10 +18,8 @@
   },
   "BaseLocation3DComponent": {},
   "PlatformComponent": {
-    "translateX": 0,
-    "translateY": 0.5,
-    "width": 2,
-    "height": 0.1
+    "translate": "0,0.5",
+    "size": "2,0.1"
   },
   "ObjectInEditorComponent": {
     "displayName": "Stone platform",

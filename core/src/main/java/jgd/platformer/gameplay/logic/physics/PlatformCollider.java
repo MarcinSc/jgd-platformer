@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.physics;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -34,6 +35,8 @@ public class PlatformCollider {
             EntityRef prefabData = entityManager.wrapEntityData(prefabManager.getPrefabByName(prefab));
             CollisionObstacleComponent collidingObject = prefabData.getComponent(CollisionObstacleComponent.class);
             if (collidingObject != null) {
+                Vector2 translate = collidingObject.getTranslate();
+                Vector2 size = collidingObject.getSize();
                 String[] locationSplit = location.split(",");
                 float x = Float.parseFloat(locationSplit[0]);
                 float y = Float.parseFloat(locationSplit[1]);
@@ -41,8 +44,8 @@ public class PlatformCollider {
                 platformBlocks.add(
                         new BlockObstacle(
                                 new Rectangle2D.Float(
-                                        x + collidingObject.getTranslateX(), y + collidingObject.getTranslateY(),
-                                        collidingObject.getWidth(), collidingObject.getHeight()),
+                                        x + translate.x, y + translate.y,
+                                        size.x, size.y),
                                 zLayer,
                                 collidingObject.getCollideSides()));
             }

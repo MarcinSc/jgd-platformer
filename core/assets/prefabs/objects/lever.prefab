@@ -3,11 +3,8 @@
   },
   "G3DModelComponent": {
     "modelFile": "model/lever/lever.g3dj",
-    "translateX": 0.5,
-    "translateZ": 0.95,
-    "scaleX": 0.5,
-    "scaleY": 1.3,
-    "scaleZ": 1.5
+    "translate": "0.5,0,0.95",
+    "scale": "0.5,1.3,1.5"
   },
   "G3DModelColorComponent": {
     "materialId": "Base"
@@ -18,9 +15,8 @@
   "SignalProducerComponent": {
   },
   "RectangleHitboxComponent": {
-    "translateX": 0.1,
-    "width": 0.8,
-    "height": 1
+    "translate": "0.1,0",
+    "size": "0.8,1"
   },
   "HitboxActivateComponent": {},
   "PlaySoundOnActivateComponent": {

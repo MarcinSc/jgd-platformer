@@ -1,16 +1,16 @@
 package com.gempukku.gaming.rendering.backdrop.background.image;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.math.Vector3;
 
 public class BackgroundImageShaderProvider implements ShaderProvider {
     private BackgroundImageShader backgroundShader;
     private int backgroundImageIndex;
-    private Vector3 backgroundColor;
+    private Color backgroundColor;
 
     private float backgroundImageStartX;
     private float backgroundImageStartY;
@@ -26,7 +26,7 @@ public class BackgroundImageShaderProvider implements ShaderProvider {
         this.backgroundImageIndex = backgroundImageIndex;
     }
 
-    public void setBackgroundColor(Vector3 backgroundColor) {
+    public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 

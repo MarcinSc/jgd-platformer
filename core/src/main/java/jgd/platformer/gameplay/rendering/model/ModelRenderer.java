@@ -55,7 +55,7 @@ public class ModelRenderer implements LifeCycleSystem {
             Vector3 scaleVec = new Vector3(1, 1, 1);
             ModelScaleComponent scale = entityRef.getComponent(ModelScaleComponent.class);
             if (scale != null) {
-                scaleVec.set(scale.getScaleX(), scale.getScaleY(), scale.getScaleZ());
+                scaleVec.set(scale.getScale());
             }
 
             GetModelInstance getModelInstance = new GetModelInstance(locationVec, rotationY, scaleVec);

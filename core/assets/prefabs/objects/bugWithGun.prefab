@@ -3,26 +3,22 @@
   },
   "RenderedShapeComponent": {
     "modelPrefab": "modelBugWithGun",
-    "translateX": -0.5
+    "translate": "-0.5,0,0"
   },
   "ModelScaleComponent": {
-    "scaleZ": 0.01
+    "scale": "1,1,0.01"
   },
   "KineticObjectComponent": {},
   "AffectedByGravityComponent": {
     "gravityMultiplier": 1
   },
   "CollidingObjectComponent": {
-    "translateX": -0.5,
-    "translateY": 0,
-    "width": 1,
-    "height": 1
+    "translate": "-0.5,0",
+    "size": "1,1"
   },
   "RectangleHitboxComponent": {
-    "translateX": -0.5,
-    "translateY": 0,
-    "width": 1,
-    "height": 1
+    "translate": "-0.5,0",
+    "size": "1,1"
   },
   "ModelRotateComponent": {},
   "RotateModelOnMovementComponent": {
@@ -46,8 +42,7 @@
       "prefabName": "bugProjectile",
       "changes": {}
     },
-    "distanceX": 0.5,
-    "distanceY": 0.5,
+    "distance": "0.5,0.5,0",
     "dissipateDuration": 3000,
     "projectileShootFrequency": 3000,
     "projectileSpeed": 6

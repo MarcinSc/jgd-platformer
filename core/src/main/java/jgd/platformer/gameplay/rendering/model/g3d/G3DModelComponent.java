@@ -1,29 +1,20 @@
 package jgd.platformer.gameplay.rendering.model.g3d;
 
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.entity.Component;
 
 public interface G3DModelComponent extends Component {
     String getModelFile();
 
-    default float getScaleX() {
-        return 1;
+    default Vector3 getTranslate() {
+        return new Vector3();
     }
 
-    default float getScaleY() {
-        return 1;
-    }
-
-    default float getScaleZ() {
-        return 1;
+    default Vector3 getScale() {
+        return new Vector3(1, 1, 1);
     }
 
     default float getOpacity() {
         return 1;
     }
-
-    float getTranslateX();
-
-    float getTranslateY();
-
-    float getTranslateZ();
 }

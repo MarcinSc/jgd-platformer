@@ -6,22 +6,17 @@
     }
   },
   "CollisionObstacleComponent": {
-    "translateX": 0,
-    "translateY": 0,
-    "width": 1,
-    "height": 1
+    "translate": "0,0",
+    "size": "1,1"
   },
   "BlockEntityComponent": {},
   "SpawnEntityOnOverlapComponent": {
     "prefabName": "star",
-    "distanceX": 0.5,
-    "distanceY": 1
+    "distance": "0.5,1,0"
   },
   "RectangleHitboxComponent": {
-    "translateX": 0,
-    "translateY": -0.1,
-    "width": 1,
-    "height": 0.1
+    "translate": "0,-0.1",
+    "size": "1,0.1"
   },
   "BlockInEditorComponent": {
     "displayName": "Star Ore"

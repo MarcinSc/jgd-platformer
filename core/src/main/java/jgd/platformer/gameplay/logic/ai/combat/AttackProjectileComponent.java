@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.ai.combat;
 
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.secsy.entity.Component;
 
 import java.util.Map;
@@ -7,9 +8,7 @@ import java.util.Map;
 public interface AttackProjectileComponent extends Component {
     Map<String, Object> getProjectileRecipe();
 
-    float getDistanceX();
-
-    float getDistanceY();
+    Vector2 getDistance();
 
     long getDissipateDuration();
 

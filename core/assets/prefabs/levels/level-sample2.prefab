@@ -26,9 +26,7 @@
     "location": "-4.5,1,0.5"
   },
   "CameraBoundsComponent": {
-    "minX": 0,
-    "minY": 0,
-    "maxX": 10,
-    "maxY": 10
+    "min": "0,0",
+    "max": "10,10"
   }
 }

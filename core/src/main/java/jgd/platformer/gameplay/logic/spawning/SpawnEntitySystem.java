@@ -27,10 +27,11 @@ public class SpawnEntitySystem {
         Vector3 spawnerLocation = spawnerLocationComp.getLocation();
         EntityRef otherEntity = event.getOtherEntity();
         if (otherEntity.hasComponent(PlayerComponent.class)) {
+            Vector3 distance = spawnEntity.getDistance();
             platformerEntitySpawner.createEntityFromRecipeAt(
-                    spawnerLocation.x + spawnEntity.getDistanceX(),
-                    spawnerLocation.y + spawnEntity.getDistanceY(),
-                    spawnerLocation.z + spawnEntity.getDistanceZ(), spawnEntity.getPrefabName());
+                    spawnerLocation.x + distance.x,
+                    spawnerLocation.y + distance.y,
+                    spawnerLocation.z + distance.z, spawnEntity.getPrefabName());
 
             entityRef.removeComponents(SpawnEntityOnOverlapComponent.class);
             entityRef.saveChanges();

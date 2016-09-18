@@ -22,10 +22,11 @@ public class SpawnEntityOnSignalSystem {
     @ReceiveEvent
     public void signalReceived(SignalActivated signalActivated, EntityRef entity, SpawnEntityOnSignalComponent spawnEntityOnSignal, Location3DComponent locationComp) {
         Vector3 location = locationComp.getLocation();
+        Vector3 distance = spawnEntityOnSignal.getDistance();
         platformerEntitySpawner.createEntityFromRecipeAt(
-                location.x + spawnEntityOnSignal.getDistanceX(),
-                location.y + spawnEntityOnSignal.getDistanceY(),
-                location.z + spawnEntityOnSignal.getDistanceZ(),
+                location.x + distance.x,
+                location.y + distance.y,
+                location.z + distance.z,
                 spawnEntityOnSignal.getPrefabName());
 
         entityManager.destroyEntity(entity);

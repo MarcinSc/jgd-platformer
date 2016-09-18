@@ -3,7 +3,7 @@ precision mediump float;
 #endif
 
 uniform sampler2D u_backgroundTexture;
-uniform vec3 u_backgroundColor;
+uniform vec4 u_backgroundColor;
 
 // Actual TextureRegion coordinates
 uniform float u_imageStartX;
@@ -15,7 +15,7 @@ varying vec2 v_position;
 
 void main() {
     if (v_position.x<0.0 ||v_position.x>1.0 || v_position.y<0.0 || v_position.y>1.0) {
-        gl_FragColor = vec4(u_backgroundColor.r, u_backgroundColor.g, u_backgroundColor.b, 1.0);
+        gl_FragColor = u_backgroundColor;
     } else {
         gl_FragColor = texture2D(u_backgroundTexture, v_position * vec2(u_imageWidth, u_imageHeight) + vec2(u_imageStartX, u_imageStartY));
     }

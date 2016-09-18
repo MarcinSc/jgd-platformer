@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
@@ -71,6 +72,8 @@ public class ModelMultiShapeRenderingSystem implements LifeCycleSystem {
             float advanceY = 0;
             float advanceZ = 0;
 
+            Vector3 shapeAdvance = modelRender.getShapeAdvance();
+
             for (int i = 0; i < modelRender.getShapeCount(); i++) {
                 ShapeOutput.outputShapeToVertexOutput(arrayVertexOutput, modelShapeDef, new TextureRegionMapper() {
                     @Override
@@ -82,9 +85,9 @@ public class ModelMultiShapeRenderingSystem implements LifeCycleSystem {
                     }
                 }, advanceX, advanceY, advanceZ);
 
-                advanceX += modelRender.getShapeAdvanceX();
-                advanceY += modelRender.getShapeAdvanceY();
-                advanceZ += modelRender.getShapeAdvanceZ();
+                advanceX += shapeAdvance.x;
+                advanceY += shapeAdvance.y;
+                advanceZ += shapeAdvance.z;
             }
 
             MeshPart platform = arrayVertexOutput.generateMeshPart("model");
@@ -103,7 +106,7 @@ public class ModelMultiShapeRenderingSystem implements LifeCycleSystem {
     }
 
     private String getModelKey(RenderedMultiShapeComponent modelRender, String modelPrefab) {
-        return modelPrefab + ":" + modelRender.getShapeCount() + ":" + modelRender.getShapeAdvanceX() + ":" + modelRender.getShapeAdvanceY() + ":" + modelRender.getShapeAdvanceZ();
+        return modelPrefab + ":" + modelRender.getShapeCount() + ":" + modelRender.getShapeAdvance();
     }
 
     @ReceiveEvent
@@ -118,10 +121,7 @@ public class ModelMultiShapeRenderingSystem implements LifeCycleSystem {
         result.transform.idt().translate(event.getLocation());
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
-        result.transform.translate(
-                renderedShape.getTranslateX(),
-                renderedShape.getTranslateY(),
-                renderedShape.getTranslateZ());
+        result.transform.translate(renderedShape.getTranslate());
 
         result.transform.scale(event.getScale().x, event.getScale().y, event.getScale().z);
 

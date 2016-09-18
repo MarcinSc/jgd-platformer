@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.hitbox;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
 import com.gempukku.secsy.entity.EntityRef;
@@ -90,8 +91,10 @@ public class HitboxOverlapSystem implements HitboxOverlapManager {
     }
 
     private Rectangle2D createShape(RectangleHitboxComponent rectangleHitbox, Vector3 location) {
-        return new Rectangle2D.Float(location.x + rectangleHitbox.getTranslateX(), location.y + rectangleHitbox.getTranslateY(),
-                rectangleHitbox.getWidth(), rectangleHitbox.getHeight());
+        Vector2 translate = rectangleHitbox.getTranslate();
+        Vector2 size = rectangleHitbox.getSize();
+        return new Rectangle2D.Float(location.x + translate.x, location.y + translate.y,
+                size.x, size.y);
     }
 
     private static class OverlapEventToFire {

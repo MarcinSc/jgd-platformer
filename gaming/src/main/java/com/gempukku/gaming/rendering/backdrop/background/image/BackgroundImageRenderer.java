@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.event.RenderBackdrop;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -118,10 +117,7 @@ public class BackgroundImageRenderer implements LifeCycleSystem {
         Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, texture.getTexture().getTextureObjectHandle());
 
         backgroundImageProvider.setBackgroundImageIndex(0);
-        backgroundImageProvider.setBackgroundColor(new Vector3(
-                backgroundImage.getBackgroundRed() / 255f,
-                backgroundImage.getBackgroundGreen() / 255f,
-                backgroundImage.getBackgroundBlue() / 255f));
+        backgroundImageProvider.setBackgroundColor(backgroundImage.getBackgroundColor());
 
         event.getRenderPipeline().getCurrentBuffer().begin();
         modelBatch.begin(event.getCamera());

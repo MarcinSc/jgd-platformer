@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.time.TimeManager;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -108,15 +109,14 @@ public class G3DRenderingSystem implements LifeCycleSystem {
             animationController.update(seconds);
         }
         result.transform.translate(
-                event.getLocation().x + g3dModel.getTranslateX(),
-                event.getLocation().y + g3dModel.getTranslateY(),
-                event.getLocation().z + g3dModel.getTranslateZ());
+                g3dModel.getTranslate().add(event.getLocation()));
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
+        Vector3 scale = g3dModel.getScale();
         result.transform.scale(
-                event.getScale().x * g3dModel.getScaleX(),
-                event.getScale().y * g3dModel.getScaleY(),
-                event.getScale().z * g3dModel.getScaleZ());
+                event.getScale().x * scale.x,
+                event.getScale().y * scale.y,
+                event.getScale().z * scale.z);
 
         event.appendModelInstance(result);
     }

@@ -1,5 +1,6 @@
 package jgd.platformer.menu.rendering.splash;
 
+import com.badlogic.gdx.graphics.Color;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.rendering.RenderingEntityProvider;
 import com.gempukku.gaming.rendering.backdrop.background.image.BackgroundImageComponent;
@@ -80,8 +81,11 @@ public class SplashScreenSystem implements LifeCycleSystem {
         String[] splashDescription = splashSeriesComponent.getSplashDescriptions().get(shownIndex).split("\\|");
         backgroundImage.setTextureName(splashDescription[0]);
         String[] color = splashDescription[2].split(",");
-        backgroundImage.setBackgroundRed(Integer.parseInt(color[0]));
-        backgroundImage.setBackgroundGreen(Integer.parseInt(color[1]));
-        backgroundImage.setBackgroundBlue(Integer.parseInt(color[2]));
+        backgroundImage.setBackgroundColor(
+                new Color(
+                        Integer.parseInt(color[0]) / 255f,
+                        Integer.parseInt(color[1]) / 255f,
+                        Integer.parseInt(color[2]) / 255f,
+                        1f));
     }
 }

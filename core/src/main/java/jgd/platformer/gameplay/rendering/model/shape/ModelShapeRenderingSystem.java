@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
@@ -100,15 +101,13 @@ public class ModelShapeRenderingSystem implements LifeCycleSystem {
         result.transform.idt().translate(event.getLocation());
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
-        result.transform.translate(
-                renderedShape.getTranslateX(),
-                renderedShape.getTranslateY(),
-                renderedShape.getTranslateZ());
+        result.transform.translate(renderedShape.getTranslate());
 
+        Vector3 scale = renderedShape.getScale();
         result.transform.scale(
-                event.getScale().x * renderedShape.getScaleX(),
-                event.getScale().y * renderedShape.getScaleY(),
-                event.getScale().z * renderedShape.getScaleZ());
+                event.getScale().x * scale.x,
+                event.getScale().y * scale.y,
+                event.getScale().z * scale.z);
 
         event.appendModelInstance(result);
     }

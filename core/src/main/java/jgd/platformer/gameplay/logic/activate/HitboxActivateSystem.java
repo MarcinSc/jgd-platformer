@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.activate;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -29,12 +30,13 @@ public class HitboxActivateSystem {
         for (EntityRef player : players) {
             RectangleHitboxComponent rectangleHitbox = player.getComponent(RectangleHitboxComponent.class);
             Vector3 location = player.getComponent(Location3DComponent.class).getLocation();
+            Vector2 translate = rectangleHitbox.getTranslate();
+            Vector2 size = rectangleHitbox.getSize();
 
             Rectangle2D.Float rectangle = new Rectangle2D.Float(
-                    location.x + rectangleHitbox.getTranslateX(),
-                    location.y + rectangleHitbox.getTranslateY(),
-                    rectangleHitbox.getWidth(),
-                    rectangleHitbox.getHeight());
+                    location.x + translate.x,
+                    location.y + translate.y,
+                    size.x, size.y);
 
             int zLayer = MathUtils.floor(location.z);
 

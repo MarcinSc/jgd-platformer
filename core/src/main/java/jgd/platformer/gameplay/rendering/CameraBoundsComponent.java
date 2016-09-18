@@ -1,13 +1,10 @@
 package jgd.platformer.gameplay.rendering;
 
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.secsy.entity.Component;
 
 public interface CameraBoundsComponent extends Component {
-    float getMinX();
+    Vector2 getMin();
 
-    float getMaxX();
-
-    float getMinY();
-
-    float getMaxY();
+    Vector2 getMax();
 }

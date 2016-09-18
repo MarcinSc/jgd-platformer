@@ -1,15 +1,15 @@
 {
   "BlockComponent": {
     "shape": "cube",
-    "translateZ": -1,
+    "translate": "0,0,-1",
     "texturesForParts": {
       "front": "blockTiles/ExitPortal.png"
     }
   },
   "BlockEntityComponent": {},
   "RectangleHitboxComponent": {
-    "width": 1,
-    "height": 1
+    "translate": "0,0",
+    "size": "1,1"
   },
   "LevelExitPortalComponent": {},
   "BlockInEditorComponent": {

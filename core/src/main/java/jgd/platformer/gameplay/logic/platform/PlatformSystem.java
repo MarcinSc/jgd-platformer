@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.platform;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -23,6 +24,8 @@ public class PlatformSystem {
     public void afterPlatformMoved(AfterComponentUpdated event, EntityRef entityRef, PlatformComponent platform, Location3DComponent locationComponent) {
         Vector3 oldLocation = event.getOldComponent(Location3DComponent.class).getLocation();
         Vector3 location = locationComponent.getLocation();
+        Vector2 translate = platform.getTranslate();
+        Vector2 size = platform.getSize();
 
         float deltaX = location.x - oldLocation.x;
         float deltaY = location.y - oldLocation.y;
@@ -30,9 +33,9 @@ public class PlatformSystem {
 
         if (deltaX != 0 || deltaY != 0 || deltaZ != 0) {
             Rectangle2D.Float platformRectangle = new Rectangle2D.Float(
-                    oldLocation.x + platform.getTranslateX(),
-                    oldLocation.y + platform.getTranslateY(),
-                    platform.getWidth(), platform.getHeight());
+                    oldLocation.x + translate.x,
+                    oldLocation.y + translate.y,
+                    size.x, size.y);
 
             int zLayer = MathUtils.floor(location.z);
 

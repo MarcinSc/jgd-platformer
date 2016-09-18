@@ -44,7 +44,7 @@ public class ModelRotationSystem implements LifeCycleSystem {
             RotateModelOnMovementComponent rotateOnMovement = movementRotationEntity.getComponent(RotateModelOnMovementComponent.class);
             ModelRotateComponent rotate = movementRotationEntity.getComponent(ModelRotateComponent.class);
 
-            float velocityX = kineticObject.getVelocityX();
+            float velocityX = kineticObject.getVelocity().x;
             if (velocityX < 0) {
                 rotate.setRotateY(rotateOnMovement.getAngleLeft());
             } else if (velocityX > 0) {

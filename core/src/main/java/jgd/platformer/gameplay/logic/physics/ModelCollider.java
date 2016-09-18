@@ -1,6 +1,7 @@
 package jgd.platformer.gameplay.logic.physics;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -32,15 +33,17 @@ public class ModelCollider implements LifeCycleSystem {
         for (EntityRef collisionEntity : collisionEntities) {
             CollisionObstacleComponent obstacle = collisionEntity.getComponent(CollisionObstacleComponent.class);
             Vector3 location = collisionEntity.getComponent(Location3DComponent.class).getLocation();
+            Vector2 translate = obstacle.getTranslate();
+            Vector2 size = obstacle.getSize();
 
             int zLayer = MathUtils.floor(location.z);
 
             List<String> sides = obstacle.getCollideSides();
             if (sides == null || containsDirection(sides, event.getDirection())) {
                 Rectangle2D.Float rectangle = new Rectangle2D.Float(
-                        location.x + obstacle.getTranslateX(),
-                        location.y + obstacle.getTranslateY(),
-                        obstacle.getWidth(), obstacle.getHeight());
+                        location.x + translate.x,
+                        location.y + translate.y,
+                        size.x, size.y);
                 if (event.getZLayer() == zLayer && rectangle.intersects(event.getObjectBounds())) {
                     switch (event.getDirection()) {
                         case LEFT:

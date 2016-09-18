@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
 import com.gempukku.gaming.rendering.shape.ShapeProvider;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -71,15 +72,14 @@ public class ModelColoredShapeRenderingSystem implements LifeCycleSystem {
         result.transform.idt().translate(event.getLocation());
         result.transform.rotate(0, 1, 0, event.getRotationY());
 
-        result.transform.translate(
-                modelColoredCuboid.getTranslateX() + 0.5f * modelColoredCuboid.getScaleX(),
-                modelColoredCuboid.getTranslateY() + 0.5f * modelColoredCuboid.getScaleY(),
-                modelColoredCuboid.getTranslateZ() + 0.5f * modelColoredCuboid.getScaleZ());
+        Vector3 scale = modelColoredCuboid.getScale();
+        result.transform.translate(modelColoredCuboid.getTranslate().add(scale.scl(0.5f)));
+        scale.scl(2f);
 
         result.transform.scale(
-                event.getScale().x * modelColoredCuboid.getScaleX(),
-                event.getScale().y * modelColoredCuboid.getScaleY(),
-                event.getScale().z * modelColoredCuboid.getScaleZ());
+                event.getScale().x * scale.x,
+                event.getScale().y * scale.y,
+                event.getScale().z * scale.z);
 
         event.appendModelInstance(result);
     }

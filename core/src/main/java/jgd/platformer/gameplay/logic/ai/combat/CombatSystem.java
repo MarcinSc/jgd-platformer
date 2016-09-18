@@ -1,5 +1,6 @@
 package jgd.platformer.gameplay.logic.ai.combat;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.time.TimeManager;
@@ -52,7 +53,8 @@ public class CombatSystem {
         String prefabName = (String) projectileRecipe.get("prefabName");
         Map<String, Object> changes = (Map<String, Object>) projectileRecipe.get("changes");
 
-        float distanceX = attackProjectile.getDistanceX();
+        Vector2 distance = attackProjectile.getDistance();
+        float distanceX = distance.x;
         if (entityRef.hasComponent(FacingDirectionComponent.class)) {
             String entityDirection = entityRef.getComponent(FacingDirectionComponent.class).getDirection();
             float projectileSpeed = attackProjectile.getProjectileSpeed();
@@ -66,12 +68,12 @@ public class CombatSystem {
             changes.put("?FacingDirectionComponent", directionValues);
 
             Map<String, Object> kineticValues = new HashMap<>();
-            kineticValues.put("velocityX", projectileSpeed);
+            kineticValues.put("velocity", projectileSpeed + ",0");
             changes.put("?KineticObjectComponent", kineticValues);
         }
 
         float x = distanceX + location.x;
-        float y = attackProjectile.getDistanceY() + location.y;
+        float y = distance.y + location.y;
         float z = location.z;
 
         EntityRef projectile = platformerEntitySpawner.createEntityAt(x, y, z, prefabName, changes);

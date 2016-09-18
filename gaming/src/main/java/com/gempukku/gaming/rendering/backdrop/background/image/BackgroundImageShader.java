@@ -1,10 +1,10 @@
 package com.gempukku.gaming.rendering.backdrop.background.image;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.math.Vector3;
 
 public class BackgroundImageShader extends DefaultShader {
     private final int u_backgroundTexture = register("u_backgroundTexture");
@@ -21,7 +21,7 @@ public class BackgroundImageShader extends DefaultShader {
     private final int u_bottomEdge = register("u_bottomEdge");
 
     private int backgroundImageIndex;
-    private Vector3 backgroundColor;
+    private Color backgroundColor;
 
     private float backgroundImageStartX;
     private float backgroundImageStartY;
@@ -57,7 +57,7 @@ public class BackgroundImageShader extends DefaultShader {
         this.backgroundImageWidth = backgroundImageWidth;
     }
 
-    public void setBackgroundColor(Vector3 backgroundColor) {
+    public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 

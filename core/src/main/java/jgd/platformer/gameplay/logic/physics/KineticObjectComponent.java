@@ -1,23 +1,20 @@
 package jgd.platformer.gameplay.logic.physics;
 
+import com.badlogic.gdx.math.Vector2;
 import com.gempukku.secsy.entity.Component;
 
 public interface KineticObjectComponent extends Component {
-    float getVelocityX();
+    default Vector2 getVelocity() {
+        return new Vector2();
+    }
 
-    void setVelocityX(float velocityX);
+    void setVelocity(Vector2 velocity);
 
-    float getVelocityY();
+    default Vector2 getAcceleration() {
+        return new Vector2();
+    }
 
-    void setVelocityY(float velocityY);
-
-    float getAccelerationX();
-
-    void setAccelerationX(float accelerationX);
-
-    float getAccelerationY();
-
-    void setAccelerationY(float accelerationY);
+    void setAcceleration(Vector2 acceleration);
 
     boolean isGrounded();
 
