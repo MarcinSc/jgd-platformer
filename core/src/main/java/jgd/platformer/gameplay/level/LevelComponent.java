@@ -9,9 +9,9 @@ public interface LevelComponent extends Component {
     Map<String, String> getBlockCoordinates();
     void setBlockCoordinates(Map<String, String> blockCoordinates);
 
-    Map<String, Object> getObjectCoordinates();
+    List<Object> getLocatedObjects();
 
-    void setObjectCoordinates(Map<String, Object> objectCoordinates);
+    void setLocatedObjects(List<Object> locatedObjects);
 
     List<Object> getAdditionalObjects();
 

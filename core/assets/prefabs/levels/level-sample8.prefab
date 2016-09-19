@@ -23,9 +23,10 @@
       "7,6,0": "stone",
       "7,7,0": "stone"
     },
-    "objectCoordinates": {
-      "3,0,0": {
+    "locatedObjects": [
+      {
         "prefabName": "pressurePlate",
+        "location": "3,0,0",
         "changes": {
           "SignalProducerComponent": {
             "channel": "spawnGhost"
@@ -35,16 +36,18 @@
           }
         }
       },
-      "1,6,0": {
+      {
         "prefabName": "tombstone",
+        "location": "1,6,0",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "spawnGhost"
           }
         }
       },
-      "1,5,1": {
+      {
         "prefabName": "signalIndicator",
+        "location": "1,5,1",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "spawnGhost"
@@ -54,8 +57,9 @@
           }
         }
       },
-      "5,5,0": {
+      {
         "prefabName": "pressurePlate",
+        "location": "5,5,0",
         "changes": {
           "SignalProducerComponent": {
             "channel": "openDoor"
@@ -65,16 +69,18 @@
           }
         }
       },
-      "5,1,0": {
+      {
         "prefabName": "signalDoor",
+        "location": "5,1,0",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "openDoor"
           }
         }
       },
-      "5,3,1": {
+      {
         "prefabName": "signalIndicator",
+        "location": "5,3,1",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "openDoor"
@@ -84,7 +90,7 @@
           }
         }
       }
-    },
+    ],
     "minX": -5,
     "maxX": 14,
     "minY": -5

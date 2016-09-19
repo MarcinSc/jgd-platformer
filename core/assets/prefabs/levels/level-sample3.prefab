@@ -17,8 +17,6 @@
       "8,0,0": "stone",
       "7,1,0": "exitPortal"
     },
-    "objectCoordinates": {
-    },
     "minX": -10,
     "maxX": 14,
     "minY": -5

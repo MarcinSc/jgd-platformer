@@ -14,10 +14,11 @@
       "-3,2,0": "stone",
       "9,-1,0": "exitPortal"
     },
-    "objectCoordinates": {
-      "-3,-1,0": "cycleDoor",
-      "1,-1.5,0": {
+    "locatedObjects": [
+      "-3,-1,0|cycleDoor",
+      {
         "prefabName": "stonePlatform",
+        "location": "1,-1.5,0",
         "changes": {
           "RenderedMultiShapeComponent": {
             "shapeCount": 3
@@ -37,7 +38,7 @@
           }
         }
       }
-    },
+    ],
     "minX": -10,
     "maxX": 15,
     "minY": -7

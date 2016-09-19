@@ -36,21 +36,31 @@ public class LevelEntitySystem {
             }
         }
 
-        if (level.getObjectCoordinates() != null) {
-            for (Map.Entry<String, Object> objectCoordinates : level.getObjectCoordinates().entrySet()) {
-                String locationStr = objectCoordinates.getKey();
-                Object value = objectCoordinates.getValue();
+        if (level.getLocatedObjects() != null) {
+            for (Object locatedObject : level.getLocatedObjects()) {
+                if (locatedObject instanceof String) {
+                    String[] objectSplit = ((String) locatedObject).split("\\|", 2);
+                    String locationStr = objectSplit[0];
+                    String recipe = objectSplit[1];
 
-                String[] locationSplit = locationStr.split(",");
-                float x = Float.parseFloat(locationSplit[0]);
-                float y = Float.parseFloat(locationSplit[1]);
-                float z = Float.parseFloat(locationSplit[2]);
-                if (value instanceof String) {
-                    platformerEntitySpawner.createEntityFromRecipeAt(x, y, z, (String) value);
+                    String[] locationSplit = locationStr.split(",");
+                    float x = Float.parseFloat(locationSplit[0]);
+                    float y = Float.parseFloat(locationSplit[1]);
+                    float z = Float.parseFloat(locationSplit[2]);
+
+                    platformerEntitySpawner.createEntityFromRecipeAt(x, y, z, recipe);
                 } else {
-                    Map<String, Object> objectMapDef = (Map<String, Object>) value;
+                    Map<String, Object> objectMapDef = (Map<String, Object>) locatedObject;
+                    String locationStr = (String) objectMapDef.get("location");
+                    String prefabName = (String) objectMapDef.get("prefabName");
+                    Map<String, Object> changes = (Map<String, Object>) objectMapDef.get("changes");
 
-                    platformerEntitySpawner.createEntityAt(x, y, z, (String) objectMapDef.get("prefabName"), (Map<String, Object>) objectMapDef.get("changes"));
+                    String[] locationSplit = locationStr.split(",");
+                    float x = Float.parseFloat(locationSplit[0]);
+                    float y = Float.parseFloat(locationSplit[1]);
+                    float z = Float.parseFloat(locationSplit[2]);
+
+                    platformerEntitySpawner.createEntityAt(x, y, z, prefabName, changes);
                 }
             }
         }

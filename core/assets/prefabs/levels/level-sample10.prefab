@@ -16,10 +16,10 @@
       "2,-2,0": "stone",
       "1,-1,0": "exitPortal"
     },
-    "objectCoordinates": {
-      "-3,-2,0": "stoneFront",
-      "0,-2,-1": "stoneBack"
-    },
+    "locatedObjects": [
+      "-3,-2,0|stoneFront",
+      "0,-2,-1|stoneBack"
+    ],
     "minX": -10,
     "maxX": 6,
     "minY": -7

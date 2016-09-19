@@ -12,12 +12,12 @@
       "8,0,0": "stone",
       "7,1,0": "exitPortal"
     },
-    "objectCoordinates": {
-      "-0.5,3,0.5": "star",
-      "0.5,3.5,0.5": "star",
-      "1.5,3,0.5": "star",
-      "5,2,0": "torch"
-    },
+    "locatedObjects": [
+      "-0.5,3,0.5|star",
+      "0.5,3.5,0.5|star",
+      "1.5,3,0.5|star",
+      "5,2,0|torch"
+    ],
     "minX": -10,
     "maxX": 14,
     "minY": -5

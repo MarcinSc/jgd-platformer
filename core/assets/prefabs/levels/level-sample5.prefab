@@ -18,9 +18,9 @@
       "12,0,0": "stone",
       "11,1,0": "exitPortal"
     },
-    "objectCoordinates": {
-      "5,2,0.5": "bugWithGun"
-    },
+    "locatedObjects": [
+      "5,2,0.5|bugWithGun"
+    ],
     "additionalObjects": [
       "playerFaction",
       "bugFaction"

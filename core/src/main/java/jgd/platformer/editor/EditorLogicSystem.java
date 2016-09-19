@@ -26,6 +26,7 @@ import jgd.platformer.gameplay.logic.spawning.PlatformerEntitySpawner;
 import jgd.platformer.gameplay.rendering.platform.RebuildBlockMesh;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(
@@ -145,16 +146,16 @@ public class EditorLogicSystem implements LifeCycleSystem {
             entityRef.send(new RebuildBlockMesh());
         }
         if (lastSelectedObjectType != null) {
-            Map<String, Object> objectCoordinates = levelComponent.getObjectCoordinates();
+            List<Object> objectCoordinates = levelComponent.getLocatedObjects();
             Vector3 placementTranslate = lastSelectedObjectType.getPlacementTranslate();
             float x = lastMousePosition.x + placementTranslate.x;
             float y = lastMousePosition.y + placementTranslate.y;
             float z = lastMousePosition.z + placementTranslate.z;
             String position = x + "," + y + "," + z;
             String prefabName = lastSelectedObjectType.getPrefabName();
-            objectCoordinates.put(position, prefabName);
+            objectCoordinates.add(position + "|" + prefabName);
 
-            levelComponent.setObjectCoordinates(objectCoordinates);
+            levelComponent.setLocatedObjects(objectCoordinates);
             entityRef.saveChanges();
 
             platformerEntitySpawner.createEntityAt(x, y, z, prefabName, Collections.emptyMap());

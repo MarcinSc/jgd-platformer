@@ -12,9 +12,9 @@
       "8,0,0": "stone",
       "7,0,0": "exitPortal"
     },
-    "objectCoordinates": {
-      "5,1,0.5": "bug"
-    },
+    "locatedObjects": [
+      "5,1,0.5|bug"
+    ],
     "additionalObjects": [
       "playerFaction",
       "bugFaction"

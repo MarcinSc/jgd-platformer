@@ -14,9 +14,10 @@
       "-2,1,0": "stone",
       "-2,2,0": "stone"
     },
-    "objectCoordinates": {
-      "-8,-2,0": {
+    "locatedObjects": [
+      {
         "prefabName": "pressurePlate",
+        "location": "-8,-2,0",
         "changes": {
           "SignalProducerComponent": {
             "channel": "openDoor"
@@ -26,8 +27,9 @@
           }
         }
       },
-      "-2,-1,0": {
+      {
         "prefabName": "signalDoor",
+        "location": "-2,-1,0",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "openDoorDelayed"
@@ -37,8 +39,9 @@
           }
         }
       },
-      "-2,1,1": {
+      {
         "prefabName": "signalIndicator",
+        "location": "-2,1,1",
         "changes": {
           "SignalConsumerComponent": {
             "channel": "openDoorDelayed"
@@ -48,7 +51,7 @@
           }
         }
       }
-    },
+    ],
     "additionalObjects": [
       {
         "prefabName": "signalRelay",
