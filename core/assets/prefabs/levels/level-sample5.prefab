@@ -19,6 +19,7 @@
       "11,1,0": "exitPortal"
     },
     "locatedObjects": [
+      "-4.5,1,0.5|playerSpawn",
       "5,2,0.5|bugWithGun"
     ],
     "additionalObjects": [
@@ -28,10 +29,7 @@
     "minX": -10,
     "maxX": 16,
     "minY": -5
-  },
-  "PlayerSpawnComponent": {
-    "location": "-4.5,1,0.5"
-  },
+  }
   "CameraBoundsComponent": {
     "min": "0,0",
     "max": "10,10"

@@ -16,6 +16,7 @@
       "5,4,0": "stone"
     },
     "locatedObjects": [
+      "0.5,1,0.5|playerSpawn",
       {
         "prefabName": "lever",
         "location": "3,1,0",
@@ -53,9 +54,6 @@
     "minX": -5,
     "maxX": 14,
     "minY": -5
-  },
-  "PlayerSpawnComponent": {
-    "location": "0.5,1,0.5"
   },
   "CameraBoundsComponent": {
     "min": "0,0",

@@ -24,6 +24,7 @@
       "7,7,0": "stone"
     },
     "locatedObjects": [
+      "0.5,1,0.5|playerSpawn",
       {
         "prefabName": "pressurePlate",
         "location": "3,0,0",
@@ -94,9 +95,6 @@
     "minX": -5,
     "maxX": 14,
     "minY": -5
-  },
-  "PlayerSpawnComponent": {
-    "location": "0.5,1,0.5"
   },
   "CameraBoundsComponent": {
     "min": "0,0",

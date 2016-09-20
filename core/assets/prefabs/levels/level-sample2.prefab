@@ -13,6 +13,7 @@
       "7,1,0": "exitPortal"
     },
     "locatedObjects": [
+      "-4.5,1,0.5|playerSpawn",
       "-0.5,3,0.5|star",
       "0.5,3.5,0.5|star",
       "1.5,3,0.5|star",
@@ -21,9 +22,6 @@
     "minX": -10,
     "maxX": 14,
     "minY": -5
-  },
-  "PlayerSpawnComponent": {
-    "location": "-4.5,1,0.5"
   },
   "CameraBoundsComponent": {
     "min": "0,0",

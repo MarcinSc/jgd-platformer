@@ -15,6 +15,7 @@
       "9,-1,0": "exitPortal"
     },
     "locatedObjects": [
+      "-4.5,-1,0.5|playerSpawn",
       "-3,-1,0|cycleDoor",
       {
         "prefabName": "stonePlatform",
@@ -42,9 +43,6 @@
     "minX": -10,
     "maxX": 15,
     "minY": -7
-  },
-  "PlayerSpawnComponent": {
-    "location": "-4.5,-1,0.5"
   },
   "CameraBoundsComponent": {
     "min": "0,0",

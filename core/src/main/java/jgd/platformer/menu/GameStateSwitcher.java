@@ -8,6 +8,7 @@ import com.gempukku.secsy.entity.EntityManager;
 import com.gempukku.secsy.entity.EntityRef;
 import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.io.EntityData;
+import jgd.platformer.editor.EditorState;
 import jgd.platformer.gameplay.GameplayState;
 import jgd.platformer.gameplay.level.LevelLoader;
 import jgd.platformer.gameplay.player.PlayerManager;
@@ -22,7 +23,8 @@ public class GameStateSwitcher implements GameState {
     private enum State {
         SHOWING_MENU(Screen.MAIN_MENU),
         START_NEW_GAME(Screen.GAMEPLAY), PLAYING_GAME(Screen.GAMEPLAY),
-        START_LEVEL_EDITOR(Screen.EDITOR), EDITING_LEVEL(Screen.EDITOR);
+        START_LEVEL_EDITOR(Screen.EDITOR), EDITING_LEVEL(Screen.EDITOR),
+        START_TESTING_LEVEL(Screen.GAMEPLAY), TESTING_LEVEL(Screen.GAMEPLAY);
 
         private GameState.Screen screen;
 
@@ -93,6 +95,32 @@ public class GameStateSwitcher implements GameState {
                 LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
                 levelLoader.unloadLevel();
                 levelLoader.loadLevel(getLevelName(currentLevelIndex));
+            }
+        }
+        if (currentState == State.EDITING_LEVEL) {
+            EditorState editorState = editorContext.getSystem(EditorState.class);
+            EntityData levelToTest = editorState.getLevelToTest();
+            if (levelToTest != null) {
+                editorState.consumeLevelToTest();
+
+                PlayerManager playerManager = gameplayContext.getSystem(PlayerManager.class);
+                playerManager.createPlayer();
+
+                LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
+                levelLoader.loadLevel(levelToTest);
+                currentState = State.TESTING_LEVEL;
+            }
+        }
+        if (currentState == State.TESTING_LEVEL) {
+            GameplayState gameplayState = gameplayContext.getSystem(GameplayState.class);
+            if (gameplayState.isLevelFinished() || gameplayState.isPlayerWithoutLives() || gameplayState.isPlayerDead()) {
+                LevelLoader levelLoader = gameplayContext.getSystem(LevelLoader.class);
+                levelLoader.unloadLevel();
+
+                PlayerManager playerManager = gameplayContext.getSystem(PlayerManager.class);
+                playerManager.removePlayer();
+
+                currentState = State.EDITING_LEVEL;
             }
         }
 

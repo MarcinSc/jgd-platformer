@@ -9,12 +9,12 @@
       "0,-2,0": "stone",
       "-1,-1,0": "exitPortal"
     },
+    "locatedObjects": [
+      "-4.5,-1,0.5|playerSpawn"
+    ],
     "minX": -10,
     "maxX": 6,
     "minY": -7
-  },
-  "PlayerSpawnComponent": {
-    "location": "-4.5,-1,0.5"
   },
   "CameraBoundsComponent": {
     "min": "0,0",

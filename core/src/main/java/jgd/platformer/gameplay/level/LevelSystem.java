@@ -22,7 +22,12 @@ public class LevelSystem implements LevelLoader {
     @Override
     public void loadLevel(String levelPrefabName) {
         EntityData levelData = prefabManager.getPrefabByName(levelPrefabName);
-        levelEntity = entityManager.createEntity(levelData);
+        loadLevel(levelData);
+    }
+
+    @Override
+    public void loadLevel(EntityData entityData) {
+        levelEntity = entityManager.createEntity(entityData);
         levelEntity.send(new AfterLevelLoaded());
     }
 

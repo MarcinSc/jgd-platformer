@@ -20,7 +20,7 @@ public class LevelEntitySystem {
     @Inject
     private EntityManager entityManager;
 
-    @ReceiveEvent
+    @ReceiveEvent(priority = 1)
     public void levelLoaded(AfterLevelLoaded event, EntityRef entity, LevelComponent level) {
         for (Map.Entry<String, String> blockCoordinates : level.getBlockCoordinates().entrySet()) {
             String locationStr = blockCoordinates.getKey();

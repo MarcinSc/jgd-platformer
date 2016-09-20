@@ -19,6 +19,7 @@ import com.gempukku.secsy.entity.dispatch.ReceiveEvent;
 import com.gempukku.secsy.entity.event.AfterComponentAdded;
 import com.gempukku.secsy.entity.event.AfterComponentUpdated;
 import com.gempukku.secsy.entity.io.EntityData;
+import jgd.platformer.editor.RequestTestingLevel;
 import jgd.platformer.gameplay.level.AfterLevelLoaded;
 import jgd.platformer.gameplay.level.LevelComponent;
 import jgd.platformer.gameplay.rendering.platform.RebuildBlockMesh;
@@ -153,6 +154,18 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
         objectsWindow.setResizable(true);
         objectsWindow.setMovable(true);
 
+        TextButton testLevel = new TextButton("Test level", uiSkin);
+        testLevel.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        EntityData levelEntityData = entityManager.exposeEntityData(levelEntity);
+                        levelEntity.send(new RequestTestingLevel(levelEntityData));
+                    }
+                });
+        objectsWindow.add(testLevel).colspan(2);
+        objectsWindow.row();
+
         Label minXLabel = new Label("Min X", uiSkin);
         Label maxXLabel = new Label("Max X", uiSkin);
         Label minYLabel = new Label("Min Y", uiSkin);
@@ -163,7 +176,7 @@ public class LevelEditorMenuSystem implements LifeCycleSystem {
         TextField.TextFieldFilter integerOnly = new TextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(TextField textField, char c) {
-                return c >= '0' && c <= '9';
+                return (c >= '0' && c <= '9') || c == '-';
             }
         };
         minXField.setTextFieldFilter(integerOnly);

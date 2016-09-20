@@ -2,8 +2,15 @@
   "LevelComponent": {
     "blockCoordinates": {
     },
-    "locatedObjects": {
-    },
-    "additionalObjects": []
+    "locatedObjects": [
+    ],
+    "additionalObjects": [],
+    "minX": -100,
+    "maxX": 100,
+    "minY": -100
+  },
+  "CameraBoundsComponent": {
+    "min": "0,0",
+    "max": "10,10"
   }
 }

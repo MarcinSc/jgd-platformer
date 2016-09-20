@@ -14,12 +14,14 @@ public class PlayerSpawnSystem {
     @Inject
     private EntityManager entityManager;
 
-    @ReceiveEvent
-    public void levelLoaded(AfterLevelLoaded event, EntityRef entity, LevelComponent level, PlayerSpawnComponent playerSpawn) {
+    @ReceiveEvent(priority = 0)
+    public void levelLoaded(AfterLevelLoaded event, EntityRef entity) {
+        EntityRef playerSpawn = entityManager.getEntitiesWithComponents(PlayerSpawnComponent.class, Location3DComponent.class).iterator().next();
+        Vector3 spawnLocation = playerSpawn.getComponent(Location3DComponent.class).getLocation();
+
         for (EntityRef playerEntity : entityManager.getEntitiesWithComponents(PlayerComponent.class, Location3DComponent.class)) {
             Location3DComponent locationComp = playerEntity.getComponent(Location3DComponent.class);
-            Vector3 location = locationComp.getLocation();
-            locationComp.setLocation(playerSpawn.getLocation());
+            locationComp.setLocation(spawnLocation);
             playerEntity.saveChanges();
         }
     }

@@ -1,0 +1,15 @@
+{
+  "ModelRenderInEditorComponent": {
+  },
+  "ModelColoredCuboidComponent": {
+    "translate": "-0.5,0,-0.5",
+    "color": "127,127,127"
+  },
+  "ObjectInEditorComponent": {
+    "displayName": "Player spawn",
+    "renderSize": "1,1,1",
+    "renderTranslate": "0,0,0",
+    "placementTranslate": "0.5,0,0.5"
+  },
+  "PlayerSpawnComponent": {}
+}
