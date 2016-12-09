@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
-public class BlendingAttributeWithoutAlphaTestCall implements PluggableVertexFunctionCall {
+public class BlendingAttributeCall implements PluggableVertexFunctionCall {
     @Override
     public String getFunctionName() {
         return "setBlendingVariable";
@@ -21,6 +21,8 @@ public class BlendingAttributeWithoutAlphaTestCall implements PluggableVertexFun
 
     @Override
     public void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
+        boolean hasAlphaTest = renderable.material.has(FloatAttribute.AlphaTest);
+
         vertexShaderBuilder.addUniformVariable("u_opacity", "float",
                 new BaseShader.LocalSetter() {
                     @Override
@@ -31,14 +33,35 @@ public class BlendingAttributeWithoutAlphaTestCall implements PluggableVertexFun
                     }
                 });
         vertexShaderBuilder.addVaryingVariable("v_opacity", "float");
-        vertexShaderBuilder.addFunction("setBlendingVariable",
-                "void setBlendingVariable() {\n" +
-                        "  v_opacity = u_opacity;\n" +
-                        "}\n");
+
+        if (hasAlphaTest) {
+            vertexShaderBuilder.addUniformVariable("u_alphaTest", "float",
+                    new BaseShader.LocalSetter() {
+                        @Override
+                        public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+                            FloatAttribute alphaTestAttribute = (FloatAttribute) combinedAttributes.get(FloatAttribute.AlphaTest);
+                            shader.set(inputID, alphaTestAttribute.value);
+                        }
+                    });
+            vertexShaderBuilder.addVaryingVariable("v_alphaTest", "float");
+        }
+
+        if (hasAlphaTest) {
+            vertexShaderBuilder.addFunction("setBlendingVariable",
+                    "void setBlendingVariable() {\n" +
+                            "  v_opacity = u_opacity;\n" +
+                            "  v_alphaTest = u_alphaTest;\n" +
+                            "}\n");
+        } else {
+            vertexShaderBuilder.addFunction("setBlendingVariable",
+                    "void setBlendingVariable() {\n" +
+                            "  v_opacity = u_opacity;\n" +
+                            "}\n");
+        }
     }
 
     @Override
     public boolean isProcessing(Renderable renderable) {
-        return renderable.material.has(BlendingAttribute.Type) && !renderable.material.has(FloatAttribute.AlphaTest);
+        return renderable.material.has(BlendingAttribute.Type);
     }
 }
