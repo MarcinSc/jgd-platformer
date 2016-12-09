@@ -7,8 +7,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
 public class WhiteColorSource implements PluggableFragmentFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("white:");
+        stringBuilder.append("white:");
     }
 
     @Override

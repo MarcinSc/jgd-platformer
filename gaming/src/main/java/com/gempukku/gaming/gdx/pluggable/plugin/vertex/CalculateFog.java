@@ -9,8 +9,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class CalculateFog implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("calculateFog:");
+        stringBuilder.append("calculateFog:");
     }
 
     @Override

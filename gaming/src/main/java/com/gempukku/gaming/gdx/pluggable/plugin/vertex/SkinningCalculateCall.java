@@ -10,8 +10,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class SkinningCalculateCall implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("skinningCalculate").append(renderable.bones.length).append(':');
+        stringBuilder.append("skinningCalculate").append(renderable.bones.length).append(':');
     }
 
     @Override

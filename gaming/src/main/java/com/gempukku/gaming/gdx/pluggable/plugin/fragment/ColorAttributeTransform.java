@@ -8,8 +8,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
 public class ColorAttributeTransform implements PluggableFragmentFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("colorTransform:");
+        stringBuilder.append("colorTransform:");
     }
 
     @Override

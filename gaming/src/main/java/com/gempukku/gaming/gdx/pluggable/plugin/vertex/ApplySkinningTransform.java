@@ -7,8 +7,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class ApplySkinningTransform implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("applySkinning").append(renderable.bones.length).append(':');
+        stringBuilder.append("applySkinning").append(renderable.bones.length).append(':');
     }
 
     @Override

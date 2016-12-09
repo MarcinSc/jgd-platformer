@@ -7,8 +7,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class AttributePositionSource implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("attributePosition:");
+        stringBuilder.append("attributePosition:");
     }
 
     @Override

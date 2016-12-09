@@ -45,18 +45,22 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
         StringBuilder builder = new StringBuilder();
         positionSource.appendShaderIdentifier(renderable, builder);
         for (PluggableVertexFunctionCall positionWrapper : positionWrappers) {
-            positionWrapper.appendShaderIdentifier(renderable, builder);
+            if (positionWrapper.isProcessing(renderable))
+                positionWrapper.appendShaderIdentifier(renderable, builder);
         }
         for (PluggableVertexFunctionCall additionalVertexCall : additionalVertexCalls) {
-            additionalVertexCall.appendShaderIdentifier(renderable, builder);
+            if (additionalVertexCall.isProcessing(renderable))
+                additionalVertexCall.appendShaderIdentifier(renderable, builder);
         }
 
         colorSource.appendShaderIdentifier(renderable, builder);
         for (PluggableFragmentFunctionCall colorWrapper : colorWrappers) {
-            colorWrapper.appendShaderIdentifier(renderable, builder);
+            if (colorWrapper.isProcessing(renderable))
+                colorWrapper.appendShaderIdentifier(renderable, builder);
         }
         for (PluggableFragmentFunctionCall additionalFragmentCall : additionalFragmentCalls) {
-            additionalFragmentCall.appendShaderIdentifier(renderable, builder);
+            if (additionalFragmentCall.isProcessing(renderable))
+                additionalFragmentCall.appendShaderIdentifier(renderable, builder);
         }
 
         return builder.toString();

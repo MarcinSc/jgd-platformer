@@ -10,8 +10,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class DiffuseTextureAttributeCall implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("colorAttribute:");
+        stringBuilder.append("diffuseTextureAttribute:");
     }
 
     @Override

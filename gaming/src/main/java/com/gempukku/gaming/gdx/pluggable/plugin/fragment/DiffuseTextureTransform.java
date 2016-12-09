@@ -10,8 +10,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
 public class DiffuseTextureTransform implements PluggableFragmentFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("diffuseTextureTransform:");
+        stringBuilder.append("diffuseTextureTransform:");
     }
 
     @Override

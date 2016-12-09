@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderProvider;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderUtil;
 import com.gempukku.gaming.rendering.environment.ArrayVertexOutput;
 import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.gaming.rendering.shape.ShapeOutput;
@@ -48,7 +50,7 @@ public class BlockRenderer implements LifeCycleSystem {
 
     @Override
     public void preInitialize() {
-        modelBatch = new ModelBatch();
+        modelBatch = new ModelBatch(new PluggableShaderProvider(PluggableShaderUtil.createDefaultPluggableShaderBuilder()));
     }
 
     @Override

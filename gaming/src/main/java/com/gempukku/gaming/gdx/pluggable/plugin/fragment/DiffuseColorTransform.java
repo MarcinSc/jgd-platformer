@@ -9,8 +9,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
 public class DiffuseColorTransform implements PluggableFragmentFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("diffuseColorTransform:");
+        stringBuilder.append("diffuseColorTransform:");
     }
 
     @Override

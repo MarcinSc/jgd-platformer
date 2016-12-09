@@ -8,8 +8,7 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 public class WorldTransform implements PluggableVertexFunctionCall {
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (isProcessing(renderable))
-            stringBuilder.append("worldTransform:");
+        stringBuilder.append("worldTransform:");
     }
 
     @Override
