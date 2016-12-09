@@ -14,7 +14,7 @@ public class SkinningCalculateCall implements PluggableVertexFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "calculateSkinning";
     }
 

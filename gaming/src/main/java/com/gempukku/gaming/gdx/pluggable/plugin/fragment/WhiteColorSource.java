@@ -11,7 +11,7 @@ public class WhiteColorSource implements PluggableFragmentFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "getWhite";
     }
 

@@ -8,18 +8,21 @@ import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
 
 public class BlendingAttributeTransform implements PluggableFragmentFunctionCall {
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "getBlendedColor";
     }
 
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        stringBuilder.append("blendingTransform:");
+        if (hasAlphaTest(renderable))
+            stringBuilder.append("blendingTransformWithAlphaTest:");
+        else
+            stringBuilder.append("blendingTransform:");
     }
 
     @Override
     public void appendFunction(Renderable renderable, FragmentShaderBuilder fragmentShaderBuilder) {
-        boolean hasAlphaTest = renderable.material.has(FloatAttribute.AlphaTest);
+        boolean hasAlphaTest = hasAlphaTest(renderable);
 
         fragmentShaderBuilder.addVaryingVariable("v_opacity", "float");
         if (hasAlphaTest)
@@ -36,6 +39,10 @@ public class BlendingAttributeTransform implements PluggableFragmentFunctionCall
                 "  return color;\n" +
                         "}\n");
         fragmentShaderBuilder.addFunction("getBlendedColor", function.toString());
+    }
+
+    private boolean hasAlphaTest(Renderable renderable) {
+        return renderable.material.has(FloatAttribute.AlphaTest);
     }
 
     @Override

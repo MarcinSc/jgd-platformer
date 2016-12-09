@@ -12,7 +12,7 @@ public class WorldTransform implements PluggableVertexFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "transformToWorld";
     }
 

@@ -11,7 +11,7 @@ public class AttributePositionSource implements PluggableVertexFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "getPositionAttribute";
     }
 

@@ -10,18 +10,21 @@ import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
 public class BlendingAttributeCall implements PluggableVertexFunctionCall {
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "setBlendingVariable";
     }
 
     @Override
     public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        stringBuilder.append("blendingAttribute:");
+        if (hasAlphaTest(renderable))
+            stringBuilder.append("blendingAttributeWithAlphaTest:");
+        else
+            stringBuilder.append("blendingAttribute:");
     }
 
     @Override
     public void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        boolean hasAlphaTest = renderable.material.has(FloatAttribute.AlphaTest);
+        boolean hasAlphaTest = hasAlphaTest(renderable);
 
         vertexShaderBuilder.addUniformVariable("u_opacity", "float",
                 new BaseShader.LocalSetter() {
@@ -58,6 +61,10 @@ public class BlendingAttributeCall implements PluggableVertexFunctionCall {
                             "  v_opacity = u_opacity;\n" +
                             "}\n");
         }
+    }
+
+    private boolean hasAlphaTest(Renderable renderable) {
+        return renderable.material.has(FloatAttribute.AlphaTest);
     }
 
     @Override

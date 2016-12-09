@@ -84,14 +84,14 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     }
 
     private String createVertexProgram(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        String functionName = positionSource.getFunctionName();
+        String functionName = positionSource.getFunctionName(renderable);
         positionSource.appendFunction(renderable, vertexShaderBuilder);
         String executionChain = functionName + "()";
 
         for (PluggableVertexFunctionCall positionWrapper : positionWrappers) {
             if (positionWrapper.isProcessing(renderable)) {
                 positionWrapper.appendFunction(renderable, vertexShaderBuilder);
-                executionChain = positionWrapper.getFunctionName() + "(" + executionChain + ")";
+                executionChain = positionWrapper.getFunctionName(renderable) + "(" + executionChain + ")";
             }
         }
 
@@ -99,7 +99,7 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
         for (PluggableVertexFunctionCall additionalVertexCall : additionalVertexCalls) {
             if (additionalVertexCall.isProcessing(renderable)) {
                 additionalVertexCall.appendFunction(renderable, vertexShaderBuilder);
-                vertexFunctions.add(additionalVertexCall.getFunctionName());
+                vertexFunctions.add(additionalVertexCall.getFunctionName(renderable));
             }
         }
 
@@ -107,14 +107,14 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     }
 
     private String createFragmentProgram(Renderable renderable, FragmentShaderBuilder fragmentShaderBuilder) {
-        String functionName = colorSource.getFunctionName();
+        String functionName = colorSource.getFunctionName(renderable);
         colorSource.appendFunction(renderable, fragmentShaderBuilder);
         String executionChain = functionName + "()";
 
         for (PluggableFragmentFunctionCall colorWrapper : colorWrappers) {
             if (colorWrapper.isProcessing(renderable)) {
                 colorWrapper.appendFunction(renderable, fragmentShaderBuilder);
-                executionChain = colorWrapper.getFunctionName() + "(" + executionChain + ")";
+                executionChain = colorWrapper.getFunctionName(renderable) + "(" + executionChain + ")";
             }
         }
 
@@ -122,7 +122,7 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
         for (PluggableFragmentFunctionCall additionalFragmentCall : additionalFragmentCalls) {
             if (additionalFragmentCall.isProcessing(renderable)) {
                 additionalFragmentCall.appendFunction(renderable, fragmentShaderBuilder);
-                fragmentFunctions.add(additionalFragmentCall.getFunctionName());
+                fragmentFunctions.add(additionalFragmentCall.getFunctionName(renderable));
             }
         }
 

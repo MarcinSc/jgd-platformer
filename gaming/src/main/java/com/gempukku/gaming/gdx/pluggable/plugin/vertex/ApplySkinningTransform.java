@@ -11,7 +11,7 @@ public class ApplySkinningTransform implements PluggableVertexFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "transformWithSkinning";
     }
 

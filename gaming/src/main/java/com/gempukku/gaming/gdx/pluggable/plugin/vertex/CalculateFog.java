@@ -13,7 +13,7 @@ public class CalculateFog implements PluggableVertexFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "applyFog";
     }
 

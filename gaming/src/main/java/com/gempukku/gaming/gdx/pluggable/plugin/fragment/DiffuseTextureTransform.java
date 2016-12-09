@@ -14,7 +14,7 @@ public class DiffuseTextureTransform implements PluggableFragmentFunctionCall {
     }
 
     @Override
-    public String getFunctionName() {
+    public String getFunctionName(Renderable renderable) {
         return "getTransformedDiffuseTexture";
     }
 
