@@ -6,11 +6,15 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.gempukku.gaming.gdx.pluggable.FragmentShaderBuilder;
 import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 
 public class DiffuseTextureTransform implements PluggableFragmentFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature diffuseTextureTransform = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        stringBuilder.append("diffuseTextureTransform:");
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
+        pluggableShaderFeatures.addFeature(diffuseTextureTransform);
     }
 
     @Override

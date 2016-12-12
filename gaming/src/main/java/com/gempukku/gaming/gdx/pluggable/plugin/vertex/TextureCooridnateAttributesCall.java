@@ -4,16 +4,22 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
+// TODO: This should be split into two classes
 public class TextureCooridnateAttributesCall implements PluggableVertexFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature diffuseTextureAttribute = PluggableShaderFeatureRegistry.registerFeature();
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature specularTextureAttribute = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
         if (isProcessingDiffuse(renderable))
-            stringBuilder.append("diffuseTextureAttribute:");
+            pluggableShaderFeatures.addFeature(diffuseTextureAttribute);
         if (isProcessingSpecular(renderable))
-            stringBuilder.append("specularTextureAttribute:");
+            pluggableShaderFeatures.addFeature(specularTextureAttribute);
     }
 
     @Override

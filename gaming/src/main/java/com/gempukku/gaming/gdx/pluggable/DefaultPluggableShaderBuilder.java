@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
+    private BitSetPluggableShaderFeatures tempShaderFeatures = new BitSetPluggableShaderFeatures();
+
     private PluggableVertexFunctionCall positionSource;
     private List<PluggableVertexFunctionCall> positionWrappers = new LinkedList<PluggableVertexFunctionCall>();
 
@@ -41,29 +43,27 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     }
 
     @Override
-    public String getShaderIdentifier(Renderable renderable) {
+    public void getShaderFeatures(Renderable renderable, PluggableShaderFeatures shaderFeatures) {
         StringBuilder builder = new StringBuilder();
-        positionSource.appendShaderIdentifier(renderable, builder);
+        positionSource.appendShaderFeatures(renderable, shaderFeatures);
         for (PluggableVertexFunctionCall positionWrapper : positionWrappers) {
             if (positionWrapper.isProcessing(renderable))
-                positionWrapper.appendShaderIdentifier(renderable, builder);
+                positionWrapper.appendShaderFeatures(renderable, shaderFeatures);
         }
         for (PluggableVertexFunctionCall additionalVertexCall : additionalVertexCalls) {
             if (additionalVertexCall.isProcessing(renderable))
-                additionalVertexCall.appendShaderIdentifier(renderable, builder);
+                additionalVertexCall.appendShaderFeatures(renderable, shaderFeatures);
         }
 
-        colorSource.appendShaderIdentifier(renderable, builder);
+        colorSource.appendShaderFeatures(renderable, shaderFeatures);
         for (PluggableFragmentFunctionCall colorWrapper : colorWrappers) {
             if (colorWrapper.isProcessing(renderable))
-                colorWrapper.appendShaderIdentifier(renderable, builder);
+                colorWrapper.appendShaderFeatures(renderable, shaderFeatures);
         }
         for (PluggableFragmentFunctionCall additionalFragmentCall : additionalFragmentCalls) {
             if (additionalFragmentCall.isProcessing(renderable))
-                additionalFragmentCall.appendShaderIdentifier(renderable, builder);
+                additionalFragmentCall.appendShaderFeatures(renderable, shaderFeatures);
         }
-
-        return builder.toString();
     }
 
     @Override

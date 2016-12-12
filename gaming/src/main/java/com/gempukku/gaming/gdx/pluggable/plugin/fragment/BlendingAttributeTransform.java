@@ -5,19 +5,24 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.gempukku.gaming.gdx.pluggable.FragmentShaderBuilder;
 import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 
 public class BlendingAttributeTransform implements PluggableFragmentFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature blendingTransform = PluggableShaderFeatureRegistry.registerFeature();
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature blendingTransformWithAlphaTest = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
     public String getFunctionName(Renderable renderable) {
         return "getBlendedColor";
     }
 
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
         if (hasAlphaTest(renderable))
-            stringBuilder.append("blendingTransformWithAlphaTest:");
+            pluggableShaderFeatures.addFeature(blendingTransformWithAlphaTest);
         else
-            stringBuilder.append("blendingTransform:");
+            pluggableShaderFeatures.addFeature(blendingTransform);
     }
 
     @Override

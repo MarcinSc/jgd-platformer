@@ -5,11 +5,15 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.gempukku.gaming.gdx.pluggable.FragmentShaderBuilder;
 import com.gempukku.gaming.gdx.pluggable.PluggableFragmentFunctionCall;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 
 public class DiffuseColorTransform implements PluggableFragmentFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature diffuseColorTransform = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        stringBuilder.append("diffuseColorTransform:");
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
+        pluggableShaderFeatures.addFeature(diffuseColorTransform);
     }
 
     @Override

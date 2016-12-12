@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 public interface PluggableVertexFunctionCall {
     String getFunctionName(Renderable renderable);
 
-    void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder);
+    void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures);
 
     void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder);
 

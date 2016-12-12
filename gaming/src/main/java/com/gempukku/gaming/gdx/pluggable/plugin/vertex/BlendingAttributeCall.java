@@ -5,21 +5,26 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
 public class BlendingAttributeCall implements PluggableVertexFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature blendingTransform = PluggableShaderFeatureRegistry.registerFeature();
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature blendingTransformWithAlphaTest = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
-    public String getFunctionName(Renderable renderable) {
-        return "setBlendingVariable";
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
+        if (hasAlphaTest(renderable))
+            pluggableShaderFeatures.addFeature(blendingTransformWithAlphaTest);
+        else
+            pluggableShaderFeatures.addFeature(blendingTransform);
     }
 
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        if (hasAlphaTest(renderable))
-            stringBuilder.append("blendingAttributeWithAlphaTest:");
-        else
-            stringBuilder.append("blendingAttribute:");
+    public String getFunctionName(Renderable renderable) {
+        return "setBlendingVariable";
     }
 
     @Override

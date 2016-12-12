@@ -25,10 +25,14 @@ public abstract class CommonShaderBuilder {
     }
 
     public void addUniformVariable(String name, String type, BaseShader.Setter setter) {
-        if (uniformVariables.containsKey(name))
-            throw new IllegalStateException("Already contains uniform of that name");
-        uniformRegistry.registerUniform(name, setter);
-        uniformVariables.put(name, new UniformVariable(type, setter));
+        UniformVariable uniformVariable = uniformVariables.get(name);
+        if (uniformVariable != null && !uniformVariable.type.equals(type) && uniformVariable.setter != setter)
+            throw new IllegalStateException("Already contains uniform of that name with a different setter or type");
+
+        if (uniformVariable == null) {
+            uniformRegistry.registerUniform(name, setter);
+            uniformVariables.put(name, new UniformVariable(type, setter));
+        }
     }
 
     public void addVaryingVariable(String name, String type) {

@@ -1,13 +1,17 @@
 package com.gempukku.gaming.gdx.pluggable.plugin.vertex;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
 public class ApplySkinningTransform implements PluggableVertexFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature applySkinning = PluggableShaderFeatureRegistry.registerFeature();
+
     @Override
-    public void appendShaderIdentifier(Renderable renderable, StringBuilder stringBuilder) {
-        stringBuilder.append("applySkinning").append(renderable.bones.length).append(':');
+    public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
+        pluggableShaderFeatures.addFeature(applySkinning);
     }
 
     @Override

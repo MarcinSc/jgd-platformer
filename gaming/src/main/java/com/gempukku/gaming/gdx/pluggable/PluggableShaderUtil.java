@@ -32,7 +32,7 @@ public class PluggableShaderUtil {
 
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new ColorAttributeCall());
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new BlendingAttributeCall());
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new SkinningCalculateCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new SkinningCalculateCall(12));
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new NormalCalculateCall());
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new TextureCooridnateAttributesCall());
 
