@@ -24,13 +24,15 @@ public class NormalCalculateCall implements PluggableVertexFunctionCall {
     @Override
     public void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
         vertexShaderBuilder.addAttributeVariable("a_normal", "vec3");
+        vertexShaderBuilder.addVariable("normal", "vec3");
         vertexShaderBuilder.addUniformVariable("u_normalMatrix", "mat3", DefaultShader.Setters.normalMatrix);
         vertexShaderBuilder.addVaryingVariable("v_normal", "vec3");
 
         if (hasSkinning(renderable))
             vertexShaderBuilder.addFunction("calculateNormal",
                     "void calculateNormal() {\n" +
-                            "  v_normal = normalize((u_worldTrans * skinning * vec4(a_normal, 0.0)).xyz);\n" +
+                            "  normal = normalize((u_worldTrans * skinning * vec4(a_normal, 0.0)).xyz);\n" +
+                            "  v_normal = normal;\n" +
                             "}\n");
         else
             vertexShaderBuilder.addFunction("calculateNormal",
