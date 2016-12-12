@@ -11,9 +11,10 @@ import com.gempukku.gaming.gdx.pluggable.plugin.vertex.AttributePositionSource;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.BlendingAttributeCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.CalculateFog;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.ColorAttributeCall;
-import com.gempukku.gaming.gdx.pluggable.plugin.vertex.DiffuseTextureAttributeCall;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.NormalCalculateCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.ProjectViewTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.SkinningCalculateCall;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.TextureCooridnateAttributesCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.WorldTransform;
 
 public class PluggableShaderUtil {
@@ -32,7 +33,8 @@ public class PluggableShaderUtil {
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new ColorAttributeCall());
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new BlendingAttributeCall());
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new SkinningCalculateCall());
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new DiffuseTextureAttributeCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new NormalCalculateCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new TextureCooridnateAttributesCall());
 
         defaultPluggableShaderBuilder.setColorSource(new WhiteColorSource());
         defaultPluggableShaderBuilder.addColorWrapper(new ColorAttributeTransform());
