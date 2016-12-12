@@ -43,7 +43,7 @@ public class SkinningCalculateCall implements PluggableVertexFunctionCall {
                 vertexShaderBuilder.addAttributeVariable("a_boneWeight" + attr.unit, "vec2");
         }
 
-        int boneCount = getBoneCount(renderable);
+        int boneCount = renderable.bones.length;
         vertexShaderBuilder.addArrayUniformVariable("u_bones", boneCount, "mat4", new DefaultShader.Setters.Bones(boneCount));
 
         vertexShaderBuilder.addVariable("skinning", "mat4");
@@ -55,7 +55,6 @@ public class SkinningCalculateCall implements PluggableVertexFunctionCall {
         for (int i = 0; i < n; i++) {
             final VertexAttribute attr = renderable.meshPart.mesh.getVertexAttributes().get(i);
             if (attr.usage == VertexAttributes.Usage.BoneWeight) {
-                if (attr.unit < boneCount)
                     skinningFunction.append(
                             "  skinning += (a_boneWeight" + attr.unit + ".y) * u_bones[int(a_boneWeight" + attr.unit + ".x)];\n");
             }
