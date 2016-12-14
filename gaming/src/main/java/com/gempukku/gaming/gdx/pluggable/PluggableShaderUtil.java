@@ -1,6 +1,7 @@
 package com.gempukku.gaming.gdx.pluggable;
 
 
+import com.gempukku.gaming.gdx.pluggable.plugin.fragment.ApplyFog;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.BlendingAttributeTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.ColorAttributeTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.DiffuseColorTransform;
@@ -31,6 +32,12 @@ public class PluggableShaderUtil {
         DefaultPluggableShaderBuilder defaultPluggableShaderBuilder = new DefaultPluggableShaderBuilder();
 
         // Vertex shader
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new ColorAttributeCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new BlendingAttributeCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new SkinningCalculateCall(12));
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new NormalCalculateCall());
+        defaultPluggableShaderBuilder.addAdditionalVertexCall(new TextureCooridnateAttributesCall());
+
         defaultPluggableShaderBuilder.setPositionSource(new AttributePositionSource());
         defaultPluggableShaderBuilder.addPositionWrapper(new ApplySkinningTransform());
         defaultPluggableShaderBuilder.addPositionWrapper(new WorldTransform());
@@ -49,17 +56,12 @@ public class PluggableShaderUtil {
 
         defaultPluggableShaderBuilder.addPositionWrapper(new ProjectViewTransform());
 
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new ColorAttributeCall());
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new BlendingAttributeCall());
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new SkinningCalculateCall(12));
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new NormalCalculateCall());
-        defaultPluggableShaderBuilder.addAdditionalVertexCall(new TextureCooridnateAttributesCall());
-
         // Fragment shader
         defaultPluggableShaderBuilder.setColorSource(new WhiteColorSource());
         defaultPluggableShaderBuilder.addColorWrapper(new ColorAttributeTransform());
         defaultPluggableShaderBuilder.addColorWrapper(new DiffuseColorTransform());
         defaultPluggableShaderBuilder.addColorWrapper(new DiffuseTextureTransform());
+        defaultPluggableShaderBuilder.addColorWrapper(new ApplyFog());
         defaultPluggableShaderBuilder.addColorWrapper(new BlendingAttributeTransform());
 
         return defaultPluggableShaderBuilder;

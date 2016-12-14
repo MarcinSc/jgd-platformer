@@ -18,7 +18,7 @@ public class CalculateFog implements PluggableVertexFunctionCall {
 
     @Override
     public String getFunctionName(Renderable renderable) {
-        return "applyFog";
+        return "calculateFog";
     }
 
     @Override
@@ -26,8 +26,8 @@ public class CalculateFog implements PluggableVertexFunctionCall {
         vertexShaderBuilder.addUniformVariable("u_cameraPosition", "vec4", DefaultShader.Setters.cameraPosition);
         vertexShaderBuilder.addVaryingVariable("v_fog", "float");
 
-        vertexShaderBuilder.addFunction("applyFog",
-                "vec4 applyFog(vec4 position) {" +
+        vertexShaderBuilder.addFunction("calculateFog",
+                "vec4 calculateFog(vec4 position) {" +
                         "  vec3 flen = u_cameraPosition.xyz - position.xyz;\n" +
                         "  float fog = dot(flen, flen) * u_cameraPosition.w;\n" +
                         "  v_fog = min(fog, 1.0);\n" +
