@@ -10,6 +10,7 @@ public class FragmentShaderBuilder extends CommonShaderBuilder {
     public String buildProgram(List<String> additionalFunctionCalls, String executionChain) {
         StringBuilder result = new StringBuilder();
 
+        appendStructures(result);
         appendUniformVariables(result);
         appendVaryingVariables(result);
         appendVariables(result);

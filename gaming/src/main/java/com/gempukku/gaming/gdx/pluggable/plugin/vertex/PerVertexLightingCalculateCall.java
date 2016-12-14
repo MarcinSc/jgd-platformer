@@ -8,6 +8,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
 import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.PerVertexLightingFunctionCall;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +20,7 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
     private PluggableVertexFunctionCall lightDiffuseSource;
     private PluggableVertexFunctionCall lightSpecularSource;
 
-    private List<PluggableVertexFunctionCall> lightDiffuseWrappers = new LinkedList<>();
-    private List<PluggableVertexFunctionCall> lightSpecularWrappers = new LinkedList<>();
+    private List<PerVertexLightingFunctionCall> lightWrappers = new LinkedList<>();
 
     public void setLightDiffuseSource(PluggableVertexFunctionCall lightDiffuseSource) {
         this.lightDiffuseSource = lightDiffuseSource;
@@ -30,12 +30,8 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
         this.lightSpecularSource = lightSpecularSource;
     }
 
-    public void addLightDiffuseWrapper(PluggableVertexFunctionCall lightDiffuseWrapper) {
-        lightDiffuseWrappers.add(lightDiffuseWrapper);
-    }
-
-    public void addLightSpecularWrapper(PluggableVertexFunctionCall lightSpecularWrapper) {
-        lightSpecularWrappers.add(lightSpecularWrapper);
+    public void addLightWrapper(PerVertexLightingFunctionCall lightWrapper) {
+        lightWrappers.add(lightWrapper);
     }
 
     @Override
@@ -46,19 +42,12 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
     @Override
     public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
         pluggableShaderFeatures.addFeature(diffuseCalculation);
-        appendShaderFeatures(renderable, pluggableShaderFeatures, lightDiffuseSource, lightDiffuseWrappers);
-
-        if (hasSpecularCalculation(renderable)) {
-            pluggableShaderFeatures.addFeature(specularCalculation);
-            appendShaderFeatures(renderable, pluggableShaderFeatures, lightSpecularSource, lightSpecularWrappers);
-        }
-    }
-
-    private void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures, PluggableVertexFunctionCall source, List<PluggableVertexFunctionCall> wrappers) {
-        source.appendShaderFeatures(renderable, pluggableShaderFeatures);
-        for (PluggableVertexFunctionCall wrapper : wrappers) {
-            if (wrapper.isProcessing(renderable))
-                wrapper.appendShaderFeatures(renderable, pluggableShaderFeatures);
+        boolean hasSpecular = hasSpecularCalculation(renderable);
+        lightDiffuseSource.appendShaderFeatures(renderable, pluggableShaderFeatures);
+        if (hasSpecular)
+            lightSpecularSource.appendShaderFeatures(renderable, pluggableShaderFeatures);
+        for (PerVertexLightingFunctionCall lightWrapper : lightWrappers) {
+            lightWrapper.appendShaderFeatures(renderable, pluggableShaderFeatures, hasSpecular);
         }
     }
 
@@ -69,37 +58,32 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
         if (specularCalculation)
             vertexShaderBuilder.addVaryingVariable("v_lightSpecular", "vec3");
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("void calculatePerVertexLighting() {\n");
-        sb.append(" v_lightDiffuse = " + createDiffuseChain(renderable, vertexShaderBuilder) + ";");
+        lightDiffuseSource.appendFunction(renderable, vertexShaderBuilder);
         if (specularCalculation)
-            sb.append("  v_lightSpecular = " + createSpecularChain(renderable, vertexShaderBuilder) + ";");
+            lightSpecularSource.appendFunction(renderable, vertexShaderBuilder);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("vec4 calculatePerVertexLighting(vec4 position) {\n");
+        sb.append("  vec3 lightDiffuse = " + lightDiffuseSource.getFunctionName(renderable) + "(position);\n");
+        if (specularCalculation)
+            sb.append("  vec3 lightSpecular = " + lightSpecularSource.getFunctionName(renderable) + "(position);\n");
+        else
+            sb.append("  vec3 lightSpecular = vec3(0.0);\n");
+
+        for (PerVertexLightingFunctionCall lightWrapper : lightWrappers) {
+            if (lightWrapper.isProcessing(renderable, specularCalculation)) {
+                lightWrapper.appendFunction(renderable, vertexShaderBuilder, specularCalculation);
+                sb.append("  " + lightWrapper.getFunctionName(renderable, specularCalculation) + "(position, lightDiffuse, lightSpecular);\n");
+            }
+        }
+
+        sb.append("  v_lightDiffuse = lightDiffuse;\n");
+        if (specularCalculation)
+            sb.append("  v_lightSpecular = lightSpecular;\n");
+        sb.append("  return position;\n");
         sb.append("}\n");
 
         vertexShaderBuilder.addFunction("calculatePerVertexLighting", sb.toString());
-    }
-
-    private String createDiffuseChain(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        return createChain(renderable, vertexShaderBuilder, lightDiffuseSource, lightDiffuseWrappers).toString();
-    }
-
-    private String createSpecularChain(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        return createChain(renderable, vertexShaderBuilder, lightSpecularSource, lightSpecularWrappers).toString();
-    }
-
-    private StringBuilder createChain(Renderable renderable, VertexShaderBuilder vertexShaderBuilder, PluggableVertexFunctionCall source, List<PluggableVertexFunctionCall> wrappers) {
-        StringBuilder chain = new StringBuilder();
-        String functionName = source.getFunctionName(renderable);
-        source.appendFunction(renderable, vertexShaderBuilder);
-        String executionChain = functionName + "()";
-
-        for (PluggableVertexFunctionCall wrapper : wrappers) {
-            if (wrapper.isProcessing(renderable)) {
-                wrapper.appendFunction(renderable, vertexShaderBuilder);
-                executionChain = wrapper.getFunctionName(renderable) + "(" + executionChain + ")";
-            }
-        }
-        return chain;
     }
 
     @Override

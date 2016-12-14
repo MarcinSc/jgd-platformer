@@ -6,23 +6,23 @@ import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
-public class DarkDiffuseSource implements PluggableVertexFunctionCall {
-    private static PluggableShaderFeatureRegistry.PluggableShaderFeature darkDiffuse = PluggableShaderFeatureRegistry.registerFeature();
+public class DarkSpecularSource implements PluggableVertexFunctionCall {
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature darkSpecular = PluggableShaderFeatureRegistry.registerFeature();
 
     @Override
     public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures) {
-        pluggableShaderFeatures.addFeature(darkDiffuse);
+        pluggableShaderFeatures.addFeature(darkSpecular);
     }
 
     @Override
     public String getFunctionName(Renderable renderable) {
-        return "getDarkDiffuse";
+        return "getDarkSpecular";
     }
 
     @Override
     public void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        vertexShaderBuilder.addFunction("getDarkDiffuse",
-                "vec3 getDarkDiffuse(vec4 position) {\n" +
+        vertexShaderBuilder.addFunction("getDarkSpecular",
+                "vec3 getDarkSpecular(vec4 position) {\n" +
                         "  return vec3(0.0);\n" +
                         "}\n");
     }

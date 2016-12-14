@@ -28,6 +28,7 @@ public class VertexShaderBuilder extends CommonShaderBuilder {
     public String buildProgram(List<String> additionalFunctionCalls, String executionChain) {
         StringBuilder result = new StringBuilder();
 
+        appendStructures(result);
         appendAttributeVariables(result);
         appendUniformVariables(result);
         appendVaryingVariables(result);

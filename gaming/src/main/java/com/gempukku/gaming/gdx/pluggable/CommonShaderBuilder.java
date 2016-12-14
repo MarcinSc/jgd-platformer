@@ -12,6 +12,7 @@ public abstract class CommonShaderBuilder {
     private Map<String, String> varyingVariables = new LinkedHashMap<String, String>();
     private Map<String, String> variables = new LinkedHashMap<>();
     private Map<String, String> functions = new LinkedHashMap<String, String>();
+    private Map<String, String> structures = new LinkedHashMap<>();
 
     public CommonShaderBuilder(UniformRegistry uniformRegistry) {
         this.uniformRegistry = uniformRegistry;
@@ -53,6 +54,12 @@ public abstract class CommonShaderBuilder {
         functions.put(name, functionText);
     }
 
+    public void addStructure(String name, String structureText) {
+        if (structures.containsKey(name))
+            throw new IllegalStateException("Already contains structure of that name");
+        structures.put(name, structureText);
+    }
+
     protected void appendUniformVariables(StringBuilder stringBuilder) {
         for (Map.Entry<String, UniformVariable> uniformDefinition : uniformVariables.entrySet()) {
             stringBuilder.append("uniform " + uniformDefinition.getValue().type + " " + uniformDefinition.getKey() + ";\n");
@@ -81,6 +88,13 @@ public abstract class CommonShaderBuilder {
         for (String function : functions.values()) {
             stringBuilder.append(function);
             stringBuilder.append("\n");
+        }
+    }
+
+    protected void appendStructures(StringBuilder stringBuilder) {
+        for (Map.Entry<String, String> structureEntry : structures.entrySet()) {
+            stringBuilder.append("struct " + structureEntry.getKey() + "\n" +
+                    "{\n").append(structureEntry.getValue()).append("};\n");
         }
     }
 }
