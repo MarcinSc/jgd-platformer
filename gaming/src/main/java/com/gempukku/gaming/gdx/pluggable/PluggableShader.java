@@ -1,5 +1,6 @@
 package com.gempukku.gaming.gdx.pluggable;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class PluggableShader extends BaseShader {
@@ -25,14 +27,17 @@ public class PluggableShader extends BaseShader {
 
     private ShaderProgram shaderProgram;
     private Renderable renderable;
+    private DefaultUniformRegistry defaultUniformRegistry;
 
-    public PluggableShader(ShaderProgram shaderProgram, Renderable renderable) {
+    public PluggableShader(ShaderProgram shaderProgram, Renderable renderable, DefaultUniformRegistry defaultUniformRegistry) {
         this.shaderProgram = shaderProgram;
         this.renderable = renderable;
+        this.defaultUniformRegistry = defaultUniformRegistry;
     }
 
     @Override
     public void init() {
+        defaultUniformRegistry.registerUniforms(this);
         super.init(shaderProgram, renderable);
     }
 
@@ -47,8 +52,15 @@ public class PluggableShader extends BaseShader {
     }
 
     @Override
+    public void begin(Camera camera, RenderContext context) {
+        defaultUniformRegistry.processGlobalStructArrayUniforms(this, null, null);
+        super.begin(camera, context);
+    }
+
+    @Override
     public void render(Renderable renderable, Attributes combinedAttributes) {
         bindMaterial(combinedAttributes);
+        defaultUniformRegistry.processLocalStructArrayUniforms(this, renderable, combinedAttributes);
         super.render(renderable, combinedAttributes);
     }
 

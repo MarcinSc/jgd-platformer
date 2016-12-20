@@ -2,18 +2,19 @@ package com.gempukku.gaming.gdx.pluggable;
 
 
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.ApplyFog;
+import com.gempukku.gaming.gdx.pluggable.plugin.fragment.ApplyPerVertexLighting;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.BlendingAttributeTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.ColorAttributeTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.DiffuseColorTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.DiffuseTextureTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.fragment.WhiteColorSource;
+import com.gempukku.gaming.gdx.pluggable.plugin.fragment.lighting.DiffuseAttributeSource;
+import com.gempukku.gaming.gdx.pluggable.plugin.fragment.lighting.SpecularAttributeSource;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.ApplySkinningTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.AttributePositionSource;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.BlendingAttributeCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.CalculateFog;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.ColorAttributeCall;
-import com.gempukku.gaming.gdx.pluggable.plugin.vertex.DarkDiffuseSource;
-import com.gempukku.gaming.gdx.pluggable.plugin.vertex.DarkSpecularSource;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.NormalCalculateCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.PerVertexLightingCalculateCall;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.ProjectViewTransform;
@@ -23,6 +24,8 @@ import com.gempukku.gaming.gdx.pluggable.plugin.vertex.WorldTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.AmbientCubemapDiffuseLightTransform;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.ApplyDirectionalLights;
 import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.ApplyPointLights;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.DarkDiffuseSource;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.DarkSpecularSource;
 
 public class PluggableShaderUtil {
     private PluggableShaderUtil() {
@@ -61,6 +64,15 @@ public class PluggableShaderUtil {
         defaultPluggableShaderBuilder.addColorWrapper(new ColorAttributeTransform());
         defaultPluggableShaderBuilder.addColorWrapper(new DiffuseColorTransform());
         defaultPluggableShaderBuilder.addColorWrapper(new DiffuseTextureTransform());
+
+        //Lighting fragment calculations
+
+        ApplyPerVertexLighting perVertexLightingApplyCall = new ApplyPerVertexLighting();
+        perVertexLightingApplyCall.setLightDiffuseSource(new DiffuseAttributeSource());
+        perVertexLightingApplyCall.setLightSpecularSource(new SpecularAttributeSource());
+
+        defaultPluggableShaderBuilder.addColorWrapper(perVertexLightingApplyCall);
+
         defaultPluggableShaderBuilder.addColorWrapper(new ApplyFog());
         defaultPluggableShaderBuilder.addColorWrapper(new BlendingAttributeTransform());
 

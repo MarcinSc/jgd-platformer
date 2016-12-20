@@ -78,8 +78,7 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
 
         System.out.println(vertexProgram);
         System.out.println(fragmentProgram);
-        PluggableShader pluggableShader = new PluggableShader(new ShaderProgram(vertexProgram, fragmentProgram), renderable);
-        uniformRegistry.registerUniforms(pluggableShader);
+        PluggableShader pluggableShader = new PluggableShader(new ShaderProgram(vertexProgram, fragmentProgram), renderable, uniformRegistry);
         return pluggableShader;
     }
 

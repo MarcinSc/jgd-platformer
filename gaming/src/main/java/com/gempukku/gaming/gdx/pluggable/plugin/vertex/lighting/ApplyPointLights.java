@@ -11,20 +11,18 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.utils.Array;
 import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
 import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
+import com.gempukku.gaming.gdx.pluggable.UniformRegistry;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
 
-public class ApplyPointLights implements PerVertexLightingFunctionCall {
+public class ApplyPointLights implements PerVertexLightingCalculateFunctionCall {
     private int numPointLights;
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature variableShininess = PluggableShaderFeatureRegistry.registerFeature();
+    private static PluggableShaderFeatureRegistry.PluggableShaderFeature constantShininess = PluggableShaderFeatureRegistry.registerFeature();
     // Separate due to config
     private PluggableShaderFeatureRegistry.PluggableShaderFeature applyPointLights = PluggableShaderFeatureRegistry.registerFeature();
 
-    private PointLight[] pointLights;
-
     public ApplyPointLights(int numPointLights) {
         this.numPointLights = numPointLights;
-        this.pointLights = new PointLight[numPointLights];
-        for (int i = 0; i < pointLights.length; i++)
-            pointLights[i] = new PointLight();
     }
 
     @Override
@@ -35,6 +33,11 @@ public class ApplyPointLights implements PerVertexLightingFunctionCall {
     @Override
     public void appendShaderFeatures(Renderable renderable, PluggableShaderFeatures pluggableShaderFeatures, boolean hasSpecular) {
         pluggableShaderFeatures.addFeature(applyPointLights);
+        boolean hasShininess = renderable.material.has(FloatAttribute.Shininess);
+        if (hasShininess)
+            pluggableShaderFeatures.addFeature(variableShininess);
+        else
+            pluggableShaderFeatures.addFeature(constantShininess);
     }
 
     @Override
@@ -42,35 +45,33 @@ public class ApplyPointLights implements PerVertexLightingFunctionCall {
         vertexShaderBuilder.addStructure("PointLight",
                 "  vec3 color;\n" +
                         "  vec3 position;\n");
-        vertexShaderBuilder.addArrayUniformVariable("u_pointLights", numPointLights, "PointLight",
-                new BaseShader.LocalSetter() {
+        vertexShaderBuilder.addStructArrayUniformVariable("u_pointLights", new String[]{"color", "position"}, numPointLights, "PointLight",
+                new UniformRegistry.Setter() {
                     @Override
-                    public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+                    public boolean isGlobal(BaseShader shader) {
+                        return false;
+                    }
+
+                    @Override
+                    public void set(BaseShader shader, int startingLocation, int[] fieldOffsets, int structSize, Renderable renderable, Attributes combinedAttributes) {
                         final PointLightsAttribute pla = combinedAttributes.get(PointLightsAttribute.class, PointLightsAttribute.Type);
                         final Array<PointLight> points = pla == null ? null : pla.lights;
 
-                        int pointLightsLoc = shader.getUniformID("u_pointLights[0].color");
-                        int pointLightsSize = shader.getUniformID("u_pointLights[1].color") - pointLightsLoc;
-                        int pointLightsPositionOffset = shader.getUniformID("u_pointLights[0].position") - pointLightsLoc;
-                        int pointLightsIntensityOffset = shader.getUniformID("u_pointLights[0].intensity") - pointLightsLoc;
+                        for (int i = 0; i < numPointLights; i++) {
+                            int idx = startingLocation + i * structSize;
+                            if (points != null && i < points.size) {
+                                PointLight pointLight = points.get(i);
 
-                        for (int i = 0; i < pointLights.length; i++) {
-                            if (points == null || i >= points.size) {
-                                if (pointLights[i].intensity == 0f) continue;
-                                pointLights[i].intensity = 0f;
-                            } else if (pointLights[i].equals(points.get(i)))
-                                continue;
-                            else
-                                pointLights[i].set(points.get(i));
-
-                            int idx = pointLightsLoc + i * pointLightsSize;
-                            shader.program.setUniformf(idx, pointLights[i].color.r * pointLights[i].intensity,
-                                    pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
-                            shader.program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
-                                    pointLights[i].position.z);
-                            if (pointLightsIntensityOffset >= 0)
-                                shader.program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
-                            if (pointLightsSize <= 0) break;
+                                shader.program.setUniformf(idx, pointLight.color.r * pointLight.intensity,
+                                        pointLight.color.g * pointLight.intensity, pointLight.color.b * pointLight.intensity);
+                                shader.program.setUniformf(idx + fieldOffsets[1], pointLight.position.x, pointLight.position.y,
+                                        pointLight.position.z);
+                                // Check if there is no second argument
+                                if (structSize <= 0) break;
+                            } else {
+                                shader.program.setUniformf(idx, 0, 0, 0);
+                                shader.program.setUniformf(idx + fieldOffsets[1], 0, 0, 0);
+                            }
                         }
                     }
                 });
@@ -84,7 +85,7 @@ public class ApplyPointLights implements PerVertexLightingFunctionCall {
         }
 
         StringBuilder function = new StringBuilder();
-        function.append("void applyPointLights(vec4 pos, vec3 diffuseLight, vec3 specularLight) {\n");
+        function.append("Lighting applyPointLights(vec4 pos, Lighting lighting) {\n");
         if (hasSpecular)
             function.append("  vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);\n");
         function.append("  for (int i = 0; i < " + numPointLights + "; i++) {\n" +
@@ -93,12 +94,13 @@ public class ApplyPointLights implements PerVertexLightingFunctionCall {
                 "    lightDir *= inversesqrt(dist2);\n" +
                 "    float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);\n" +
                 "    vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));\n" +
-                "    v_lightDiffuse += value;\n");
+                "    lighting.diffuse += value;\n");
         if (hasSpecular) {
             function.append("    float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));\n" +
-                    "    v_lightSpecular += value * pow(halfDotView, u_shininess);\n");
+                    "    lighting.specular += value * pow(halfDotView, u_shininess);\n");
         }
         function.append("  }\n");
+        function.append("  return lighting;\n");
         function.append("}\n");
 
         vertexShaderBuilder.addFunction("applyPointLights", function.toString());

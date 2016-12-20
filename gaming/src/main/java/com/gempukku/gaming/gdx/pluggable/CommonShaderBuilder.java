@@ -18,6 +18,13 @@ public abstract class CommonShaderBuilder {
         this.uniformRegistry = uniformRegistry;
     }
 
+    public void addStructArrayUniformVariable(String name, String[] fieldNames, int size, String type, UniformRegistry.Setter setter) {
+        if (uniformVariables.containsKey(name))
+            throw new IllegalStateException("Already contains uniform of that name");
+        uniformRegistry.registerStructArrayUniform(name, fieldNames, setter);
+        uniformVariables.put(name + "[" + size + "]", new UniformVariable(type, null));
+    }
+
     public void addArrayUniformVariable(String name, int size, String type, BaseShader.Setter setter) {
         if (uniformVariables.containsKey(name))
             throw new IllegalStateException("Already contains uniform of that name");
@@ -96,5 +103,7 @@ public abstract class CommonShaderBuilder {
             stringBuilder.append("struct " + structureEntry.getKey() + "\n" +
                     "{\n").append(structureEntry.getValue()).append("};\n");
         }
+        if (!structures.isEmpty())
+            stringBuilder.append("\n");
     }
 }

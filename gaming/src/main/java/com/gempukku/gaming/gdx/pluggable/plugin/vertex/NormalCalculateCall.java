@@ -37,7 +37,8 @@ public class NormalCalculateCall implements PluggableVertexFunctionCall {
         else
             vertexShaderBuilder.addFunction("calculateNormal",
                     "void calculateNormal() {\n" +
-                            "  v_normal = normalize(u_normalMatrix * a_normal);\n" +
+                            "  normal = normalize(u_normalMatrix * a_normal);\n" +
+                            "  v_normal = normal;\n" +
                             "}\n");
 
     }

@@ -1,4 +1,4 @@
-package com.gempukku.gaming.gdx.pluggable.plugin.vertex;
+package com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;

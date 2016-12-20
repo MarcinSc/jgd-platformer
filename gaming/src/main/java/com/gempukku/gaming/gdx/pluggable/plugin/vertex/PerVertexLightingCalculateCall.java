@@ -8,7 +8,7 @@ import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatureRegistry;
 import com.gempukku.gaming.gdx.pluggable.PluggableShaderFeatures;
 import com.gempukku.gaming.gdx.pluggable.PluggableVertexFunctionCall;
 import com.gempukku.gaming.gdx.pluggable.VertexShaderBuilder;
-import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.PerVertexLightingFunctionCall;
+import com.gempukku.gaming.gdx.pluggable.plugin.vertex.lighting.PerVertexLightingCalculateFunctionCall;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
     private PluggableVertexFunctionCall lightDiffuseSource;
     private PluggableVertexFunctionCall lightSpecularSource;
 
-    private List<PerVertexLightingFunctionCall> lightWrappers = new LinkedList<>();
+    private List<PerVertexLightingCalculateFunctionCall> lightWrappers = new LinkedList<>();
 
     public void setLightDiffuseSource(PluggableVertexFunctionCall lightDiffuseSource) {
         this.lightDiffuseSource = lightDiffuseSource;
@@ -30,7 +30,7 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
         this.lightSpecularSource = lightSpecularSource;
     }
 
-    public void addLightWrapper(PerVertexLightingFunctionCall lightWrapper) {
+    public void addLightWrapper(PerVertexLightingCalculateFunctionCall lightWrapper) {
         lightWrappers.add(lightWrapper);
     }
 
@@ -46,13 +46,17 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
         lightDiffuseSource.appendShaderFeatures(renderable, pluggableShaderFeatures);
         if (hasSpecular)
             lightSpecularSource.appendShaderFeatures(renderable, pluggableShaderFeatures);
-        for (PerVertexLightingFunctionCall lightWrapper : lightWrappers) {
+        for (PerVertexLightingCalculateFunctionCall lightWrapper : lightWrappers) {
             lightWrapper.appendShaderFeatures(renderable, pluggableShaderFeatures, hasSpecular);
         }
     }
 
     @Override
     public void appendFunction(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
+        vertexShaderBuilder.addStructure("Lighting",
+                "vec3 diffuse;\n" +
+                        "vec3 specular;\n");
+
         vertexShaderBuilder.addVaryingVariable("v_lightDiffuse", "vec3");
         boolean specularCalculation = hasSpecularCalculation(renderable);
         if (specularCalculation)
@@ -69,17 +73,18 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
             sb.append("  vec3 lightSpecular = " + lightSpecularSource.getFunctionName(renderable) + "(position);\n");
         else
             sb.append("  vec3 lightSpecular = vec3(0.0);\n");
+        sb.append("  Lighting lighting = Lighting(lightDiffuse, lightSpecular);\n");
 
-        for (PerVertexLightingFunctionCall lightWrapper : lightWrappers) {
+        for (PerVertexLightingCalculateFunctionCall lightWrapper : lightWrappers) {
             if (lightWrapper.isProcessing(renderable, specularCalculation)) {
                 lightWrapper.appendFunction(renderable, vertexShaderBuilder, specularCalculation);
-                sb.append("  " + lightWrapper.getFunctionName(renderable, specularCalculation) + "(position, lightDiffuse, lightSpecular);\n");
+                sb.append("  lighting = " + lightWrapper.getFunctionName(renderable, specularCalculation) + "(position, lighting);\n");
             }
         }
 
-        sb.append("  v_lightDiffuse = lightDiffuse;\n");
+        sb.append("  v_lightDiffuse = lighting.diffuse;\n");
         if (specularCalculation)
-            sb.append("  v_lightSpecular = lightSpecular;\n");
+            sb.append("  v_lightSpecular = lighting.specular;\n");
         sb.append("  return position;\n");
         sb.append("}\n");
 
@@ -95,10 +100,6 @@ public class PerVertexLightingCalculateCall implements PluggableVertexFunctionCa
 
     private boolean hasSpecularCalculation(Renderable renderable) {
         return renderable.material.has(TextureAttribute.Specular) || renderable.material.has(ColorAttribute.Specular);
-    }
-
-    private boolean hasFogCalculation(Renderable renderable) {
-        return renderable.environment.has(ColorAttribute.Fog);
     }
 
     private boolean hasNormal(long vertexMask) {
