@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderProvider;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderUtil;
 import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.secsy.context.annotation.Inject;
 import com.gempukku.secsy.context.annotation.RegisterSystem;
@@ -86,7 +88,7 @@ public class EditorLogicSystem implements LifeCycleSystem {
         modelBuilder.part("cube", mesh, GL20.GL_LINES, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)));
         model = modelBuilder.end();
         modelInstance = new ModelInstance(model);
-        modelBatch = new ModelBatch();
+        modelBatch = new ModelBatch(new PluggableShaderProvider(PluggableShaderUtil.createDefaultPluggableShaderBuilder()));
     }
 
     @ReceiveEvent

@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.gempukku.gaming.asset.prefab.PrefabManager;
 import com.gempukku.gaming.asset.texture.TextureAtlasProvider;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderProvider;
+import com.gempukku.gaming.gdx.pluggable.PluggableShaderUtil;
 import com.gempukku.gaming.rendering.event.RenderEnvironment;
 import com.gempukku.gaming.rendering.shape.ShapeProvider;
 import com.gempukku.secsy.context.annotation.Inject;
@@ -36,7 +38,7 @@ public class ModelEditorRenderer implements LifeCycleSystem {
     @Inject
     private EntityManager entityManager;
 
-    private ModelBatch modelBatch = new ModelBatch();
+    private ModelBatch modelBatch = new ModelBatch(new PluggableShaderProvider(PluggableShaderUtil.createDefaultPluggableShaderBuilder()));
 
     private EntityIndex modelsIndex;
 
