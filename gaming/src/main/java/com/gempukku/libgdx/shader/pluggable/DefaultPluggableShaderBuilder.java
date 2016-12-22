@@ -9,6 +9,8 @@ import java.util.List;
 public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     private BitSetPluggableShaderFeatures tempShaderFeatures = new BitSetPluggableShaderFeatures();
 
+    private List<PluggableRenderInitializerCall> renderInitializers = new LinkedList<>();
+
     private PluggableVertexFunctionCall positionSource;
     private List<PluggableVertexFunctionCall> positionProcessors = new LinkedList<PluggableVertexFunctionCall>();
 
@@ -17,6 +19,10 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
 
     private List<PluggableVertexFunctionCall> additionalVertexCalls = new LinkedList<PluggableVertexFunctionCall>();
     private List<PluggableFragmentFunctionCall> additionalFragmentCalls = new LinkedList<PluggableFragmentFunctionCall>();
+
+    public void addRenderInitializer(PluggableRenderInitializerCall renderInitializer) {
+        renderInitializers.add(renderInitializer);
+    }
 
     public void setPositionSource(PluggableVertexFunctionCall positionSource) {
         this.positionSource = positionSource;
@@ -44,7 +50,11 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
 
     @Override
     public void getShaderFeatures(Renderable renderable, PluggableShaderFeatures shaderFeatures) {
-        StringBuilder builder = new StringBuilder();
+        for (PluggableRenderInitializerCall renderInitializer : renderInitializers) {
+            if (renderInitializer.isProcessing(renderable))
+                renderInitializer.appendShaderFeatures(renderable, shaderFeatures);
+        }
+
         positionSource.appendShaderFeatures(renderable, shaderFeatures);
         for (PluggableVertexFunctionCall positionWrapper : positionProcessors) {
             if (positionWrapper.isProcessing(renderable))
@@ -69,6 +79,11 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     @Override
     public PluggableShader buildShader(Renderable renderable) {
         PluggableShader pluggableShader = new PluggableShader(renderable);
+
+        for (PluggableRenderInitializerCall renderInitializer : renderInitializers) {
+            if (renderInitializer.isProcessing(renderable))
+                renderInitializer.appendInitializer(renderable, pluggableShader);
+        }
 
         VertexShaderBuilder vertexShaderBuilder = new VertexShaderBuilder(pluggableShader);
         FragmentShaderBuilder fragmentShaderBuilder = new FragmentShaderBuilder(pluggableShader);

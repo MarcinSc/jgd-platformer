@@ -10,6 +10,8 @@ import com.gempukku.libgdx.shader.pluggable.plugin.fragment.DiffuseTextureTransf
 import com.gempukku.libgdx.shader.pluggable.plugin.fragment.WhiteColorSource;
 import com.gempukku.libgdx.shader.pluggable.plugin.fragment.lighting.DiffuseAttributeSource;
 import com.gempukku.libgdx.shader.pluggable.plugin.fragment.lighting.SpecularAttributeSource;
+import com.gempukku.libgdx.shader.pluggable.plugin.initializer.CullFaceInitializer;
+import com.gempukku.libgdx.shader.pluggable.plugin.initializer.DepthTestInitializer;
 import com.gempukku.libgdx.shader.pluggable.plugin.vertex.ApplySkinningTransform;
 import com.gempukku.libgdx.shader.pluggable.plugin.vertex.AttributePositionSource;
 import com.gempukku.libgdx.shader.pluggable.plugin.vertex.BlendingAttributeCall;
@@ -33,6 +35,10 @@ public class PluggableShaderUtil {
 
     public static PluggableShaderBuilder createDefaultPluggableShaderBuilder() {
         DefaultPluggableShaderBuilder defaultPluggableShaderBuilder = new DefaultPluggableShaderBuilder();
+
+        // Initializers
+        defaultPluggableShaderBuilder.addRenderInitializer(new CullFaceInitializer());
+        defaultPluggableShaderBuilder.addRenderInitializer(new DepthTestInitializer());
 
         // Vertex shader
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new ColorAttributeCall());

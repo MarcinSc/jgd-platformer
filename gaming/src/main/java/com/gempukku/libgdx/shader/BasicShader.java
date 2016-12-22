@@ -21,9 +21,38 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class BasicShader implements Shader, UniformRegistry {
+    private static class Initializer {
+        private final boolean global;
+        private final RenderInitializer renderInitializer;
+
+        public Initializer(boolean global, RenderInitializer renderInitializer) {
+            this.global = global;
+            this.renderInitializer = renderInitializer;
+        }
+    }
+
+    private static class Uniform {
+        private final String alias;
+        private final boolean global;
+        private final UniformSetter setter;
+        private int location = -1;
+
+        public Uniform(String alias, boolean global, UniformSetter setter) {
+            this.alias = alias;
+            this.global = global;
+            this.setter = setter;
+        }
+
+        private void setUniformLocation(int location) {
+            this.location = location;
+        }
+    }
+
     private static class StructArrayUniform {
         private final String alias;
         private final String[] fieldNames;
@@ -48,25 +77,9 @@ public abstract class BasicShader implements Shader, UniformRegistry {
         }
     }
 
-    private static class Uniform {
-        private final String alias;
-        private final boolean global;
-        private final UniformSetter setter;
-        private int location = -1;
-
-        public Uniform(String alias, boolean global, UniformSetter setter) {
-            this.alias = alias;
-            this.global = global;
-            this.setter = setter;
-        }
-
-        private void setUniformLocation(int location) {
-            this.location = location;
-        }
-    }
-
     private final Map<String, Uniform> uniforms = new HashMap<>();
     private final Map<String, StructArrayUniform> structArrayUniforms = new HashMap<>();
+    private final List<Initializer> renderInitializers = new LinkedList<>();
     private final IntIntMap attributes = new IntIntMap();
 
     private ShaderProgram program;
@@ -75,6 +88,12 @@ public abstract class BasicShader implements Shader, UniformRegistry {
     private Mesh currentMesh;
 
     private boolean initialized = false;
+
+    @Override
+    public void registerRenderInitializer(boolean global, RenderInitializer renderInitializer) {
+        if (initialized) throw new GdxRuntimeException("Cannot register an initializer after initialization");
+        renderInitializers.add(new Initializer(global, renderInitializer));
+    }
 
     @Override
     public void registerUniform(final String alias, final boolean global, final UniformSetter setter) {
@@ -153,6 +172,11 @@ public abstract class BasicShader implements Shader, UniformRegistry {
         this.context = context;
         program.begin();
         currentMesh = null;
+
+        for (Initializer initializer : renderInitializers) {
+            if (initializer.global)
+                initializer.renderInitializer.initialize(this, null, null);
+        }
         for (Uniform uniform : uniforms.values()) {
             if (uniform.global)
                 uniform.setter.set(this, uniform.location, null, null);
@@ -185,7 +209,11 @@ public abstract class BasicShader implements Shader, UniformRegistry {
         render(renderable, combinedAttributes);
     }
 
-    public void render(Renderable renderable, final Attributes combinedAttributes) {
+    protected void render(Renderable renderable, final Attributes combinedAttributes) {
+        for (Initializer initializer : renderInitializers) {
+            if (!initializer.global)
+                initializer.renderInitializer.initialize(this, renderable, combinedAttributes);
+        }
         for (Uniform uniform : uniforms.values()) {
             if (!uniform.global)
                 uniform.setter.set(this, uniform.location, renderable, combinedAttributes);
