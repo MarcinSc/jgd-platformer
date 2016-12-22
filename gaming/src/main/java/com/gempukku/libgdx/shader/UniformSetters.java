@@ -24,44 +24,44 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter projTrans = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.projection);
+            shader.setUniform(location, shader.getCamera().projection);
         }
     };
     public final static UniformRegistry.UniformSetter viewTrans = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.view);
+            shader.setUniform(location, shader.getCamera().view);
         }
     };
     public final static UniformRegistry.UniformSetter projViewTrans = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.combined);
+            shader.setUniform(location, shader.getCamera().combined);
         }
     };
     public final static UniformRegistry.UniformSetter cameraPosition = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.position.x, shader.camera.position.y, shader.camera.position.z,
-                    1.1881f / (shader.camera.far * shader.camera.far));
+            shader.setUniform(location, shader.getCamera().position.x, shader.getCamera().position.y, shader.getCamera().position.z,
+                    1.1881f / (shader.getCamera().far * shader.getCamera().far));
         }
     };
     public final static UniformRegistry.UniformSetter cameraDirection = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.direction);
+            shader.setUniform(location, shader.getCamera().direction);
         }
     };
     public final static UniformRegistry.UniformSetter cameraUp = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.up);
+            shader.setUniform(location, shader.getCamera().up);
         }
     };
     public final static UniformRegistry.UniformSetter cameraNearFar = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, shader.camera.near, shader.camera.far);
+            shader.setUniform(location, shader.getCamera().near, shader.getCamera().far);
         }
     };
     public final static UniformRegistry.UniformSetter worldTrans = new UniformRegistry.UniformSetter() {
@@ -75,7 +75,7 @@ public class UniformSetters {
 
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, temp.set(shader.camera.view).mul(renderable.worldTransform));
+            shader.setUniform(location, temp.set(shader.getCamera().view).mul(renderable.worldTransform));
         }
     };
     public final static UniformRegistry.UniformSetter projViewWorldTrans = new UniformRegistry.UniformSetter() {
@@ -83,7 +83,7 @@ public class UniformSetters {
 
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            shader.setUniform(location, temp.set(shader.camera.combined).mul(renderable.worldTransform));
+            shader.setUniform(location, temp.set(shader.getCamera().combined).mul(renderable.worldTransform));
         }
     };
     public final static UniformRegistry.UniformSetter normalMatrix = new UniformRegistry.UniformSetter() {
@@ -129,7 +129,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter diffuseTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Diffuse))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -150,7 +150,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter specularTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Specular))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -171,7 +171,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter emissiveTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Emissive))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -192,7 +192,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter reflectionTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Reflection))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -207,7 +207,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter normalTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Normal))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -222,7 +222,7 @@ public class UniformSetters {
     public final static UniformRegistry.UniformSetter ambientTexture = new UniformRegistry.UniformSetter() {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
-            final int unit = shader.context.textureBinder.bind(((TextureAttribute) (combinedAttributes
+            final int unit = shader.getContext().textureBinder.bind(((TextureAttribute) (combinedAttributes
                     .get(TextureAttribute.Ambient))).textureDescription);
             shader.setUniform(location, unit);
         }
@@ -279,7 +279,7 @@ public class UniformSetters {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
             if (combinedAttributes.has(CubemapAttribute.EnvironmentMap)) {
-                shader.setUniform(location, shader.context.textureBinder.bind(((CubemapAttribute) combinedAttributes
+                shader.setUniform(location, shader.getContext().textureBinder.bind(((CubemapAttribute) combinedAttributes
                         .get(CubemapAttribute.EnvironmentMap)).textureDescription));
             }
         }
@@ -296,7 +296,7 @@ public class UniformSetters {
         @Override
         public void set(BasicShader shader, int location, Renderable renderable, Attributes combinedAttributes) {
             BlendingAttribute blendingAttribute = (BlendingAttribute) combinedAttributes.get(BlendingAttribute.Type);
-            shader.context.setBlending(true, blendingAttribute.sourceFunction, blendingAttribute.destFunction);
+            shader.getContext().setBlending(true, blendingAttribute.sourceFunction, blendingAttribute.destFunction);
             shader.setUniform(location, blendingAttribute.opacity);
         }
     };

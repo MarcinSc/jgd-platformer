@@ -82,9 +82,9 @@ public class PluggableShader extends UniformCachingShader {
             }
         }
 
-        context.setCullFace(cullFace);
-        context.setDepthTest(depthFunc, depthRangeNear, depthRangeFar);
-        context.setDepthMask(depthMask);
+        getContext().setCullFace(cullFace);
+        getContext().setDepthTest(depthFunc, depthRangeNear, depthRangeFar);
+        getContext().setDepthMask(depthMask);
     }
 
     @Override

@@ -70,8 +70,8 @@ public abstract class BasicShader implements Shader, UniformRegistry {
     private final IntIntMap attributes = new IntIntMap();
 
     private ShaderProgram program;
-    protected RenderContext context;
-    public Camera camera;
+    private RenderContext context;
+    private Camera camera;
     private Mesh currentMesh;
 
     private boolean initialized = false;
@@ -88,6 +88,14 @@ public abstract class BasicShader implements Shader, UniformRegistry {
         if (initialized) throw new GdxRuntimeException("Cannot register an uniform after initialization");
         validateNewUniform(alias);
         structArrayUniforms.put(alias, new StructArrayUniform(alias, fieldNames, global, setter));
+    }
+
+    public RenderContext getContext() {
+        return context;
+    }
+
+    public Camera getCamera() {
+        return camera;
     }
 
     private void validateNewUniform(String alias) {
