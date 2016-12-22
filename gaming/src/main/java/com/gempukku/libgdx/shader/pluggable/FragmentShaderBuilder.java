@@ -2,14 +2,12 @@ package com.gempukku.libgdx.shader.pluggable;
 
 import com.gempukku.libgdx.shader.UniformRegistry;
 
-import java.util.List;
-
 public class FragmentShaderBuilder extends CommonShaderBuilder {
     public FragmentShaderBuilder(UniformRegistry uniformRegistry) {
         super(uniformRegistry);
     }
 
-    public String buildProgram(List<String> additionalFunctionCalls, String executionChain) {
+    public String buildProgram(String mainBody) {
         StringBuilder result = new StringBuilder();
 
         appendStructures(result);
@@ -21,11 +19,7 @@ public class FragmentShaderBuilder extends CommonShaderBuilder {
 
         result.append("void main() {\n");
 
-        for (String additionalFunctionCall : additionalFunctionCalls) {
-            result.append("  " + additionalFunctionCall + "();\n");
-        }
-
-        result.append("  gl_FragColor = " + executionChain + ";\n");
+        result.append(mainBody);
 
         result.append("}\n");
         return result.toString();

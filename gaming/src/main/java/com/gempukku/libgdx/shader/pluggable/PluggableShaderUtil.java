@@ -42,9 +42,9 @@ public class PluggableShaderUtil {
         defaultPluggableShaderBuilder.addAdditionalVertexCall(new TextureCooridnateAttributesCall());
 
         defaultPluggableShaderBuilder.setPositionSource(new AttributePositionSource());
-        defaultPluggableShaderBuilder.addPositionWrapper(new ApplySkinningTransform());
-        defaultPluggableShaderBuilder.addPositionWrapper(new WorldTransform());
-        defaultPluggableShaderBuilder.addPositionWrapper(new CalculateFog());
+        defaultPluggableShaderBuilder.addPositionProcessor(new ApplySkinningTransform());
+        defaultPluggableShaderBuilder.addPositionProcessor(new WorldTransform());
+        defaultPluggableShaderBuilder.addPositionProcessor(new CalculateFog());
 
         // Lighting vertex calculations
         PerVertexLightingCalculateCall perVertexLightingCalculateCall = new PerVertexLightingCalculateCall();
@@ -55,15 +55,15 @@ public class PluggableShaderUtil {
         perVertexLightingCalculateCall.addLightWrapper(new ApplyDirectionalLights(2));
         perVertexLightingCalculateCall.addLightWrapper(new ApplyPointLights(5));
 
-        defaultPluggableShaderBuilder.addPositionWrapper(perVertexLightingCalculateCall);
+        defaultPluggableShaderBuilder.addPositionProcessor(perVertexLightingCalculateCall);
 
-        defaultPluggableShaderBuilder.addPositionWrapper(new ProjectViewTransform());
+        defaultPluggableShaderBuilder.addPositionProcessor(new ProjectViewTransform());
 
         // Fragment shader
         defaultPluggableShaderBuilder.setColorSource(new WhiteColorSource());
-        defaultPluggableShaderBuilder.addColorWrapper(new ColorAttributeTransform());
-        defaultPluggableShaderBuilder.addColorWrapper(new DiffuseColorTransform());
-        defaultPluggableShaderBuilder.addColorWrapper(new DiffuseTextureTransform());
+        defaultPluggableShaderBuilder.addColorProcessor(new ColorAttributeTransform());
+        defaultPluggableShaderBuilder.addColorProcessor(new DiffuseColorTransform());
+        defaultPluggableShaderBuilder.addColorProcessor(new DiffuseTextureTransform());
 
         //Lighting fragment calculations
 
@@ -71,10 +71,10 @@ public class PluggableShaderUtil {
         perVertexLightingApplyCall.setLightDiffuseSource(new DiffuseAttributeSource());
         perVertexLightingApplyCall.setLightSpecularSource(new SpecularAttributeSource());
 
-        defaultPluggableShaderBuilder.addColorWrapper(perVertexLightingApplyCall);
+        defaultPluggableShaderBuilder.addColorProcessor(perVertexLightingApplyCall);
 
-        defaultPluggableShaderBuilder.addColorWrapper(new ApplyFog());
-        defaultPluggableShaderBuilder.addColorWrapper(new BlendingAttributeTransform());
+        defaultPluggableShaderBuilder.addColorProcessor(new ApplyFog());
+        defaultPluggableShaderBuilder.addColorProcessor(new BlendingAttributeTransform());
 
         return defaultPluggableShaderBuilder;
     }

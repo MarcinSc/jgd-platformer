@@ -3,7 +3,6 @@ package com.gempukku.libgdx.shader.pluggable;
 import com.gempukku.libgdx.shader.UniformRegistry;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class VertexShaderBuilder extends CommonShaderBuilder {
@@ -27,7 +26,7 @@ public class VertexShaderBuilder extends CommonShaderBuilder {
             stringBuilder.append("\n");
     }
 
-    public String buildProgram(List<String> additionalFunctionCalls, String executionChain) {
+    public String buildProgram(String mainBody) {
         StringBuilder result = new StringBuilder();
 
         appendStructures(result);
@@ -40,11 +39,7 @@ public class VertexShaderBuilder extends CommonShaderBuilder {
 
         result.append("void main() {\n");
 
-        for (String additionalFunctionCall : additionalFunctionCalls) {
-            result.append("  " + additionalFunctionCall + "();\n");
-        }
-
-        result.append("  gl_Position = " + executionChain + ";\n");
+        result.append(mainBody);
 
         result.append("}\n");
         return result.toString();

@@ -26,7 +26,8 @@ public class DiffuseColorTransform implements PluggableFragmentFunctionCall {
         fragmentShaderBuilder.addUniformVariable("u_diffuseColor", "vec4", false, UniformSetters.diffuseColor);
         fragmentShaderBuilder.addFunction("getTransformedDiffuseColor",
                 "vec4 getTransformedDiffuseColor(vec4 color) {\n" +
-                        "  return color * u_diffuseColor;\n" +
+                        "  color *= u_diffuseColor;\n" +
+                        "  return color;\n" +
                         "}\n");
     }
 

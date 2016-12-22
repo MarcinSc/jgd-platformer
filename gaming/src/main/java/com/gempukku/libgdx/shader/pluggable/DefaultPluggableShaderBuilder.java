@@ -10,10 +10,10 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     private BitSetPluggableShaderFeatures tempShaderFeatures = new BitSetPluggableShaderFeatures();
 
     private PluggableVertexFunctionCall positionSource;
-    private List<PluggableVertexFunctionCall> positionWrappers = new LinkedList<PluggableVertexFunctionCall>();
+    private List<PluggableVertexFunctionCall> positionProcessors = new LinkedList<PluggableVertexFunctionCall>();
 
     private PluggableFragmentFunctionCall colorSource;
-    private List<PluggableFragmentFunctionCall> colorWrappers = new LinkedList<PluggableFragmentFunctionCall>();
+    private List<PluggableFragmentFunctionCall> colorProcessors = new LinkedList<PluggableFragmentFunctionCall>();
 
     private List<PluggableVertexFunctionCall> additionalVertexCalls = new LinkedList<PluggableVertexFunctionCall>();
     private List<PluggableFragmentFunctionCall> additionalFragmentCalls = new LinkedList<PluggableFragmentFunctionCall>();
@@ -26,12 +26,12 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
         this.colorSource = colorSource;
     }
 
-    public void addPositionWrapper(PluggableVertexFunctionCall positionWrapper) {
-        positionWrappers.add(positionWrapper);
+    public void addPositionProcessor(PluggableVertexFunctionCall positionProcessor) {
+        positionProcessors.add(positionProcessor);
     }
 
-    public void addColorWrapper(PluggableFragmentFunctionCall colorWrapper) {
-        colorWrappers.add(colorWrapper);
+    public void addColorProcessor(PluggableFragmentFunctionCall colorProcessor) {
+        colorProcessors.add(colorProcessor);
     }
 
     public void addAdditionalVertexCall(PluggableVertexFunctionCall additionalVertexCall) {
@@ -46,7 +46,7 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     public void getShaderFeatures(Renderable renderable, PluggableShaderFeatures shaderFeatures) {
         StringBuilder builder = new StringBuilder();
         positionSource.appendShaderFeatures(renderable, shaderFeatures);
-        for (PluggableVertexFunctionCall positionWrapper : positionWrappers) {
+        for (PluggableVertexFunctionCall positionWrapper : positionProcessors) {
             if (positionWrapper.isProcessing(renderable))
                 positionWrapper.appendShaderFeatures(renderable, shaderFeatures);
         }
@@ -56,7 +56,7 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
         }
 
         colorSource.appendShaderFeatures(renderable, shaderFeatures);
-        for (PluggableFragmentFunctionCall colorWrapper : colorWrappers) {
+        for (PluggableFragmentFunctionCall colorWrapper : colorProcessors) {
             if (colorWrapper.isProcessing(renderable))
                 colorWrapper.appendShaderFeatures(renderable, shaderFeatures);
         }
@@ -83,48 +83,56 @@ public class DefaultPluggableShaderBuilder implements PluggableShaderBuilder {
     }
 
     private String createVertexProgram(Renderable renderable, VertexShaderBuilder vertexShaderBuilder) {
-        String functionName = positionSource.getFunctionName(renderable);
-        positionSource.appendFunction(renderable, vertexShaderBuilder);
-        String executionChain = functionName + "()";
+        StringBuilder body = new StringBuilder();
 
-        for (PluggableVertexFunctionCall positionWrapper : positionWrappers) {
-            if (positionWrapper.isProcessing(renderable)) {
-                positionWrapper.appendFunction(renderable, vertexShaderBuilder);
-                executionChain = positionWrapper.getFunctionName(renderable) + "(" + executionChain + ")";
-            }
-        }
-
-        List<String> vertexFunctions = new LinkedList<String>();
         for (PluggableVertexFunctionCall additionalVertexCall : additionalVertexCalls) {
             if (additionalVertexCall.isProcessing(renderable)) {
                 additionalVertexCall.appendFunction(renderable, vertexShaderBuilder);
-                vertexFunctions.add(additionalVertexCall.getFunctionName(renderable));
+                body.append("  " + additionalVertexCall.getFunctionName(renderable) + "();\n");
             }
         }
+        if (!additionalVertexCalls.isEmpty())
+            body.append("\n");
 
-        return vertexShaderBuilder.buildProgram(vertexFunctions, executionChain);
+        String functionName = positionSource.getFunctionName(renderable);
+        positionSource.appendFunction(renderable, vertexShaderBuilder);
+        body.append("  vec4 position = " + functionName + "();\n");
+
+        for (PluggableVertexFunctionCall positionWrapper : positionProcessors) {
+            if (positionWrapper.isProcessing(renderable)) {
+                positionWrapper.appendFunction(renderable, vertexShaderBuilder);
+                body.append("  position = " + positionWrapper.getFunctionName(renderable) + "(position);\n");
+            }
+        }
+        body.append("  gl_Position = position;\n");
+
+        return vertexShaderBuilder.buildProgram(body.toString());
     }
 
     private String createFragmentProgram(Renderable renderable, FragmentShaderBuilder fragmentShaderBuilder) {
-        String functionName = colorSource.getFunctionName(renderable);
-        colorSource.appendFunction(renderable, fragmentShaderBuilder);
-        String executionChain = functionName + "()";
+        StringBuilder body = new StringBuilder();
 
-        for (PluggableFragmentFunctionCall colorWrapper : colorWrappers) {
-            if (colorWrapper.isProcessing(renderable)) {
-                colorWrapper.appendFunction(renderable, fragmentShaderBuilder);
-                executionChain = colorWrapper.getFunctionName(renderable) + "(" + executionChain + ")";
-            }
-        }
-
-        List<String> fragmentFunctions = new LinkedList<String>();
         for (PluggableFragmentFunctionCall additionalFragmentCall : additionalFragmentCalls) {
             if (additionalFragmentCall.isProcessing(renderable)) {
                 additionalFragmentCall.appendFunction(renderable, fragmentShaderBuilder);
-                fragmentFunctions.add(additionalFragmentCall.getFunctionName(renderable));
+                body.append("  " + additionalFragmentCall.getFunctionName(renderable) + "();\n");
             }
         }
+        if (!additionalFragmentCalls.isEmpty())
+            body.append("\n");
 
-        return fragmentShaderBuilder.buildProgram(fragmentFunctions, executionChain);
+        String functionName = colorSource.getFunctionName(renderable);
+        colorSource.appendFunction(renderable, fragmentShaderBuilder);
+        body.append("  vec4 color = " + functionName + "();\n");
+
+        for (PluggableFragmentFunctionCall colorWrapper : colorProcessors) {
+            if (colorWrapper.isProcessing(renderable)) {
+                colorWrapper.appendFunction(renderable, fragmentShaderBuilder);
+                body.append("  color = " + colorWrapper.getFunctionName(renderable) + "(color);\n");
+            }
+        }
+        body.append("  gl_FragColor = color;\n");
+
+        return fragmentShaderBuilder.buildProgram(body.toString());
     }
 }

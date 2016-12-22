@@ -28,7 +28,8 @@ public class DiffuseTextureTransform implements PluggableFragmentFunctionCall {
         fragmentShaderBuilder.addVaryingVariable("v_diffuseUV", "vec2");
         fragmentShaderBuilder.addFunction("getTransformedDiffuseTexture",
                 "vec4 getTransformedDiffuseTexture(vec4 color) {\n" +
-                        "  return color * texture2D(u_diffuseTexture, v_diffuseUV);\n" +
+                        "  color *= texture2D(u_diffuseTexture, v_diffuseUV);\n" +
+                        "  return color;\n" +
                         "}\n");
     }
 

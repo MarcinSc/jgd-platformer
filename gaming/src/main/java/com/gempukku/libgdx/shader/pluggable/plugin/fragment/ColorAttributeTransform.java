@@ -25,7 +25,8 @@ public class ColorAttributeTransform implements PluggableFragmentFunctionCall {
         fragmentShaderBuilder.addVaryingVariable("v_color", "vec4");
         fragmentShaderBuilder.addFunction("getTransformedColor",
                 "vec4 getTransformedColor(vec4 color) {\n" +
-                        "  return color * v_color;\n" +
+                        "  color *= v_color;\n" +
+                        "  return color;\n" +
                         "}\n");
     }
 
