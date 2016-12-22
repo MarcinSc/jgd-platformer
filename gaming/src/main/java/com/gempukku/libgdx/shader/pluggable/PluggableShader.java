@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.gempukku.libgdx.shader.BasicShader;
+import com.gempukku.libgdx.shader.UniformCachingShader;
 
-public class PluggableShader extends BasicShader {
+public class PluggableShader extends UniformCachingShader {
     /**
      * @deprecated Replaced by {@link DefaultShader.Config#defaultCullFace} Set to 0 to disable culling
      */
